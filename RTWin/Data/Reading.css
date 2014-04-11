@@ -185,3 +185,10 @@ textarea.changed, input.changed {
     left: 0;
     width: 100%;
 }
+
+#video {
+    margin-top: 20px;
+    margin-bottom: 30px;
+    margin-left: 30%;
+    margin-right: 0;
+}

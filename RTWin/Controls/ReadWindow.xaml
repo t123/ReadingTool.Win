@@ -6,23 +6,7 @@
         WindowState="Maximized"
         >
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="40"></RowDefinition>
-        </Grid.RowDefinitions>
-        <awe:WebControl Name="WebControl"  Grid.Row="0" Grid.Column="0"  NativeViewInitialized="WebControl_OnNativeViewInitialized">
+        <awe:WebControl Name="WebControl"  Grid.Row="0" Grid.Column="0">
         </awe:WebControl>
-        <StackPanel Orientation="Horizontal" Grid.Row="1" Name="spMediaPlayer">
-            <MediaElement Name="mePlayer"></MediaElement>
-            <Button Name="btnPlayPause" Click="BtnPlay_OnClick" Margin="10,5,10,5">Play</Button>
-            <Button Name="btnStop" Click="BtnStop_OnClick" Margin="10,5,10,5">Stop</Button>
-            <TextBlock Margin="10,5,10,5">Volume:</TextBlock>
-            <Slider Minimum="0" Maximum="1" Value="{Binding ElementName=mePlayer, Path=Volume, Mode=TwoWay}" Width="100" Margin="10,5,10,5"></Slider>
-            <TextBlock>Speed:</TextBlock>
-            <Slider Minimum="0" Maximum="2" Value="{Binding ElementName=mePlayer, Path=SpeedRatio, Mode=TwoWay}" Width="100" Margin="10,5,10,5"></Slider>
-            <TextBlock Margin="10,5,10,5">Pos:</TextBlock>
-            <Slider Minimum="0" Name="SliderPosition" ValueChanged="SliderPosition_OnValueChangedliderPosition_ValueChanged" Width="100" Margin="10,5,10,5"></Slider>
-            <TextBlock Name="CurrentTime" Margin="10,5,10,5"></TextBlock>
-        </StackPanel>
     </Grid>
 </Window>

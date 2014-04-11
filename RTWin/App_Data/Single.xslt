@@ -15,6 +15,9 @@
       <xsl:attribute name="data-mediaUri">
         <xsl:value-of select="/root/content/@mediaUri"/>
       </xsl:attribute>
+      <xsl:attribute name="data-itemtype">
+        <xsl:value-of select="/root/content/@itemType"/>
+      </xsl:attribute>
 
       <xsl:choose>
         <xsl:when test="/root/content/@isParallel='true'">

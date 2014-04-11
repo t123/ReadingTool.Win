@@ -95,49 +95,69 @@ namespace RTWin
             InitHub();
         }
 
-        private IReadingWindow FindWindow()
+        private WatchWindow FindWatchWindow()
         {
             Window owner = System.Windows.Application.Current.MainWindow;
-            IReadingWindow readingWindow = null;
+            WatchWindow watchWindow = null;
 
             foreach (var window in owner.OwnedWindows)
             {
-                if (window is IReadingWindow)
+                if (window is WatchWindow)
                 {
-                    readingWindow = window as IReadingWindow;
+                    watchWindow = window as WatchWindow;
                     break;
                 }
             }
 
-            return readingWindow;
+            return watchWindow;
         }
 
         private void InitHub()
         {
             _mainHubProxy.On<string, string>("addMessage", (element, action) =>
             {
-                //TODO fixme
-                if (element == "mp")
+                //if (element == "mp")
+                //{
+                //    System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                //    {
+                //        var readingWindow = FindWindow();
+
+                //        if (readingWindow == null)
+                //        {
+                //            return;
+                //        }
+
+                //        switch (action)
+                //        {
+                //            case "play":
+                //                readingWindow.Play();
+                //                break;
+                //            case "pause":
+                //                bool isPlaying = readingWindow.IsPlaying();
+                //                _mainHubProxy.Invoke("Send", new object[] { "mpr", isPlaying });
+                //                readingWindow.Pause();
+                //                break;
+                //        }
+                //    });
+                //}
+                //else 
+                if (element == "video")
                 {
                     System.Windows.Application.Current.Dispatcher.Invoke(() =>
                     {
-                        var readingWindow = FindWindow();
+                        double time;
+                        var window = FindWatchWindow();
 
-                        if (readingWindow == null)
+                        if (!double.TryParse(action, out time) || window == null)
                         {
-                            return;
+                            _mainHubProxy.Invoke("Send", new object[] {"srtl1", -1});
+                            _mainHubProxy.Invoke("Send", new object[] {"srtl2", -1});
                         }
-
-                        switch (action)
+                        else
                         {
-                            case "play":
-                                readingWindow.Play();
-                                break;
-                            case "pause":
-                                bool isPlaying = readingWindow.IsPlaying();
-                                _mainHubProxy.Invoke("Send", new object[] { "mpr", isPlaying });
-                                readingWindow.Pause();
-                                break;
+                            var sub = window.GetSub(time);
+                            _mainHubProxy.Invoke("Send", new object[] {"srtl1", sub.Item1});
+                            _mainHubProxy.Invoke("Send", new object[] {"srtl2", sub.Item2});
                         }
                     });
                 }

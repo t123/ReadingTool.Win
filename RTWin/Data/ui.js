@@ -31,8 +31,6 @@ $(function () {
             } else {
                 $('#l2Main').html($('#l2_' + message).html());
             }
-        } else if (name == "mpr") {
-            reading.setWasPlaying(message);
         }
     };
 
@@ -44,16 +42,30 @@ $(function () {
 
     if ($('#reading').data('mediauri') != '') {
         var mediaUri = 'http://localhost:9000/api/media/' + $('#reading').data('itemid');
-        $("#jquery_jplayer_1").jPlayer({
-            ready: function() {
-                $(this).jPlayer("setMedia", {
-                    mp3: mediaUri
-                });
-            },
-            swfPath: "http://localhost:9000/api/local/Jplayer.swf",
-            supplied: "mp3",
-            errorAlerts: true
-        });
+
+        if ($('#reading').data('itemtype') == 'text') {
+            $("#jquery_jplayer_1").jPlayer({
+                ready: function() {
+                    $(this).jPlayer("setMedia", {
+                        mp3: mediaUri
+                    });
+                },
+                swfPath: "http://localhost:9000/api/local/Jplayer.swf",
+                supplied: "mp3",
+                errorAlerts: true
+            });
+        } else {
+            $("#jquery_jplayer_1").jPlayer({
+                ready: function () {
+                    $(this).jPlayer("setMedia", {
+                        m4v: mediaUri
+                    });
+                },
+                swfPath: "http://localhost:9000/api/local/Jplayer.swf",
+                supplied: "m4v",
+                errorAlerts: true
+            });
+        }
     }
 
     var reading = new Reading({

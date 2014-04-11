@@ -24,8 +24,20 @@ namespace RTWin.Web
 
                 HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
                 response.Content = new StreamContent(new FileStream(item.MediaUri, FileMode.Open, FileAccess.Read));
-                response.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
-                response.Content.Headers.ContentDisposition.FileName = Path.GetFileName(item.MediaUri);
+
+                switch (Path.GetExtension(item.MediaUri))
+                {
+                    case ".mp3":
+                        response.Content.Headers.ContentType = new MediaTypeHeaderValue("audio/mpeg3");
+                        break;
+
+                    case ".mp4":
+                        response.Content.Headers.ContentType = new MediaTypeHeaderValue("video/mpeg");
+                        break;
+
+                    default:
+                        break;
+                }
 
                 return response;
             }

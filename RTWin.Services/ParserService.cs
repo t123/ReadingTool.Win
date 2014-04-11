@@ -119,6 +119,7 @@ namespace RTWin.Services
             contentNode.SetAttributeValue("l1Title", _pi.Item.L1Title);
             contentNode.SetAttributeValue("l2Title", _pi.Item.L2Title);
             contentNode.SetAttributeValue("l1Id", _pi.Language1.LanguageId);
+            contentNode.SetAttributeValue("itemType", _pi.Item.ItemType.ToString().ToLowerInvariant());
             contentNode.SetAttributeValue("itemId", _pi.Item.ItemId);
 
             if (!string.IsNullOrWhiteSpace(_pi.Item.MediaUri) && File.Exists(_pi.Item.MediaUri))

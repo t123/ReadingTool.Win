@@ -5,6 +5,7 @@
     self.currentElement = null;
     self.options = options;
     self.wasPlaying = false;
+    self.jplayer = $('#jquery_jplayer_1');
 
     self._getCurrentSentence = function () {
         var sentence = '';
@@ -102,6 +103,7 @@
     self.save = function () {
         var phrase = self._getCurrentWordFromSpan();
         var state = $('input[name="State"]:checked').val();
+
         $.ajax({
             url: self.options.url + "/api/terms/",
             type: 'POST',
@@ -125,13 +127,13 @@
 
             self._removeChanged();
             var lower = phrase.toLowerCase();
-            $('#reading .__' + lower).removeClass('__notseen __known __ignored __unknown').addClass('__' + state.toLowerCase());
+            $('.__' + lower).removeClass('__notseen __known __ignored __unknown').addClass('__' + state.toLowerCase());
 
             var tempDef = $('#dBase').val().length > 0 ? $('#dBase').val() + "<br/>" : '';
             if ($('#dDefinition').val().length > 0) tempDef += $('#dDefinition').val().replace(/\n/g, '<br />');
 
             if (tempDef.length > 0) {
-                $('#reading .__' + lower).each(function (index) {
+                $('.__' + lower).each(function (index) {
                     $(this).html(
                         (tempDef.length > 0 ? '<a rel="tooltip" title="' + tempDef + '">' : '') + phrase + (tempDef.length > 0 ? '</a>' : '')
                     );
@@ -175,8 +177,8 @@
             }
 
             var lower = phrase.toLowerCase();
-            $('#reading .__' + lower).removeClass('__notseen __known __ignored __unknown __kd __id __ud __t').addClass('__notseen');
-            $('#reading .__' + lower).each(function (index) {
+            $('.__' + lower).removeClass('__notseen __known __ignored __unknown __kd __id __ud __t').addClass('__notseen');
+            $('.__' + lower).each(function (index) {
                 $(this).html(phrase);
             });
 
@@ -198,12 +200,12 @@
         return self.hasChanged;
     };
 
-    self.setWasPlaying = function (value) {
-        if (value == 'True') {
-            self.wasPlaying = true;
-        } else {
-            self.wasPlaying = false;
-        }
+    self.setWasPlaying = function() {
+        self.wasPlaying = self.jplayer.data() == null ? false : !self.jplayer.data().jPlayer.status.paused;
+    };
+
+    self.getWasPlaying = function () {
+        return self.wasPlaying;
     };
 
     self.copy = function () {
@@ -255,9 +257,14 @@
         var cls = self.currentElement.data('lower');
         $('.__' + cls).addClass('__matching');
 
+        self.setWasPlaying();
+
+        if (self.getWasPlaying()) {
+            self.jplayer.jPlayer('pause');
+        }
+
         self._updateModal();
         self._displayModal();
-        self.options.chat.server.send("mp", "pause");
     };
 
     self.closeModal = function () {
@@ -265,8 +272,13 @@
         $('.__matching').removeClass('__matching');
         self.modal.hide();
 
-        if (self.wasPlaying) {
-            self.options.chat.server.send("mp", "play");
+        if (self.getWasPlaying()) {
+            self.jplayer.jPlayer("play", self.jplayer.data().jPlayer.status.currentTime - 1);
+            self.jplayer.jPlayer("play");
         }
     };
+
+    self.jplayer.bind($.jPlayer.event.timeupdate, function (event) {
+        self.options.chat.server.send("video", event.jPlayer.status.currentTime);
+    });
 }

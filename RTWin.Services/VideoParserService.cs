@@ -122,6 +122,7 @@ namespace RTWin.Services
             contentNode.SetAttributeValue("l2Title", _pi.Item.L2Title);
             contentNode.SetAttributeValue("l1Id", _pi.Language1.LanguageId);
             contentNode.SetAttributeValue("itemId", _pi.Item.ItemId);
+            contentNode.SetAttributeValue("itemType", _pi.Item.ItemType.ToString().ToLowerInvariant());
             contentNode.SetAttributeValue("l1Direction", _pi.Language1.Settings.Direction);
             contentNode.SetAttributeValue("l2Direction", _pi.AsParallel ? _pi.Language2.Settings.Direction.ToString() : "");
 

@@ -12,6 +12,9 @@
       <xsl:attribute name="data-itemid">
         <xsl:value-of select="/root/content/@itemId"/>
       </xsl:attribute>
+      <xsl:attribute name="data-itemtype">
+        <xsl:value-of select="/root/content/@itemType"/>
+      </xsl:attribute>
       <tr id="l1Main" width="100%">
         <xsl:comment>output</xsl:comment>
       </tr>
