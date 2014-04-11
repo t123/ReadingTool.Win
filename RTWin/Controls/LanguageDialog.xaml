@@ -1,0 +1,79 @@
+﻿<Window
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	x:Class="RTWin.Controls.LanguageDialog"
+	x:Name="Window"
+	Title="Language"
+	Width="640" SizeToContent="Height"
+	WindowStartupLocation="CenterOwner"
+	WindowStyle="SingleBorderWindow"
+    ResizeMode="NoResize"
+	>
+
+    <Grid x:Name="LayoutRoot">
+        <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5">
+            <GroupBox Header="General">
+                <Grid>
+                    <Grid.Resources>
+                        <Style TargetType="{x:Type TextBox}">
+                            <Setter Property="Margin" Value="0,5,0,5" />
+                        </Style>
+                    </Grid.Resources>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Label Content="Language Name" Grid.Row="0" Grid.Column="0"/>
+                    <TextBox Grid.Row="0" Grid.Column="1" Name="TextBoxName"/>
+                    <Label Content="Language Code" Grid.Row="1" Grid.Column="0"/>
+                    <ComboBox Grid.Row="1" Grid.Column="1" Name="ComboBoxLanguageCode"/>
+                    <Label Content="Is Archived?" Grid.Row="2" Grid.Column="0"/>
+                    <CheckBox Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="CheckBoxArchive"/>
+                </Grid>
+            </GroupBox>
+            <GroupBox Margin="0,10,0,0">
+                <GroupBox.Header>Advanced Settings</GroupBox.Header>
+                <Grid>
+                    <Grid.Resources>
+                        <Style TargetType="{x:Type TextBox}">
+                            <Setter Property="Margin" Value="0,5,0,5" />
+                        </Style>
+                    </Grid.Resources>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Label Content="Direction" Grid.Row="0" Grid.Column="0"/>
+                    <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center">
+                        <RadioButton GroupName="RbDirection" Name="RbLTR">Left to Right</RadioButton>
+                        <RadioButton GroupName="RbDirection" Name="RbRTL" Margin="20,0,0,0">Right to Left</RadioButton>
+                    </StackPanel>
+                    <Label Content="Display Spaces" Grid.Row="1" Grid.Column="0"/>
+                    <CheckBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Name="CheckBoxDisplaySpaces"/>
+                    <Label Content="Pause Audio" Grid.Row="2" Grid.Column="0"/>
+                    <CheckBox Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="CheckBoxPauseAudio"/>
+                    <Label Content="Sentence Regex" Grid.Row="3" Grid.Column="0"/>
+                    <TextBox Grid.Row="3" Grid.Column="1" Name="TextBoxSentenceRegex"/>
+                    <Label Content="Term Regex" Grid.Row="4" Grid.Column="0"/>
+                    <TextBox Grid.Row="4" Grid.Column="1" Name="TextBoxTermRegex"/>
+                </Grid>
+            </GroupBox>
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                <Button Content="Save" Margin="5" MinWidth="75" Name="ButtonSave" Click="ButtonSave_OnClick"/>
+                <Button Content="Cancel" Margin="5" MinWidth="75" Name="ButtonCancel" Click="ButtonCancel_OnClick"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>

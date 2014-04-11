@@ -1,0 +1,32 @@
+﻿<Window
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	x:Class="RTWin.Controls.UserDialog"
+	x:Name="Window"
+	Title="User profiles"
+    Width="400"
+    Height="300"
+	WindowStartupLocation="CenterScreen"
+	MinHeight="220" MinWidth="200" Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"
+	>
+    <Grid x:Name="LayoutRoot" Margin="5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="1" Grid.Row="0">
+            <StackPanel.Resources>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Margin" Value="5"/>
+                </Style>
+            </StackPanel.Resources>
+            <Button Name="ButtonOpen" Click="ButtonOpen_OnClick" Content="Open" HorizontalAlignment="Stretch" VerticalAlignment="Top" />
+            <Button Name="ButtonAdd" Content="Add" Click="ButtonAdd_OnClick" HorizontalAlignment="Stretch" VerticalAlignment="Top" />
+            <Button Name="ButtonRename" Content="Rename" Click="ButtonRename_OnClick" HorizontalAlignment="Stretch" VerticalAlignment="Top" />
+            <Button Name="ButtonDelete" Content="Delete" Click="ButtonDelete_OnClick" HorizontalAlignment="Stretch" VerticalAlignment="Top" />
+            <Button Name="ButtonQuit" Content="Quit" Click="ButtonQuit_OnClick" HorizontalAlignment="Stretch" VerticalAlignment="Top" />
+        </StackPanel>
+        <ListBox Name="ListBoxUsers" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="0" Grid.Row="0">
+        </ListBox>
+    </Grid>
+</Window>

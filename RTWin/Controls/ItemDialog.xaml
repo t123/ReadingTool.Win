@@ -1,0 +1,91 @@
+﻿<Window
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
+	x:Name="Window"
+	Title="Item"
+    WindowState="Maximized"
+	WindowStyle="SingleBorderWindow"
+	x:Class="RTWin.Controls.ItemDialog"
+    MinWidth="400"
+    MinHeight="300"
+	>
+
+    <DockPanel>
+        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" DockPanel.Dock="Bottom" Height="35">
+            <Button Content="Save" Margin="5" MinWidth="75" Name="ButtonSave" Click="ButtonSave_OnClick" />
+            <Button Content="Cancel" Margin="5" MinWidth="75" Name="ButtonCancel" Click="ButtonCancel_OnClick"/>
+        </StackPanel>
+        <TabControl>
+            <TabItem Header="General">
+                <Grid>
+                    <Grid.Resources>
+                        <Style TargetType="{x:Type TextBox}">
+                            <Setter Property="Margin" Value="0,5,0,5" />
+                        </Style>
+                    </Grid.Resources>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Label Content="Collection Name" Grid.Row="0" Grid.Column="0"/>
+                    <StackPanel Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Orientation="Horizontal">
+                        <RadioButton Name="RbText" GroupName="ItemType">Text</RadioButton>
+                        <RadioButton Name="RbVideo" GroupName="ItemType" Margin="20,0,0,0">Video</RadioButton>
+                    </StackPanel>
+                    <Label Content="Collection Name" Grid.Row="1" Grid.Column="0"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" Name="TextBoxCollectionName"/>
+                    <Label Content="Collection No" Grid.Row="2" Grid.Column="0"/>
+                    <TextBox Grid.Row="2" Grid.Column="1" Name="TextBoxCollectionNo"/>
+                    <Label Content="Media URI" Grid.Row="3" Grid.Column="0"/>
+                    <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="1">
+                        <TextBox Name="TextBoxMediaUri" MinWidth="200"/>
+                        <Button Name="ButtonOpenFile" Content="Browse for file..." Margin="20,5,0,5" Click="ButtonOpenFile_OnClick"></Button>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Content">
+                <Grid>
+                    <Grid.Resources>
+                        <Style TargetType="{x:Type TextBox}">
+                            <Setter Property="Margin" Value="0,5,0,5" />
+                        </Style>
+                    </Grid.Resources>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150" />
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Label Content="L1 Content" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" FontWeight="Bold"/>
+                    <Label Content="Language" Grid.Row="1" Grid.Column="0"/>
+                    <ComboBox Grid.Row="1" Grid.Column="1" Name="ComboBoxL1Language"/>
+                    <Label Content="Title" Grid.Row="2" Grid.Column="0"/>
+                    <TextBox Grid.Row="2" Grid.Column="1" Name="TextBoxL1Title"/>
+                    <avalonedit:TextEditor MinHeight="100" MaxHeight="500" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Name="TextBoxL1Content" WordWrap="True" VerticalScrollBarVisibility="Auto" ShowLineNumbers="True" VerticalAlignment="Top">
+                    </avalonedit:TextEditor>
+
+                    <Label Content="L2 Content" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" FontWeight="Bold"/>
+                    <Label Content="Language" Grid.Row="1" Grid.Column="2"/>
+                    <ComboBox Grid.Row="1" Grid.Column="3" Name="ComboBoxL2Language"/>
+                    <Label Content="Title" Grid.Row="2" Grid.Column="2"/>
+                    <TextBox Grid.Row="2" Grid.Column="3" Name="TextBoxL2Title"/>
+                    <avalonedit:TextEditor MinHeight="100" MaxHeight="500" Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" Name="TextBoxL2Content" WordWrap="True" VerticalScrollBarVisibility="Auto" ShowLineNumbers="True" VerticalAlignment="Top">
+                    </avalonedit:TextEditor>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</Window>
