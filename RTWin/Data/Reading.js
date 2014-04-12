@@ -70,8 +70,6 @@
             $('#dBase').val(data.BasePhrase);
             $('#dSentence').val(data.Sentence);
             $('#dDefinition').val(data.Definition);
-
-            self._selectText();
         }).fail(function (data) {
             if (data.status == 404) {
                 $('[name=State][value="unknown"]').prop('checked', 'true');
@@ -81,8 +79,6 @@
                 $('#dSentence').val(self._getCurrentSentence());
                 $('#dSentence').addClass('changed');
                 $('#dMessage').html('New word, defaulting to unknown');
-
-                self._selectText();
             } else {
                 $('#dPhrase').html(text);
                 $('#dMessage').html('failed to lookup word');
@@ -91,13 +87,13 @@
     };
 
     self._selectText = function () {
-        //setTimeout(function () {
-        //    var range = document.createRange();
-        //    var selection = window.getSelection();
-        //    selection.removeAllRanges();
-        //    range.selectNodeContents($('#dPhrase')[0]);
-        //    selection.addRange(range);
-        //}, 125);
+        setTimeout(function () {
+            var range = document.createRange();
+            var selection = window.getSelection();
+            selection.removeAllRanges();
+            range.selectNodeContents($('#dPhrase')[0]);
+            selection.addRange(range);
+        }, 125);
     };
 
     self.save = function () {
@@ -278,7 +274,9 @@
         }
     };
 
-    self.jplayer.bind($.jPlayer.event.timeupdate, function (event) {
-        self.options.chat.server.send("video", event.jPlayer.status.currentTime);
-    });
+    if ($('#reading').data('itemtype') == 'video') {
+        self.jplayer.bind($.jPlayer.event.timeupdate, function(event) {
+            self.options.chat.server.send("video", event.jPlayer.status.currentTime);
+        });
+    }
 }
