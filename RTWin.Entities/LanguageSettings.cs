@@ -7,5 +7,7 @@
         public Direction Direction { get; set; }
         public bool DisplaySpaces { get; set; }
         public bool PauseOnModal { get; set; }
+        public bool LowercaseTerm { get; set; }
+        public string StripChars { get; set; }
     }
 }

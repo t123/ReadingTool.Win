@@ -77,9 +77,19 @@ namespace RTWin.Services
         }
     }
 
+    public class Srt
+    {
+        public int LineNo { get; set; }
+        public string Content { get; set; }
+        public double Start { get; set; }
+        public double End { get; set; }
+    }
+
     public class ParserOutput
     {
         public string Html { get; set; }
+        public List<Srt> L1Srt { get; set; }
+        public List<Srt> L2Srt { get; set; }
     }
 
     public interface IParserService
@@ -209,9 +219,9 @@ namespace RTWin.Services
                 t.SetAttributeValue("frequency", Math.Round((double)frequency[t.Value.ToLowerInvariant()] / (double)totalTerms * 100, 2));
             }
 
-            WriteFile(_pi.Item.ItemId + ".xml", document.ToString());
+            //WriteFile(_pi.Item.ItemId + ".xml", document.ToString());
             _po.Html = _pi.Html.Replace("<!-- table -->", ApplyTransform(document));
-            WriteFile(_pi.Item.ItemId + ".html", _po.Html);
+            //WriteFile(_pi.Item.ItemId + ".html", _po.Html);
 
             return _po;
         }
@@ -243,7 +253,6 @@ namespace RTWin.Services
 
         protected virtual string ApplyTransform(XDocument document)
         {
-            //string xslText = _pi.AsParallel ? ReadFile("parallel.xslt") : ReadFile("single.xslt");
             string xslText = ReadFile("single.xslt");
 
             XmlWriterSettings settings = new XmlWriterSettings();

@@ -38,6 +38,9 @@
   <ItemGroup>
     <Reference Include="Awesomium.Core, Version=1.7.4.1, Culture=neutral, PublicKeyToken=e1a0d7c8071a5214, processorArchitecture=x86" />
     <Reference Include="Awesomium.Windows.Controls, Version=1.7.4.1, Culture=neutral, PublicKeyToken=7a34e179b8b61c39, processorArchitecture=x86" />
+    <Reference Include="Humanizer">
+      <HintPath>..\packages\Humanizer.1.21.1\lib\portable-win+net40+sl50+wp8\Humanizer.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.AvalonEdit">
       <HintPath>..\packages\AvalonEdit.4.4.0.9727\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
     </Reference>
@@ -130,6 +133,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Common\DateTimeConverter.cs" />
     <Compile Include="Common\HtmlLoader.cs" />
     <Compile Include="Controls\ItemDialog.xaml.cs">
       <DependentUpon>ItemDialog.xaml</DependentUpon>
@@ -156,6 +160,7 @@
     <Compile Include="Web\ItemController.cs" />
     <Compile Include="Web\LocalController.cs" />
     <Compile Include="Web\MediaController.cs" />
+    <Compile Include="Web\SyncController.cs" />
     <Compile Include="Web\TermsController.cs" />
     <Page Include="Controls\ItemDialog.xaml">
       <Generator>MSBuild:Compile</Generator>

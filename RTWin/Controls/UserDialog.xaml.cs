@@ -22,10 +22,12 @@ namespace RTWin.Controls
     public partial class UserDialog : Window
     {
         private readonly UserService _userService;
+        private bool _skip;
 
-        public UserDialog(UserService userService)
+        public UserDialog(UserService userService, bool skip)
         {
             _userService = userService;
+            _skip = skip;
             InitializeComponent();
 
             this.ShowInTaskbar = false;
@@ -46,7 +48,7 @@ namespace RTWin.Controls
         {
             var users = _userService.FindAll();
 
-            if (users.Count == 1)
+            if (_skip && users.Count == 1)
             {
                 App.User = users.First();
                 return;

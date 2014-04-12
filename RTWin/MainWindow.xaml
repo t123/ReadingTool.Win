@@ -3,32 +3,128 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:rtWin="clr-namespace:RTWin"
         xmlns:awe="http://schemas.awesomium.com/winfx"
-        Title="RTWin" Height="500" Width="600" WindowStartupLocation="CenterScreen" WindowState="Normal" WindowStyle="SingleBorderWindow">
-    <Grid x:Name="RootGrid" Background="White">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition></RowDefinition>
-        </Grid.RowDefinitions>
-        <Button Content="New Language" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="94" Name="btnNewLanguage" Click="btnNewLanguage_Click"/>
-        <Button Content="New Item" HorizontalAlignment="Left" Margin="139,10,0,0" VerticalAlignment="Top" Width="75" Name="btnNewItem" Click="btnNewItem_Click"/>
-        <ListBox HorizontalAlignment="Left" Height="222" Margin="20,50,0,0" VerticalAlignment="Top" Width="277" Name="lbLanguages"/>
-        <Button Content="Edit Language" HorizontalAlignment="Left" Margin="20,286,0,0" VerticalAlignment="Top" Width="75" Name="btnEditLanguage" Click="btnEditLanguage_Click"/>
-        <ListBox HorizontalAlignment="Left" Height="222" Margin="368,50,0,0" VerticalAlignment="Top" Width="504" Name="lbItems">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock>
-                        [<Run Text="{Binding ItemType}" />]
-                        <Run Text="{Binding CollectionName}" />
-                        <Run Text="{Binding CollectionNo}" />
-                        - 
-                        <Run Text="{Binding L1Title}" />
-                    </TextBlock>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        <Button Content="View" HorizontalAlignment="Left" Margin="368,286,0,0" VerticalAlignment="Top" Width="75" x:Name="btnView" Click="BtnView_OnClick"/>
-        <Button Content="Edit" HorizontalAlignment="Left" Margin="462,286,0,0" VerticalAlignment="Top" Width="75" x:Name="btnEdit" Click="BtnEdit_OnClick" RenderTransformOrigin="1.72,0.455"/>
+        xmlns:common="clr-namespace:RTWin.Common"
+        Title="RTWin" WindowState="Maximized" WindowStyle="SingleBorderWindow"
+        Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+        >
+    <Window.Resources>
+        <common:DateTimeConverter x:Key="dateConverter"/>
+    </Window.Resources>
+    <Grid x:Name="RootGrid">
+        <DockPanel>
+            <ToolBarTray DockPanel.Dock="Top">
+                <ToolBar>
+                    <Button Name="ButtonChangeUser" Content="Change Profile" Click="ButtonChangeProfile_OnClick"/>
+                    <Button Name="ButtonNewLanguage" Content="Add Language" Click="ButtonNewLanguage_OnClick"/>
+                    <Button Name="ButtonNewItem" Content="Add Item" Click="ButtonNewItem_OnClick"/>
+                </ToolBar>
+            </ToolBarTray>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition MinWidth="100" Width="300"></ColumnDefinition>
+                    <ColumnDefinition Width="5"></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition MinHeight="100"></RowDefinition>
+                        <RowDefinition Height="5"></RowDefinition>
+                        <RowDefinition MinHeight="100"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <GroupBox Grid.Row="0">
+                        <GroupBox.Header>Languages</GroupBox.Header>
+                        <ListBox Name="ListBoxLanguageNames" MouseDoubleClick="ListBoxLanguageNames_OnMouseDoubleClick">
+                        </ListBox>
+                    </GroupBox>
+                    <GridSplitter HorizontalAlignment="Stretch" Grid.Row="1" Height="5"></GridSplitter>
+                    <GroupBox Grid.Row="2">
+                        <GroupBox.Header>Collection Names</GroupBox.Header>
+                        <ListBox Name="ListBoxCollectionNames">
+                        </ListBox>
+                    </GroupBox>
+                </Grid>
+                <GridSplitter HorizontalAlignment="Stretch" Grid.Column="1" Width="5" ResizeDirection="Columns"></GridSplitter>
+                <Grid Grid.Column="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition MinHeight="100"></RowDefinition>
+                        <RowDefinition Height="5"></RowDefinition>
+                        <RowDefinition MinHeight="100"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <GroupBox Grid.Row="0">
+                        <GroupBox.Header>Items</GroupBox.Header>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="30"></RowDefinition>
+                                <RowDefinition Height="*"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Label Grid.Row="0" Grid.Column="0">Search Items</Label>
+                            <TextBox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" Margin="5"></TextBox>
+                            <DataGrid Name="DataGridItems" Grid.Row="1" Grid.ColumnSpan="2" AutoGenerateColumns="False" CanUserReorderColumns="False" AlternatingRowBackground="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" CanUserAddRows="False" CanUserResizeRows="False">
+                                <DataGrid.Columns>
+                                    <DataGridCheckBoxColumn IsReadOnly="False"></DataGridCheckBoxColumn>
+                                    <DataGridTextColumn IsReadOnly="True" Header="Type" Binding="{Binding ItemType}"></DataGridTextColumn>
+                                    <DataGridTextColumn IsReadOnly="True" Header="Language" Binding="{Binding Language}"></DataGridTextColumn>
+                                    <DataGridTextColumn IsReadOnly="True" Header="No" Binding="{Binding CollectionNo}"></DataGridTextColumn>
+                                    <DataGridTextColumn IsReadOnly="True" Header="Collection" Binding="{Binding CollectionName}"></DataGridTextColumn>
+                                    <DataGridTextColumn IsReadOnly="True" Header="L1 Title" Binding="{Binding L1Title}"></DataGridTextColumn>
+                                    <DataGridTextColumn IsReadOnly="True" Header="LastRead" Binding="{Binding LastRead, Converter={StaticResource dateConverter}}"></DataGridTextColumn>
+                                    <DataGridCheckBoxColumn IsReadOnly="True" Header="Media?" Binding="{Binding HasMedia}"></DataGridCheckBoxColumn>
+                                    <DataGridCheckBoxColumn IsReadOnly="True" Header="Is Parallel?" Binding="{Binding IsParallel}"></DataGridCheckBoxColumn>
+                                    <DataGridTemplateColumn>
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button Content="View" Click="ButtonView_OnClick"></Button>
+                                                <Button Content="Parallel" Click="ButtonView_OnClick" ></Button>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn>
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button Content="Edit" Click="ButtonEdit_OnClick"></Button>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
+                    </GroupBox>
+
+                    <GridSplitter HorizontalAlignment="Stretch" Grid.Row="1" Height="5"></GridSplitter>
+                    <GroupBox Grid.Row="2">
+                        <GroupBox.Header>Terms</GroupBox.Header>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="30"></RowDefinition>
+                                <RowDefinition Height="*"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Label Grid.Row="0" Grid.Column="0">Search Terms</Label>
+                            <TextBox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" Margin="5"></TextBox>
+                            <DataGrid Grid.Row="1" Name="DataGridTerms" Grid.ColumnSpan="2"  AutoGenerateColumns="False" CanUserReorderColumns="False" AlternatingRowBackground="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" CanUserAddRows="False" CanUserResizeRows="False">
+                                <DataGrid.Columns>
+                                    <DataGridCheckBoxColumn IsReadOnly="False"></DataGridCheckBoxColumn>
+                                    <DataGridTextColumn IsReadOnly="True" Header="Language" Binding="{Binding Language}"></DataGridTextColumn>
+                                    <DataGridTextColumn IsReadOnly="True" Header="State" Binding="{Binding State}"></DataGridTextColumn>
+                                    <DataGridTextColumn IsReadOnly="True" Header="Phrase" Binding="{Binding Phrase}"></DataGridTextColumn>
+                                    <DataGridTextColumn IsReadOnly="True" Header="BasePhrase" Binding="{Binding BasePhrase}"></DataGridTextColumn>
+                                    <DataGridTextColumn IsReadOnly="True" Header="Sentence" Binding="{Binding Sentence}"></DataGridTextColumn>
+                                    <DataGridTextColumn IsReadOnly="True" Header="Definition" Binding="{Binding Definition}"></DataGridTextColumn>
+                                    <DataGridTextColumn IsReadOnly="True" Header="Created" Binding="{Binding DateCreated, Converter={StaticResource dateConverter}}"></DataGridTextColumn>
+                                    <DataGridTextColumn IsReadOnly="True" Header="Modified" Binding="{Binding DateModified, Converter={StaticResource dateConverter}}"></DataGridTextColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
+                    </GroupBox>
+                </Grid>
+            </Grid>
+        </DockPanel>
     </Grid>
 </Window>

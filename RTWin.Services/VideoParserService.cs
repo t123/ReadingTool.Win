@@ -18,19 +18,8 @@ namespace RTWin.Services
 {
     public class VideoParserService : IParserService
     {
-        public class Srt
-        {
-            public int LineNo { get; set; }
-            public string Content { get; set; }
-            public double Start { get; set; }
-            public double End { get; set; }
-        }
-
         private readonly ParserInput _pi;
         private readonly ParserOutput _po;
-
-        public List<Srt> L1Srt { get; private set; }
-        public List<Srt> L2Srt { get; private set; }
 
         public VideoParserService(ParserInput pi)
         {
@@ -99,8 +88,8 @@ namespace RTWin.Services
 
         public ParserOutput Parse()
         {
-            L1Srt = ParseSubtitles(_pi.Item.L1Content);
-            L2Srt = _pi.AsParallel ? ParseSubtitles(_pi.Item.L2Content) : null;
+            _po.L1Srt = ParseSubtitles(_pi.Item.L1Content);
+            _po.L2Srt = _pi.AsParallel ? ParseSubtitles(_pi.Item.L2Content) : null;
 
             //string[] l1Paragraphs = SplitIntoParagraphs(_pi.Item.L1Content);
             //string[] l2Paragraphs = _pi.AsParallel ? SplitIntoParagraphs(_pi.Item.L2Content) : null;
@@ -133,10 +122,10 @@ namespace RTWin.Services
 
             var frequency = new Dictionary<string, int>();
 
-            for (int i = 0; i < L1Srt.Count; i++)
+            for (int i = 0; i < _po.L1Srt.Count; i++)
             {
-                var l1Paragraph = L1Srt[i];
-                var l2Paragraph = _pi.AsParallel && L2Srt != null && i < L2Srt.Count ? L2Srt[i] : null;
+                var l1Paragraph = _po.L1Srt[i];
+                var l2Paragraph = _pi.AsParallel && _po.L2Srt != null && i < _po.L2Srt.Count ? _po.L2Srt[i] : null;
 
                 var joinNode = new XElement("join");
                 joinNode.SetAttributeValue("line", l1Paragraph.LineNo);
@@ -218,9 +207,9 @@ namespace RTWin.Services
                 t.SetAttributeValue("frequency", Math.Round((double)frequency[t.Value.ToLowerInvariant()] / (double)totalTerms * 100, 2));
             }
 
-            WriteFile(_pi.Item.ItemId + ".xml", document.ToString());
+            //WriteFile(_pi.Item.ItemId + ".xml", document.ToString());
             _po.Html = _pi.Html.Replace("<!-- table -->", ApplyTransform(document));
-            WriteFile(_pi.Item.ItemId + ".html", _po.Html);
+            //WriteFile(_pi.Item.ItemId + ".html", _po.Html);
 
             return _po;
         }

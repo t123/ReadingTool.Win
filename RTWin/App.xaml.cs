@@ -39,7 +39,8 @@ namespace RTWin
             InitWebApi();
             InitSignalR();
 
-            var userDialog = Container.Get<UserDialog>();
+            var skip = new Ninject.Parameters.ConstructorArgument("skip", true);
+            var userDialog = Container.Get<UserDialog>(skip);
 
             ShutdownMode = ShutdownMode.OnExplicitShutdown;
             var result = userDialog.ShowDialog();
@@ -116,31 +117,6 @@ namespace RTWin
         {
             _mainHubProxy.On<string, string>("addMessage", (element, action) =>
             {
-                //if (element == "mp")
-                //{
-                //    System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                //    {
-                //        var readingWindow = FindWindow();
-
-                //        if (readingWindow == null)
-                //        {
-                //            return;
-                //        }
-
-                //        switch (action)
-                //        {
-                //            case "play":
-                //                readingWindow.Play();
-                //                break;
-                //            case "pause":
-                //                bool isPlaying = readingWindow.IsPlaying();
-                //                _mainHubProxy.Invoke("Send", new object[] { "mpr", isPlaying });
-                //                readingWindow.Pause();
-                //                break;
-                //        }
-                //    });
-                //}
-                //else 
                 if (element == "video")
                 {
                     System.Windows.Application.Current.Dispatcher.Invoke(() =>
@@ -150,14 +126,14 @@ namespace RTWin
 
                         if (!double.TryParse(action, out time) || window == null)
                         {
-                            _mainHubProxy.Invoke("Send", new object[] {"srtl1", -1});
-                            _mainHubProxy.Invoke("Send", new object[] {"srtl2", -1});
+                            _mainHubProxy.Invoke("Send", new object[] { "srtl1", -1 });
+                            _mainHubProxy.Invoke("Send", new object[] { "srtl2", -1 });
                         }
                         else
                         {
                             var sub = window.GetSub(time);
-                            _mainHubProxy.Invoke("Send", new object[] {"srtl1", sub.Item1});
-                            _mainHubProxy.Invoke("Send", new object[] {"srtl2", sub.Item2});
+                            _mainHubProxy.Invoke("Send", new object[] { "srtl1", sub.Item1 });
+                            _mainHubProxy.Invoke("Send", new object[] { "srtl2", sub.Item2 });
                         }
                     });
                 }

@@ -8,6 +8,7 @@
 	WindowStartupLocation="CenterOwner"
 	WindowStyle="SingleBorderWindow"
     ResizeMode="NoResize"
+    Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
 	>
 
     <Grid x:Name="LayoutRoot">

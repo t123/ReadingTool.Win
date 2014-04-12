@@ -32,7 +32,7 @@ namespace RTWin.Web
                         break;
 
                     case ".mp4":
-                        response.Content.Headers.ContentType = new MediaTypeHeaderValue("video/mpeg");
+                        response.Content.Headers.ContentType = new MediaTypeHeaderValue("video/mp4");
                         break;
 
                     default:

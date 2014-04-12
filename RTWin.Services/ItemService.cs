@@ -55,5 +55,33 @@ namespace RTWin.Services
 
             return items;
         }
+
+        public IList<string> FindAllCollectionNames(long? languageId)
+        {
+            var builder = Sql.Builder.Append("SELECT DISTINCT(CollectionName) as X FROM item");
+            builder.Append("WHERE UserId=@0", _user.UserId);
+
+            if (languageId.HasValue)
+            {
+                builder.Append(" AND LanguageId=@0", languageId.Value);
+            }
+
+            builder.OrderBy("x");
+
+            return _db.Fetch<string>(builder);
+        }
+
+        public void MarkLastRead(long id)
+        {
+            var item = FindOne(id);
+
+            if (item == null)
+            {
+                return;
+            }
+
+            item.LastRead = DateTime.Now;
+            _db.Update(item);
+        }
     }
 }

@@ -35,10 +35,12 @@ namespace RTWin.Controls
         private ParserOutput _output;
         private LanguageService _languageService;
         private TermService _termService;
+        private ItemService _itemService;
 
         public ReadWindow(Item item)
         {
             _item = item;
+            _itemService = App.Container.Get<ItemService>();
             _languageService = App.Container.Get<LanguageService>();
             _termService = App.Container.Get<TermService>();
 
@@ -60,6 +62,11 @@ namespace RTWin.Controls
 
             var ps = new ParserService(pi);
             _output = ps.Parse();
+
+            using (StreamWriter sw = new StreamWriter(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", _item.ItemId + ".html"), false, Encoding.UTF8))
+            {
+                sw.Write(_output.Html);
+            }
 
             string path = System.IO.Path.Combine(
                 AppDomain.CurrentDomain.BaseDirectory,
@@ -92,6 +99,8 @@ namespace RTWin.Controls
                     (string.IsNullOrWhiteSpace(_item.CollectionName) ? "" : (_item.CollectionName + " - ")) +
                     _item.L1Title
                     ;
+
+            _itemService.MarkLastRead(_item.ItemId);
         }
 
         void WebControl_ConsoleMessage(object sender, ConsoleMessageEventArgs e)

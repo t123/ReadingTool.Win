@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -50,11 +51,23 @@ namespace RTWin.Services
                 term.DateModified = DateTime.Now;
                 _db.Update(term);
             }
+
+            _db.Insert(new TermLog()
+            {
+                EntryDate = DateTime.Now,
+                State = term.State,
+                TermId = term.TermId
+            });
         }
 
         public void DeleteOne(long id)
         {
             _db.Delete<Term>(id);
+        }
+
+        public IList<Term> FindAll()
+        {
+            return _db.Fetch<Term>("WHERE UserId=@0 ORDER BY LowerPhrase", _user.UserId);
         }
     }
 }

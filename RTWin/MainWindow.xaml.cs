@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -27,8 +28,40 @@ namespace RTWin
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly ItemService _itemService;
-        private readonly LanguageService _languageService;
+        public class ItemModel
+        {
+            public long ItemId { get; set; }
+            public long? CollectionNo { get; set; }
+            public string CollectionName { get; set; }
+            public string ItemType { get; set; }
+            public bool HasMedia { get; set; }
+            public bool IsParallel { get; set; }
+            public DateTime DateCreated { get; set; }
+            public DateTime DateModifed { get; set; }
+            public DateTime? LastRead { get; set; }
+            public string L1Title { get; set; }
+            public string L2Title { get; set; }
+            public string Language { get; set; }
+        }
+
+        public class TermModel
+        {
+            public long TermId { get; set; }
+            public DateTime DateCreated { get; set; }
+            public DateTime DateModified { get; set; }
+            public string Phrase { get; set; }
+            public string Language { get; set; }
+            public string State { get; set; }
+            public string Sentence { get; set; }
+            public string BasePhrase { get; set; }
+            public string Definition { get; set; }
+        }
+
+        private ItemService _itemService;
+        private LanguageService _languageService;
+        private TermService _termService;
+        private List<ItemModel> _items;
+        private List<TermModel> _terms;
 
         public MainWindow()
         {
@@ -36,35 +69,89 @@ namespace RTWin
 
             _itemService = App.Container.Get<ItemService>();
             _languageService = App.Container.Get<LanguageService>();
+            _termService = App.Container.Get<TermService>();
 
             BindLanguages();
             BindItems();
+            BindTerms();
+
+            Title = string.Format("ReadingTool - {0}", App.User.Username);
         }
 
         private void BindLanguages()
         {
-            lbLanguages.ItemsSource = _languageService.FindAll();
-            lbLanguages.DisplayMemberPath = "Name";
+            ListBoxLanguageNames.ItemsSource = _languageService.FindAll();
+            ListBoxLanguageNames.DisplayMemberPath = "Name";
+
+            ListBoxCollectionNames.ItemsSource = _itemService.FindAllCollectionNames(null);
         }
 
         private void BindItems()
         {
-            lbItems.ItemsSource = _itemService.FindAll();
+            var items = _itemService.FindAll();
+            var languages = _languageService.FindAll().ToDictionary(x => x.LanguageId, x => x.Name);
+
+            _items = new List<ItemModel>(items.Count);
+
+            foreach (var item in items)
+            {
+                _items.Add(new ItemModel()
+                {
+                    CollectionName = item.CollectionName,
+                    DateCreated = item.DateCreated,
+                    CollectionNo = item.CollectionNo,
+                    ItemType = item.ItemType.ToString(),
+                    LastRead = item.LastRead,
+                    DateModifed = item.DateModified,
+                    HasMedia = !string.IsNullOrWhiteSpace(item.MediaUri),
+                    IsParallel = !string.IsNullOrWhiteSpace(item.L2Content),
+                    ItemId = item.ItemId,
+                    L1Title = item.L1Title,
+                    L2Title = item.L2Title,
+                    Language = languages.ContainsKey(item.L1LanguageId) ? languages[item.L1LanguageId] : "Unknown"
+                });
+            }
+
+            DataGridItems.ItemsSource = _items;
         }
 
-        private void btnNewLanguage_Click(object sender, RoutedEventArgs e)
+        private void BindTerms()
         {
-            var ld = new LanguageDialog(null);
+            var terms = _termService.FindAll();
+            var languages = _languageService.FindAll().ToDictionary(x => x.LanguageId, x => x.Name);
 
-            var result = ld.ShowDialog() ?? false;
+            _terms = new List<TermModel>();
 
-            if (result == true)
+            foreach (var term in terms)
+            {
+                _terms.Add(new TermModel()
+                {
+                    TermId = term.TermId,
+                    DateCreated = term.DateCreated,
+                    DateModified = term.DateModified,
+                    Phrase = term.Phrase,
+                    Sentence = term.Sentence,
+                    BasePhrase = term.BasePhrase,
+                    Definition = term.Definition,
+                    State = term.State.ToString(),
+                    Language = languages.ContainsKey(term.LanguageId) ? languages[term.LanguageId] : "Unknown"
+                });
+            }
+            DataGridTerms.ItemsSource = _terms.OrderBy(x => x.Language).ThenBy(x => x.Phrase, StringComparer.InvariantCultureIgnoreCase);
+        }
+
+        private void ButtonNewLanguage_OnClick(object sender, RoutedEventArgs e)
+        {
+            var languagedialog = new LanguageDialog(null);
+
+            var result = languagedialog.ShowDialog() ?? false;
+
+            if (result)
             {
                 BindLanguages();
             }
         }
-
-        private void btnNewItem_Click(object sender, RoutedEventArgs e)
+        private void ButtonNewItem_OnClick(object sender, RoutedEventArgs e)
         {
             var itemDialog = new ItemDialog(null);
             var result = itemDialog.ShowDialog();
@@ -75,32 +162,14 @@ namespace RTWin
             }
         }
 
-        private void BtnView_OnClick(object sender, RoutedEventArgs e)
+        private void ListBoxLanguageNames_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            var item = lbItems.SelectedValue as Item;
-
-            if (item == null)
+            if (ListBoxLanguageNames.SelectedIndex < 0)
             {
                 return;
             }
 
-            if (item.ItemType == ItemType.Text)
-            {
-                var rw = new ReadWindow(item);
-                rw.Owner = this;
-                rw.ShowDialog();
-            }
-            else if (item.ItemType == ItemType.Video)
-            {
-                var ww = new WatchWindow(item);
-                ww.Owner = this;
-                ww.ShowDialog();
-            }
-        }
-
-        private void btnEditLanguage_Click(object sender, RoutedEventArgs e)
-        {
-            var language = lbLanguages.SelectedValue as Language;
+            var language = ListBoxLanguageNames.SelectedValue as Language;
 
             if (language == null)
             {
@@ -115,22 +184,77 @@ namespace RTWin
             }
         }
 
-        private void BtnEdit_OnClick(object sender, RoutedEventArgs e)
+        private void ButtonChangeProfile_OnClick(object sender, RoutedEventArgs e)
         {
-            var item = lbItems.SelectedValue as Item;
+            var currentUser = App.User;
+            App.User = null;
+            var skip = new Ninject.Parameters.ConstructorArgument("skip", false);
+            var userDialog = App.Container.Get<UserDialog>(skip);
+            var result = userDialog.ShowDialog() ?? false;
 
-            if (item == null)
+            if (result == false)
             {
-                return;
+                App.User = currentUser;
             }
-
-            ItemDialog itemDialog = new ItemDialog(item);
-            var result = itemDialog.ShowDialog();
-            if (result == true)
+            else
             {
+                _itemService = App.Container.Get<ItemService>();
+                _languageService = App.Container.Get<LanguageService>();
+                _termService = App.Container.Get<TermService>();
+
+                BindLanguages();
                 BindItems();
+                BindTerms();
+            }
+        }
+
+        private void ButtonView_OnClick(object sender, RoutedEventArgs e)
+        {
+            var obj = ((FrameworkElement)sender).DataContext as ItemModel;
+            if (obj != null)
+            {
+                var item = _itemService.FindOne(obj.ItemId); //TODO fixme
+
+                if (item == null)
+                {
+                    return;
+                }
+
+                if (item.ItemType == ItemType.Text)
+                {
+                    var rw = new ReadWindow(item);
+                    rw.Owner = this;
+                    rw.ShowDialog();
+                }
+                else if (item.ItemType == ItemType.Video)
+                {
+                    var ww = new WatchWindow(item);
+                    ww.Owner = this;
+                    ww.ShowDialog();
+                }
+            }
+        }
+
+        private void ButtonEdit_OnClick(object sender, RoutedEventArgs e)
+        {
+            var obj = ((FrameworkElement)sender).DataContext as ItemModel;
+
+            if (obj != null)
+            {
+                var item = _itemService.FindOne(obj.ItemId); //TODO fixme
+
+                if (item == null)
+                {
+                    return;
+                }
+
+                ItemDialog itemDialog = new ItemDialog(item);
+                var result = itemDialog.ShowDialog();
+                if (result == true)
+                {
+                    BindItems();
+                }
             }
         }
     }
-
 }
