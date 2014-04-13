@@ -192,3 +192,12 @@ textarea.changed, input.changed {
     margin-left: 30%;
     margin-right: 0;
 }
+
+#l1Main {
+    width: 100%;
+    padding-bottom: 10px;
+}
+
+#l2Main {
+    width: 100%;
+}

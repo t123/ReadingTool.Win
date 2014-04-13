@@ -36,7 +36,6 @@ namespace RTWin.Controls
 
             BindLanguage();
             BindLanguages();
-            ResetFields();
         }
 
         private void ResetFields()
@@ -59,6 +58,7 @@ namespace RTWin.Controls
         {
             if (_language == null)
             {
+                ResetFields();
                 return;
             }
 
@@ -66,11 +66,13 @@ namespace RTWin.Controls
             TextBoxName.Text = _language.Name;
             RbLTR.IsChecked = _language.Settings.Direction == Direction.LeftToRight;
             RbRTL.IsChecked = _language.Settings.Direction == Direction.RightToLeft;
-            CheckBoxDisplaySpaces.IsChecked = _language.Settings.DisplaySpaces;
             CheckBoxPauseAudio.IsChecked = _language.Settings.PauseOnModal;
             TextBoxSentenceRegex.Text = _language.Settings.SentenceRegex;
             TextBoxTermRegex.Text = _language.Settings.TermRegex;
             ComboBoxLanguageCode.SelectedValue = _language.LanguageCode;
+            CheckBoxCopyClipboard.IsChecked = _language.Settings.CopyToClipboard;
+            CheckBoxLowercaseTerm.IsChecked = _language.Settings.LowercaseTerm;
+            TextBoxStripChars.Text = _language.Settings.StripChars;
         }
 
         private void ButtonSave_OnClick(object sender, RoutedEventArgs e)
@@ -85,11 +87,13 @@ namespace RTWin.Controls
                     UserId = App.User.UserId,
                     Settings = new LanguageSettings()
                     {
-                        Direction = (RbLTR.IsChecked ?? true) ? Direction.LeftToRight : Direction.RightToLeft,
-                        DisplaySpaces = CheckBoxArchive.IsChecked ?? true,
-                        PauseOnModal = CheckBoxArchive.IsChecked ?? true,
+                        Direction = RbLTR.IsChecked ?? false ? Direction.LeftToRight : (RbRTL.IsChecked ?? false ? Direction.RightToLeft : Direction.LeftToRight),
+                        PauseOnModal = CheckBoxPauseAudio.IsChecked ?? true,
                         SentenceRegex = TextBoxSentenceRegex.Text,
-                        TermRegex = TextBoxTermRegex.Text
+                        TermRegex = TextBoxTermRegex.Text,
+                        StripChars = TextBoxStripChars.Text,
+                        CopyToClipboard = CheckBoxCopyClipboard.IsChecked ?? false,
+                        LowercaseTerm = CheckBoxLowercaseTerm.IsChecked ?? false
                     }
                 };
             }
@@ -100,11 +104,13 @@ namespace RTWin.Controls
                 _language.LanguageCode = ComboBoxLanguageCode.SelectedValue.ToString();
                 var settings = _language.Settings;
 
-                settings.Direction = (RbLTR.IsChecked ?? true) ? Direction.LeftToRight : Direction.RightToLeft;
-                settings.DisplaySpaces = CheckBoxArchive.IsChecked ?? true;
-                settings.PauseOnModal = CheckBoxArchive.IsChecked ?? true;
+                settings.Direction = RbLTR.IsChecked ?? false ? Direction.LeftToRight : (RbRTL.IsChecked ?? false ? Direction.RightToLeft : Direction.LeftToRight);
+                settings.PauseOnModal = CheckBoxPauseAudio.IsChecked ?? true;
                 settings.SentenceRegex = TextBoxSentenceRegex.Text;
                 settings.TermRegex = TextBoxTermRegex.Text;
+                settings.StripChars = TextBoxStripChars.Text;
+                settings.CopyToClipboard = CheckBoxCopyClipboard.IsChecked ?? false;
+                settings.LowercaseTerm = CheckBoxLowercaseTerm.IsChecked ?? false;
 
                 _language.Settings = settings;
             }

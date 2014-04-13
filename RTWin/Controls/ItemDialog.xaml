@@ -9,6 +9,7 @@
 	x:Class="RTWin.Controls.ItemDialog"
     MinWidth="400"
     MinHeight="300"
+    Topmost="True"
 	>
 
     <DockPanel>

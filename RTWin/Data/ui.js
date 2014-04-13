@@ -16,11 +16,16 @@ $(function () {
     window.hubReady = $.connection.hub.start();
 
     chat.client.addMessage = function (name, message) {
+        console.log(name);
+        console.log(message);
+
         if (name == "srtl1") {
             if (message == -1) {
                 $('#l1Main').html('');
             } else {
+                console.log($('#l1_' + message).html());
                 $('#l1Main').html($('#l1_' + message).html());
+                console.log($('#l1Main').html());
             }
         } else if (name == "srtl2") {
             if (message == -1) {

@@ -15,11 +15,15 @@
       <xsl:attribute name="data-itemtype">
         <xsl:value-of select="/root/content/@itemType"/>
       </xsl:attribute>
-      <tr id="l1Main" width="100%">
-        <xsl:comment>output</xsl:comment>
+      <tr width="100%">
+        <td id="l1Main">
+          <xsl:comment>output</xsl:comment>
+        </td>
       </tr>
-      <tr id="l2Main" width="100%">
-        <xsl:comment>output</xsl:comment>
+      <tr width="100%">
+        <td id="l2Main">
+          <xsl:comment>output</xsl:comment>
+        </td>
       </tr>
     </table>
     <div id="parsed" style="display:none">

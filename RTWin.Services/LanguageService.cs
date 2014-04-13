@@ -48,7 +48,7 @@ namespace RTWin.Services
 
         public IList<Language> FindAll()
         {
-            return _db.FetchBy<Language>(sql => sql.Where(x => x.UserId == _user.UserId).OrderBy(x => !x.IsArchived).ThenBy(x => x.Name));
+            return _db.FetchBy<Language>(sql => sql.Where(x => x.UserId == _user.UserId).OrderBy(x => x.IsArchived).ThenBy(x => x.Name));
         }
     }
 }

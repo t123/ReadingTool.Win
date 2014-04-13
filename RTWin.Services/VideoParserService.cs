@@ -89,7 +89,7 @@ namespace RTWin.Services
         public ParserOutput Parse()
         {
             _po.L1Srt = ParseSubtitles(_pi.Item.L1Content);
-            _po.L2Srt = _pi.AsParallel ? ParseSubtitles(_pi.Item.L2Content) : null;
+            _po.L2Srt = _pi.AsParallel ? ParseSubtitles(_pi.Item.L2Content) : new List<Srt>();
 
             //string[] l1Paragraphs = SplitIntoParagraphs(_pi.Item.L1Content);
             //string[] l2Paragraphs = _pi.AsParallel ? SplitIntoParagraphs(_pi.Item.L2Content) : null;
@@ -136,7 +136,7 @@ namespace RTWin.Services
                 l1ParagraphNode.SetAttributeValue("start", l1Paragraph.Start);
                 l1ParagraphNode.SetAttributeValue("end", l1Paragraph.End);
 
-                l2ParagraphNode.Value = l2Paragraph.Content;
+                l2ParagraphNode.Value = l2Paragraph == null ? string.Empty : l2Paragraph.Content;
                 l1ParagraphNode.SetAttributeValue("direction", _pi.Language1.Settings.Direction == Direction.LeftToRight ? "ltr" : "rtl");
                 l2ParagraphNode.SetAttributeValue("direction", _pi.AsParallel ? _pi.Language2.Settings.Direction == Direction.LeftToRight ? "ltr" : "rtl" : "ltr");
 

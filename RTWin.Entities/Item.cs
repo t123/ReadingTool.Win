@@ -23,5 +23,8 @@ namespace RTWin.Entities
         public string L2Content { get; set; }
         public long L2LanguageId { get; set; }
         public long UserId { get; set; }
+
+        public int ReadTimes { get; set; }
+        public int ListenedTimes { get; set; }
     }
 }

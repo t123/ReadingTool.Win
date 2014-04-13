@@ -42,6 +42,8 @@ namespace RTWin
             public string L1Title { get; set; }
             public string L2Title { get; set; }
             public string Language { get; set; }
+            public int ReadTimes { get; set; }
+            public int ListenedTimes { get; set; }
         }
 
         public class TermModel
@@ -76,12 +78,56 @@ namespace RTWin
             BindTerms();
 
             Title = string.Format("ReadingTool - {0}", App.User.Username);
+
+            SetButtonVisibility();
+        }
+
+        private void SetButtonVisibility()
+        {
+            var item = DataGridItems.SelectedItem as ItemModel;
+
+            if (item == null)
+            {
+                ButtonEdit.Visibility = ButtonDelete.Visibility = ButtonRead.Visibility = ButtonReadParallel.Visibility = Visibility.Hidden;
+                return;
+            }
+
+            ButtonEdit.Visibility = ButtonDelete.Visibility = ButtonRead.Visibility = ButtonReadParallel.Visibility = Visibility.Visible;
+
+            if (item.ItemType.Equals(ItemType.Text.ToString(), StringComparison.InvariantCultureIgnoreCase))
+            {
+                ButtonRead.Content = "Read";
+                ButtonReadParallel.Content = "Read Parallel";
+
+                if (item.IsParallel)
+                {
+                    ButtonReadParallel.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    ButtonReadParallel.Visibility = Visibility.Hidden;
+                }
+            }
+            else
+            {
+                ButtonRead.Content = "Watch";
+                ButtonReadParallel.Content = "Watch Parallel";
+
+                if (item.IsParallel)
+                {
+                    ButtonReadParallel.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    ButtonReadParallel.Visibility = Visibility.Hidden;
+                }
+            }
         }
 
         private void BindLanguages()
         {
             ListBoxLanguageNames.ItemsSource = _languageService.FindAll();
-            ListBoxLanguageNames.DisplayMemberPath = "Name";
+            //ListBoxLanguageNames.DisplayMemberPath = "Name";
 
             ListBoxCollectionNames.ItemsSource = _itemService.FindAllCollectionNames(null);
         }
@@ -108,7 +154,9 @@ namespace RTWin
                     ItemId = item.ItemId,
                     L1Title = item.L1Title,
                     L2Title = item.L2Title,
-                    Language = languages.ContainsKey(item.L1LanguageId) ? languages[item.L1LanguageId] : "Unknown"
+                    Language = languages.ContainsKey(item.L1LanguageId) ? languages[item.L1LanguageId] : "Unknown",
+                    ReadTimes = item.ReadTimes,
+                    ListenedTimes = item.ListenedTimes
                 });
             }
 
@@ -208,9 +256,10 @@ namespace RTWin
             }
         }
 
-        private void ButtonView_OnClick(object sender, RoutedEventArgs e)
+        private void ButtonRead_OnClick(object sender, RoutedEventArgs e)
         {
-            var obj = ((FrameworkElement)sender).DataContext as ItemModel;
+            var obj = DataGridItems.SelectedItem as ItemModel;
+
             if (obj != null)
             {
                 var item = _itemService.FindOne(obj.ItemId); //TODO fixme
@@ -222,13 +271,41 @@ namespace RTWin
 
                 if (item.ItemType == ItemType.Text)
                 {
-                    var rw = new ReadWindow(item);
+                    var rw = new ReadWindow(item, false);
                     rw.Owner = this;
                     rw.ShowDialog();
                 }
                 else if (item.ItemType == ItemType.Video)
                 {
-                    var ww = new WatchWindow(item);
+                    var ww = new WatchWindow(item, false);
+                    ww.Owner = this;
+                    ww.ShowDialog();
+                }
+            }
+        }
+
+        private void ButtonReadParallel_OnClick(object sender, RoutedEventArgs e)
+        {
+            var obj = DataGridItems.SelectedItem as ItemModel;
+
+            if (obj != null)
+            {
+                var item = _itemService.FindOne(obj.ItemId); //TODO fixme
+
+                if (item == null)
+                {
+                    return;
+                }
+
+                if (item.ItemType == ItemType.Text)
+                {
+                    var rw = new ReadWindow(item, true);
+                    rw.Owner = this;
+                    rw.ShowDialog();
+                }
+                else if (item.ItemType == ItemType.Video)
+                {
+                    var ww = new WatchWindow(item, true);
                     ww.Owner = this;
                     ww.ShowDialog();
                 }
@@ -237,7 +314,7 @@ namespace RTWin
 
         private void ButtonEdit_OnClick(object sender, RoutedEventArgs e)
         {
-            var obj = ((FrameworkElement)sender).DataContext as ItemModel;
+            var obj = DataGridItems.SelectedItem as ItemModel;
 
             if (obj != null)
             {
@@ -250,11 +327,19 @@ namespace RTWin
 
                 ItemDialog itemDialog = new ItemDialog(item);
                 var result = itemDialog.ShowDialog();
+
                 if (result == true)
                 {
                     BindItems();
                 }
+
+                SetButtonVisibility();
             }
+        }
+
+        private void DataGridItems_OnSelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
+        {
+            SetButtonVisibility();
         }
     }
 }

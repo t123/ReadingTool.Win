@@ -32,14 +32,16 @@ namespace RTWin.Controls
     public partial class ReadWindow : Window
     {
         protected Item _item;
+        private readonly bool _parallel;
         private ParserOutput _output;
         private LanguageService _languageService;
         private TermService _termService;
         private ItemService _itemService;
 
-        public ReadWindow(Item item)
+        public ReadWindow(Item item, bool parallel)
         {
             _item = item;
+            _parallel = parallel;
             _itemService = App.Container.Get<ItemService>();
             _languageService = App.Container.Get<LanguageService>();
             _termService = App.Container.Get<TermService>();
@@ -53,7 +55,7 @@ namespace RTWin.Controls
         {
             ParserInput pi = new ParserInput()
                 .WithItem(_item)
-                .IsParallel(false)
+                .IsParallel(_parallel)
                 .WithLanguage1(_languageService.FindOne(_item.L1LanguageId))
                 .WithLanguage2(_languageService.FindOne(_item.L2LanguageId))
                 .WithTerms(_termService.FindAllByLanguage(_item.L1LanguageId))

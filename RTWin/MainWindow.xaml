@@ -9,6 +9,7 @@
         >
     <Window.Resources>
         <common:DateTimeConverter x:Key="dateConverter"/>
+        <BooleanToVisibilityConverter  x:Key="BooleanToVisibilityConverter"/>
     </Window.Resources>
     <Grid x:Name="RootGrid">
         <DockPanel>
@@ -34,6 +35,14 @@
                     <GroupBox Grid.Row="0">
                         <GroupBox.Header>Languages</GroupBox.Header>
                         <ListBox Name="ListBoxLanguageNames" MouseDoubleClick="ListBoxLanguageNames_OnMouseDoubleClick">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Name}"></TextBlock>
+                                        <TextBlock HorizontalAlignment="Right" Text="(archived)" Visibility="{Binding IsArchived, Converter={StaticResource BooleanToVisibilityConverter}}"></TextBlock>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
                         </ListBox>
                     </GroupBox>
                     <GridSplitter HorizontalAlignment="Stretch" Grid.Row="1" Height="5"></GridSplitter>
@@ -60,10 +69,11 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="30"></RowDefinition>
                                 <RowDefinition Height="*"></RowDefinition>
+                                <RowDefinition Height="30"></RowDefinition>
                             </Grid.RowDefinitions>
                             <Label Grid.Row="0" Grid.Column="0">Search Items</Label>
                             <TextBox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" Margin="5"></TextBox>
-                            <DataGrid Name="DataGridItems" Grid.Row="1" Grid.ColumnSpan="2" AutoGenerateColumns="False" CanUserReorderColumns="False" AlternatingRowBackground="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" CanUserAddRows="False" CanUserResizeRows="False">
+                            <DataGrid Name="DataGridItems" Grid.Row="1" Grid.ColumnSpan="2" AutoGenerateColumns="False" CanUserReorderColumns="False" AlternatingRowBackground="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" CanUserAddRows="False" CanUserResizeRows="False" SelectedCellsChanged="DataGridItems_OnSelectedCellsChanged">
                                 <DataGrid.Columns>
                                     <DataGridCheckBoxColumn IsReadOnly="False"></DataGridCheckBoxColumn>
                                     <DataGridTextColumn IsReadOnly="True" Header="Type" Binding="{Binding ItemType}"></DataGridTextColumn>
@@ -71,26 +81,20 @@
                                     <DataGridTextColumn IsReadOnly="True" Header="No" Binding="{Binding CollectionNo}"></DataGridTextColumn>
                                     <DataGridTextColumn IsReadOnly="True" Header="Collection" Binding="{Binding CollectionName}"></DataGridTextColumn>
                                     <DataGridTextColumn IsReadOnly="True" Header="L1 Title" Binding="{Binding L1Title}"></DataGridTextColumn>
+                                    <DataGridTextColumn IsReadOnly="True" Header="L1 Title" Binding="{Binding L2Title}"></DataGridTextColumn>
                                     <DataGridTextColumn IsReadOnly="True" Header="LastRead" Binding="{Binding LastRead, Converter={StaticResource dateConverter}}"></DataGridTextColumn>
+                                    <DataGridTextColumn IsReadOnly="True" Header="Read" Binding="{Binding ReadTimes}"></DataGridTextColumn>
+                                    <DataGridTextColumn IsReadOnly="True" Header="Listened" Binding="{Binding ListenedTimes}"></DataGridTextColumn>
                                     <DataGridCheckBoxColumn IsReadOnly="True" Header="Media?" Binding="{Binding HasMedia}"></DataGridCheckBoxColumn>
                                     <DataGridCheckBoxColumn IsReadOnly="True" Header="Is Parallel?" Binding="{Binding IsParallel}"></DataGridCheckBoxColumn>
-                                    <DataGridTemplateColumn>
-                                        <DataGridTemplateColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <Button Content="View" Click="ButtonView_OnClick"></Button>
-                                                <Button Content="Parallel" Click="ButtonView_OnClick" ></Button>
-                                            </DataTemplate>
-                                        </DataGridTemplateColumn.CellTemplate>
-                                    </DataGridTemplateColumn>
-                                    <DataGridTemplateColumn>
-                                        <DataGridTemplateColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <Button Content="Edit" Click="ButtonEdit_OnClick"></Button>
-                                            </DataTemplate>
-                                        </DataGridTemplateColumn.CellTemplate>
-                                    </DataGridTemplateColumn>
                                 </DataGrid.Columns>
                             </DataGrid>
+                            <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal">
+                                <Button Name="ButtonEdit" Content="Edit" Margin="5" Click="ButtonEdit_OnClick" MinWidth="75"></Button>
+                                <Button Name="ButtonDelete" Content="Delete" Margin="5" MinWidth="75"></Button>
+                                <Button Name="ButtonRead" Content="Read" Margin="5" Click="ButtonRead_OnClick" MinWidth="75"></Button>
+                                <Button Name="ButtonReadParallel" Content="Read Parallel" Margin="5" Click="ButtonReadParallel_OnClick" MinWidth="75"></Button>
+                            </StackPanel>
                         </Grid>
                     </GroupBox>
 

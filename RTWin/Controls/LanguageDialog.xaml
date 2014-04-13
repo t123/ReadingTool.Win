@@ -9,6 +9,7 @@
 	WindowStyle="SingleBorderWindow"
     ResizeMode="NoResize"
     Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+    Topmost="True"
 	>
 
     <Grid x:Name="LayoutRoot">
@@ -55,20 +56,26 @@
                         <RowDefinition/>
                         <RowDefinition/>
                         <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
                     </Grid.RowDefinitions>
                     <Label Content="Direction" Grid.Row="0" Grid.Column="0"/>
                     <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center">
                         <RadioButton GroupName="RbDirection" Name="RbLTR">Left to Right</RadioButton>
                         <RadioButton GroupName="RbDirection" Name="RbRTL" Margin="20,0,0,0">Right to Left</RadioButton>
                     </StackPanel>
-                    <Label Content="Display Spaces" Grid.Row="1" Grid.Column="0"/>
-                    <CheckBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Name="CheckBoxDisplaySpaces"/>
+                    <Label Content="Lowercase Base Phrase" Grid.Row="1" Grid.Column="0"/>
+                    <CheckBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Name="CheckBoxLowercaseTerm"/>
                     <Label Content="Pause Audio" Grid.Row="2" Grid.Column="0"/>
                     <CheckBox Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="CheckBoxPauseAudio"/>
-                    <Label Content="Sentence Regex" Grid.Row="3" Grid.Column="0"/>
-                    <TextBox Grid.Row="3" Grid.Column="1" Name="TextBoxSentenceRegex"/>
-                    <Label Content="Term Regex" Grid.Row="4" Grid.Column="0"/>
-                    <TextBox Grid.Row="4" Grid.Column="1" Name="TextBoxTermRegex"/>
+                    <Label Content="Copy Term To Clipboard" Grid.Row="3" Grid.Column="0"/>
+                    <CheckBox Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Name="CheckBoxCopyClipboard"/>
+                    <Label Content="Sentence Regex" Grid.Row="4" Grid.Column="0"/>
+                    <TextBox Grid.Row="4" Grid.Column="1" Name="TextBoxSentenceRegex"/>
+                    <Label Content="Term Regex" Grid.Row="5" Grid.Column="0"/>
+                    <TextBox Grid.Row="5" Grid.Column="1" Name="TextBoxTermRegex"/>
+                    <Label Content="Strip Characters" Grid.Row="6" Grid.Column="0"/>
+                    <TextBox Grid.Row="6" Grid.Column="1" Name="TextBoxStripChars"/>
                 </Grid>
             </GroupBox>
             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
