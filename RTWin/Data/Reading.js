@@ -54,11 +54,15 @@
     };
 
     self.getCurrentWordAsText = function () {
-        if (self.currentElement.any()) {
+        if (self.getCurrent().any()) {
             return self._getWordFromSpan(self.currentElement);
         }
 
         return '';
+    };
+
+    self.getCurrent = function () {
+        return self.currentElement;
     };
 
     self.getCurrentSentence = function () {
@@ -84,8 +88,27 @@
 
     self.copyToClipboard = function (toCopy) {
         $(document).trigger('preCopyToClipboard');
-        self.sendChatMessage('modal', toCopy);
+
+        if (typeof rtjscript === 'object' && typeof rtjscript.copyToClipboard === 'function') {
+            rtjscript.copyToClipboard(toCopy);
+        } else {
+            self.sendChatMessage('modal', toCopy);
+        }
+        
         $(document).trigger('postCopyToClipboard');
+    };
+
+    self.log = function (message) {
+        var date = new Date();
+        var d = date.getDate();
+        var m = date.getMonth() + 1;
+        var y = date.getFullYear();
+        var h = date.getHours();
+        var mn = date.getMinutes();
+        var s = date.getSeconds();
+        var f = date.getMilliseconds();
+
+        console.log((d < 10 ? '0' + d : d) + '/' + (m < 10 ? '0' + m : m) + y + ' ' + (h < 10 ? '0' + h : h) + ':' + (mn < 10 ? '0' + mn : mn) + ':' + (s < 10 ? '0' + s : s)  + '.' + f + ":-> " + message);
     };
 
     self.updateModal = function () {
@@ -98,8 +121,6 @@
         self.setOccurencesText(self.getOccurrences());
         self.setFrequencyText(self.getFrequency());
 
-        self.copyToClipboard(text);
-
         $.ajax({
             url: self.options.url + '/api/terms/',
             type: 'GET',
@@ -108,27 +129,35 @@
                 languageId: self.options.languageId
             }
         }).done(function (data) {
-            $('[name=State][value=' + data.State + ']').prop('checked', 'true');
-            $('#dPhrase').html(data.Phrase);
-            $('#dBase').val(data.BasePhrase);
-            $('#dSentence').val(data.Sentence);
-            $('#dDefinition').val(data.Definition);
+            self.setDPhrase(data.Phrase);
+            self.setDState(data.State);
+            self.setDBase(data.BasePhrase);
+            self.setDDefinition(data.Definition);
+            self.setDSentence(data.Sentence);
+
+            self.setHasChanged(false);
         }).fail(function (data) {
             if (data.status == 404) {
-                $('[name=State][value="unknown"]').prop('checked', 'true');
-                $('#dPhrase').html(text);
-                $('#dBase').val('');
-                $('#dDefinition').val('');
-                $('#dSentence').val(self.getCurrentSentence());
-                $('#dSentence').addClass('changed');
-                $('#dMessage').html('New word, defaulting to unknown');
+                self.setDPhrase(text);
+                self.setDState('unknown');
+                self.setDBase('');
+                self.setDDefinition('');
+                self.setDSentence(self.getCurrentSentence());
+                self.changed($('#dSentence'));
+
+                self.setDMessage('New word, defaulting to unknown');
+                
+                self.setHasChanged(false);
             } else {
-                $('#dPhrase').html(text);
-                $('#dMessage').html('failed to lookup word');
+                self.setDPhrase(text);
+                self.setDMessage('Failed to lookup word');
             }
+
         }).always(function (data) {
-            $(document).trigger('postUpdateModal');
+            $(document).trigger('postUpdateModalFetched');
         });
+
+        $(document).trigger('postUpdateModal');
     };
 
     self._selectText = function () {
@@ -166,8 +195,17 @@
     };
 
     self.setDState = function (state) {
-        $('[name=State][value=' + state + ']').prop('checked', 'true');
-        self.changed();
+        if (state) {
+            state = state.toLowerCase();
+            $('[name=State][value=' + state + ']').prop('checked', 'true');
+            self.changed();
+        } else {
+            alert('state value is unknown: ' + state);
+        }
+    };
+
+    self.setDPhrase= function (val) {
+        $('#dPhrase').html(val);
     };
 
     self.setDBase = function (val) {
@@ -218,6 +256,7 @@
             }
 
             self._removeChanged();
+            self.setHasChanged(false);
             var lower = phrase.toLowerCase();
             $('.__' + lower).removeClass('__notseen __known __ignored __unknown').addClass('__' + state.toLowerCase());
 
@@ -285,8 +324,16 @@
         });
     };
 
-    self.changed = function () {
-        self.hasChanged = true;
+    self.changed = function (element) {
+        if (element && element.any()) {
+            element.addClass('changed');
+        }
+
+        self.setHasChanged(true);
+    };
+
+    self.setHasChanged = function (value) {
+        self.hasChanged = value;
     };
 
     self.getHasChanged = function () {
@@ -302,6 +349,8 @@
     };
 
     self.copy = function () {
+        $(document).trigger('preWordCopy');
+
         self.setDBase(self.getCurrentWordAsText());
         self.changed();
 
@@ -309,9 +358,10 @@
     };
 
     self.refresh = function () {
+        $(document).trigger('preSentenceRefreshed');
+
         self.setDSentence(self.getCurrentSentence());
-        $('#dSentence').addClass('changed');
-        self.changed();
+        self.changed($('#dSentence'));
 
         $(document).trigger('postSentenceRefreshed');
     };
@@ -341,7 +391,7 @@
         var o = self.currentElement.offset();
         var nt, nl;
 
-        if (c.top + 21 + 220 > dh) {
+        if (c.top + 21 + 220 + 70> dh) {
             nt = o.top - 215;
         } else {
             nt = o.top + 21;
@@ -357,40 +407,25 @@
         self.modal.offset({ top: nt, left: nl });
     };
 
-    self.addMatching = function (element) {
-        if (element.any()) {
-            element.addClass('__matching');
-        }
-
-        $(document).trigger('postAddMatching');
-    };
-
-    self.removeMatching = function () {
-        $('.__matching').removeClass('__matching');
-
-        $(document).trigger('postRemoveMatching');
+    self._clearInputs = function () {
+        self.setDBase('');
+        self.setDSentence('');
+        self.setDDefinition('');
+        self.setDState('unknown');
+        self.setHasChanged(false);
     };
 
     self.showModal = function (element) {
-        $(document).trigger('preShowModal');
-
         if (self.modal.is(':visible') && self.hasChanged) {
             return;
         }
 
+        self._clearInputs();
         self.currentElement = element;
-        self.removeMatching();
-        self.updateCurrentSelected(element);
 
-        var cls = self.currentElement.data('lower');
-        self.addMatching($('.__' + cls));
+        $(document).trigger('preShowModal');
 
-        self.setWasPlaying();
-
-        if (self.getWasPlaying()) {
-            self.jplayer.jPlayer('pause');
-        }
-
+        self.updateCurrentSelected(self.getCurrent());
         self.updateModal();
         self.displayModal();
 
@@ -401,13 +436,7 @@
         $(document).trigger('preCloseModal');
 
         self.hasChanged = false;
-        self.removeMatching();
         self.modal.hide();
-
-        if (self.getWasPlaying()) {
-            self.jplayer.jPlayer("play", self.jplayer.data().jPlayer.status.currentTime - 1);
-            self.jplayer.jPlayer("play");
-        }
 
         $(document).trigger('postCloseModal');
     };
@@ -422,6 +451,15 @@
 
     self.sendChatMessage = function (source, message) {
         self.options.chat.server.send(source, message);
+    };
+
+    self.setResultMessage = function (message) {
+        $('#resultMessage').html(message);
+    };
+
+    self.markRemainingAsKnown = function () {
+        self.setResultMessage('Marking remaining words as known....');
+        self.setResultMessage('1000 words marked as known');
     };
 
     if (self.getItemType() == 'video') {

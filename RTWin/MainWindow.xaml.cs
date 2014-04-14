@@ -258,83 +258,69 @@ namespace RTWin
 
         private void ButtonRead_OnClick(object sender, RoutedEventArgs e)
         {
-            var obj = DataGridItems.SelectedItem as ItemModel;
-
-            if (obj != null)
-            {
-                var item = _itemService.FindOne(obj.ItemId); //TODO fixme
-
-                if (item == null)
-                {
-                    return;
-                }
-
-                if (item.ItemType == ItemType.Text)
-                {
-                    var rw = new ReadWindow(item, false);
-                    rw.Owner = this;
-                    rw.ShowDialog();
-                }
-                else if (item.ItemType == ItemType.Video)
-                {
-                    var ww = new WatchWindow(item, false);
-                    ww.Owner = this;
-                    ww.ShowDialog();
-                }
-            }
+            var item = GetSelectedRowAsItem();
+            ReadItem(item, false);
         }
 
         private void ButtonReadParallel_OnClick(object sender, RoutedEventArgs e)
         {
+            var item = GetSelectedRowAsItem();
+            ReadItem(item, true);
+        }
+
+        private Item GetSelectedRowAsItem()
+        {
             var obj = DataGridItems.SelectedItem as ItemModel;
 
-            if (obj != null)
+            if (obj == null)
             {
-                var item = _itemService.FindOne(obj.ItemId); //TODO fixme
+                return null;
+            }
 
-                if (item == null)
-                {
-                    return;
-                }
+            var item = _itemService.FindOne(obj.ItemId); //TODO fixme
 
-                if (item.ItemType == ItemType.Text)
-                {
-                    var rw = new ReadWindow(item, true);
-                    rw.Owner = this;
-                    rw.ShowDialog();
-                }
-                else if (item.ItemType == ItemType.Video)
-                {
-                    var ww = new WatchWindow(item, true);
-                    ww.Owner = this;
-                    ww.ShowDialog();
-                }
+            return item;
+        }
+
+        private void ReadItem(Item item, bool asParallel)
+        {
+            if (item == null)
+            {
+                return;
+            }
+
+            if (item.ItemType == ItemType.Text)
+            {
+                var rw = new ReadWindow(item, asParallel);
+                rw.Owner = this;
+                rw.ShowDialog();
+            }
+            else if (item.ItemType == ItemType.Video)
+            {
+                var ww = new WatchWindow(item, asParallel);
+                ww.Owner = this;
+                ww.ShowDialog();
             }
         }
 
         private void ButtonEdit_OnClick(object sender, RoutedEventArgs e)
         {
-            var obj = DataGridItems.SelectedItem as ItemModel;
+            var item = GetSelectedRowAsItem();
 
-            if (obj != null)
+            if (item == null)
             {
-                var item = _itemService.FindOne(obj.ItemId); //TODO fixme
-
-                if (item == null)
-                {
-                    return;
-                }
-
-                ItemDialog itemDialog = new ItemDialog(item);
-                var result = itemDialog.ShowDialog();
-
-                if (result == true)
-                {
-                    BindItems();
-                }
-
-                SetButtonVisibility();
+                return;
             }
+
+            ItemDialog itemDialog = new ItemDialog(item);
+            var result = itemDialog.ShowDialog();
+
+            if (result == true)
+            {
+                BindItems();
+            }
+
+            SetButtonVisibility();
         }
 
         private void DataGridItems_OnSelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
@@ -346,6 +332,12 @@ namespace RTWin
         {
             PluginDialog pluginDialog = App.Container.Get<PluginDialog>();
             pluginDialog.ShowDialog();
+        }
+
+        private void DataGridItems_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var item = GetSelectedRowAsItem();
+            ReadItem(item, !string.IsNullOrWhiteSpace(item.L2Content));
         }
     }
 }

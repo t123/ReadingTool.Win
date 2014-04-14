@@ -141,7 +141,7 @@
     <Compile Include="Controls\LanguageDialog.xaml.cs">
       <DependentUpon>LanguageDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\IReadingWindow.cs" />
+    <Compile Include="Controls\CommonWindow.cs" />
     <Compile Include="Controls\PluginDialog.xaml.cs">
       <DependentUpon>PluginDialog.xaml</DependentUpon>
     </Compile>
@@ -264,8 +264,12 @@
     <Content Include="Database\ignore.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Resource Include="Data\iconmonstr-copy-7-icon-24.png" />
-    <Resource Include="Data\iconmonstr-refresh-3-icon-24.png" />
+    <Resource Include="Data\iconmonstr-copy-7-icon-24.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Data\iconmonstr-refresh-3-icon-24.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Content Include="Data\bootstrap.min.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

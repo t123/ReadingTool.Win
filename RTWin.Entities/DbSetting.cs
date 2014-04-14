@@ -11,6 +11,12 @@ namespace RTWin.Entities
     [PrimaryKey("Id")]
     public class DbSetting
     {
+        public class Keys
+        {
+            public const string BaseWebAPIAddress = @"basewebapiaddress";
+            public const string BaseWebSignalRAddress = @"basewebsignalraddress";
+        }
+
         public int Id { get; set; }
         [Column(Name = "SKey")]
         public string Key { get; set; }

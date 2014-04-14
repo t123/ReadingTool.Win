@@ -22,12 +22,26 @@ namespace RTWin.Services
         public Term[] Terms { get; protected set; }
         public bool AsParallel { get; protected set; }
         public Dictionary<string, Term> Lookup { get; protected set; }
+        public string WebApiEndPoint { get; protected set; }
+        public string SignalREndPoint { get; protected set; }
 
         public ParserInput()
         {
             AsParallel = false;
             Terms = new Term[0];
             Lookup = new Dictionary<string, Term>();
+        }
+
+        public ParserInput WithWebApiEndPoint(string endpoint)
+        {
+            WebApiEndPoint = endpoint;
+            return this;
+        }
+
+        public ParserInput WithSignalREndPoint(string endpoint)
+        {
+            SignalREndPoint = endpoint;
+            return this;
         }
 
         public ParserInput WithHtml(string html)
@@ -94,22 +108,23 @@ namespace RTWin.Services
 
     public interface IParserService
     {
-        ParserOutput Parse();
+        ParserOutput Parse(ParserInput pi);
     }
 
     public class ParserService : IParserService
     {
-        private readonly ParserInput _pi;
+        private ParserInput _pi;
         private readonly ParserOutput _po;
 
-        public ParserService(ParserInput pi)
+        public ParserService()
         {
-            _pi = pi;
             _po = new ParserOutput();
         }
 
-        public ParserOutput Parse()
+        public ParserOutput Parse(ParserInput pi)
         {
+            _pi = pi;
+
             string[] l1Paragraphs = SplitIntoParagraphs(_pi.Item.L1Content);
             string[] l2Paragraphs = _pi.AsParallel ? SplitIntoParagraphs(_pi.Item.L2Content) : null;
 
@@ -121,6 +136,8 @@ namespace RTWin.Services
 
             var contentNode = new XElement("content");
             contentNode.SetAttributeValue("isParallel", _pi.AsParallel);
+            contentNode.SetAttributeValue("signalR", _pi.SignalREndPoint);
+            contentNode.SetAttributeValue("webApi", _pi.WebApiEndPoint);
             contentNode.SetAttributeValue("collectionName", _pi.Item.CollectionName);
             contentNode.SetAttributeValue("collectionNo", _pi.Item.CollectionNo);
             contentNode.SetAttributeValue("dateCreated", _pi.Item.DateCreated);
@@ -129,6 +146,8 @@ namespace RTWin.Services
             contentNode.SetAttributeValue("l1Title", _pi.Item.L1Title);
             contentNode.SetAttributeValue("l2Title", _pi.Item.L2Title);
             contentNode.SetAttributeValue("l1Id", _pi.Language1.LanguageId);
+            contentNode.SetAttributeValue("l1Code", _pi.Language1.LanguageCode);
+            contentNode.SetAttributeValue("l2Code", _pi.Language2 == null ? "" : _pi.Language2.LanguageCode);
             contentNode.SetAttributeValue("itemType", _pi.Item.ItemType.ToString().ToLowerInvariant());
             contentNode.SetAttributeValue("itemId", _pi.Item.ItemId);
 

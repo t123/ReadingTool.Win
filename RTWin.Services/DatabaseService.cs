@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Caching;
 using System.Text;
 using System.Threading.Tasks;
 using NPoco;
@@ -17,10 +18,46 @@ namespace RTWin.Services
             _db = db;
         }
 
+        private Dictionary<string, string> GetAndCacheSettings()
+        {
+            ObjectCache cache = MemoryCache.Default;
+
+            Dictionary<string, string> settings = (Dictionary<string, string>)cache.Get("DbSetttings");
+
+            if (settings == null)
+            {
+                settings = _db.Fetch<DbSetting>().ToDictionary(x => x.Key.ToLowerInvariant(), x => x.Value);
+                cache.Add("DbSettings", settings, ObjectCache.InfiniteAbsoluteExpiration);
+            }
+
+            return settings;
+        }
+
+        public void SaveSetting(DbSetting dbSetting)
+        {
+            if (dbSetting == null)
+            {
+                return;
+            }
+
+            dbSetting.Key = dbSetting.Key.ToLowerInvariant().Trim();
+
+            if (dbSetting.Id == 0)
+            {
+                _db.Insert(dbSetting);
+            }
+            else
+            {
+                _db.Update(dbSetting);
+            }
+
+            ObjectCache cache = MemoryCache.Default;
+            cache.Remove("DbSettings");
+        }
+
         public Dictionary<string, string> GetSettings()
         {
-            var settings = _db.Fetch<DbSetting>();
-            return settings.ToDictionary(x => x.Key.ToLowerInvariant(), x => x.Value);
+            return GetAndCacheSettings();
         }
 
         public string GetSetting(int id)
@@ -32,20 +69,14 @@ namespace RTWin.Services
         public string GetSetting(string key)
         {
             key = key.ToLowerInvariant();
-            var setting = _db.FetchBy<DbSetting>(sql => sql.Where(x => x.Key == key).Limit(1)).FirstOrDefault();
-            return setting == null ? null : setting.Value;
+            var setting = GetAndCacheSettings().FirstOrDefault(x => x.Key == key);
+            return setting.Value;
         }
 
         public T GetSetting<T>(string key)
         {
             key = key.ToLowerInvariant();
-            var setting = _db.FetchBy<DbSetting>(sql => sql.Where(x => x.Key == key).Limit(1)).FirstOrDefault();
-
-            if (setting == null)
-            {
-                throw new KeyNotFoundException(string.Format("Key '{0}' was not found", key));
-            }
-
+            var setting = GetAndCacheSettings().FirstOrDefault(x => x.Key == key);
             return (T)Convert.ChangeType(setting.Value, typeof(T));
         }
 
@@ -57,6 +88,7 @@ namespace RTWin.Services
             }
 
             UpgradeDatabase();
+            CheckSettings();
         }
 
         private void UpgradeDatabase()
@@ -184,6 +216,30 @@ CREATE TABLE ""languagecode"" (""LanguageCodeId"" INTEGER PRIMARY KEY  AUTOINCRE
             }
 
             _db.Insert(new DbVersion() { Version = 1 });
+        }
+
+        private void CheckSettings()
+        {
+            var key1 = _db.Fetch<object>("SELECT * FROM Settings WHERE SKey=@0", DbSetting.Keys.BaseWebAPIAddress);
+            var key2 = _db.Fetch<object>("SELECT * FROM Settings WHERE SKey=@0", DbSetting.Keys.BaseWebSignalRAddress);
+
+            if (key1.Count == 0)
+            {
+                SaveSetting(new DbSetting
+                {
+                    Key = DbSetting.Keys.BaseWebAPIAddress,
+                    Value = "http://localhost:9000"
+                });
+            }
+
+            if (key2.Count == 0)
+            {
+                SaveSetting(new DbSetting
+                {
+                    Key = DbSetting.Keys.BaseWebSignalRAddress,
+                    Value = "http://localhost:8888"
+                });
+            }
         }
     }
 }

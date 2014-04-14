@@ -28,104 +28,27 @@ namespace RTWin.Controls
     /// <summary>
     /// Interaction logic for WatchWindow.xaml
     /// </summary>
-    public partial class WatchWindow : Window
+    public partial class WatchWindow
     {
-        private Item _item;
-        private readonly bool _parallel;
-        private ParserOutput _output;
-        private HubConnection hubConnection;
-        private IHubProxy mainHubProxy;
-        private int _lastL1 = -1;
-        private int _lastL2 = -1;
-        private TermService _termService;
-        private LanguageService _languageService;
-        private VideoParserService _vps;
-        private ItemService _itemService;
+        private readonly CommonWindow _cw;
 
-        public WatchWindow(Item item, bool parallel) 
+        public WatchWindow(Item item, bool parallel)
         {
-            _item = item;
-            _parallel = parallel;
-            _itemService = App.Container.Get<ItemService>();
-            _languageService = App.Container.Get<LanguageService>();
-            _termService = App.Container.Get<TermService>();
-
             InitializeComponent();
 
-            BindItem();
+            _cw = new CommonWindow(item, parallel, new VideoParserService(), WebControl);
+            this.Title = _cw.GetTitle();
         }
 
         public Tuple<long, long> GetSub(double time)
         {
-            var l1Sub = _output.L1Srt.FirstOrDefault(x => x.Start < time && x.End > time);
-            var l2Sub = _output.L2Srt.FirstOrDefault(x => x.Start < time && x.End > time);
+            var l1Sub = _cw.Output.L1Srt.FirstOrDefault(x => x.Start < time && x.End > time);
+            var l2Sub = _cw.Output.L2Srt.FirstOrDefault(x => x.Start < time && x.End > time);
 
             var l1 = l1Sub == null ? -1 : l1Sub.LineNo;
             var l2 = l2Sub == null ? -1 : l2Sub.LineNo;
 
             return new Tuple<long, long>(l1, l2);
-        }
-
-        private void BindItem()
-        {
-            ParserInput pi = new ParserInput()
-                .WithItem(_item)
-                .IsParallel(_parallel)
-                .WithLanguage1(_languageService.FindOne(_item.L1LanguageId))
-                .WithLanguage2(_languageService.FindOne(_item.L2LanguageId))
-                .WithTerms(_termService.FindAllByLanguage(_item.L1LanguageId))
-                .WithHtml(HtmlLoader.Instance.WatchingHtml)
-                ;
-
-            _vps = new VideoParserService(pi);
-            _output = _vps.Parse();
-
-            using (StreamWriter sw = new StreamWriter(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", _item.ItemId + ".html"), false, Encoding.UTF8))
-            {
-                sw.Write(_output.Html);
-            }
-
-            string path = System.IO.Path.Combine(
-                AppDomain.CurrentDomain.BaseDirectory,
-                "awesomium"
-                );
-
-            var session = WebCore.Sessions.FirstOrDefault(x => x.DataPath == path);
-
-            if (session == null)
-            {
-                session = WebCore.CreateWebSession(path, new WebPreferences()
-                {
-                    SmoothScrolling = true,
-                    FileAccessFromFileURL = true,
-                    UniversalAccessFromFileURL = true,
-                    DefaultEncoding = "utf-8",
-                    AllowInsecureContent = true,
-                    Plugins = true,
-                    WebAudio = true,
-                    WebGL = true,
-                    EnableGPUAcceleration = true,
-                    WebSecurity = false,
-                }
-                    );
-            }
-
-
-            WebControl.WebSession = session;
-            WebControl.ConsoleMessage += WebControl_ConsoleMessage;
-            WebControl.Source = ("http://localhost:9000/api/item/" + _item.ItemId).ToUri();
-
-            Title = (_item.CollectionNo == null ? "" : (_item.CollectionNo.ToString() + ". ")) +
-                    (string.IsNullOrWhiteSpace(_item.CollectionName) ? "" : (_item.CollectionName + " - ")) +
-                    _item.L1Title
-                    ;
-
-            _itemService.MarkLastRead(_item.ItemId);
-        }
-
-        private void WebControl_ConsoleMessage(object sender, ConsoleMessageEventArgs e)
-        {
-            return;
         }
     }
 }

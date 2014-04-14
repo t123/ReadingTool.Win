@@ -22,9 +22,18 @@ namespace RTWin.Controls
     /// </summary>
     public partial class LanguageDialog : Window
     {
+        public class PluginLanguage
+        {
+            public string Name { get; set; }
+            public string Description { get; set; }
+            public long PluginId { get; set; }
+            public bool Enabled { get; set; }
+        }
+
         private LanguageCodeService _languageCodeService;
         private LanguageService _languageService;
         private Language _language = null;
+        private PluginService _pluginService;
 
         public LanguageDialog(Language language)
         {
@@ -33,9 +42,29 @@ namespace RTWin.Controls
             _language = language;
             _languageCodeService = App.Container.Get<LanguageCodeService>();
             _languageService = App.Container.Get<LanguageService>();
+            _pluginService = App.Container.Get<PluginService>();
 
             BindLanguage();
             BindLanguages();
+        }
+
+        private void BindPlugins()
+        {
+            var items = _pluginService.FindAllWithActive(_language == null ? 0 : _language.LanguageId);
+            List<PluginLanguage> plugins = new List<PluginLanguage>();
+
+            foreach (var item in items)
+            {
+                plugins.Add(new PluginLanguage()
+                {
+                    PluginId = long.Parse(item[0].ToString()),
+                    Name = item[1].ToString(),
+                    Description = item[2].ToString(),
+                    Enabled = item[3] != null
+                });
+            }
+
+            ListBoxPlugins.ItemsSource = plugins;
         }
 
         private void ResetFields()
@@ -56,6 +85,8 @@ namespace RTWin.Controls
 
         private void BindLanguage()
         {
+            BindPlugins();
+
             if (_language == null)
             {
                 ResetFields();
@@ -66,13 +97,9 @@ namespace RTWin.Controls
             TextBoxName.Text = _language.Name;
             RbLTR.IsChecked = _language.Settings.Direction == Direction.LeftToRight;
             RbRTL.IsChecked = _language.Settings.Direction == Direction.RightToLeft;
-            CheckBoxPauseAudio.IsChecked = _language.Settings.PauseOnModal;
             TextBoxSentenceRegex.Text = _language.Settings.SentenceRegex;
             TextBoxTermRegex.Text = _language.Settings.TermRegex;
             ComboBoxLanguageCode.SelectedValue = _language.LanguageCode;
-            CheckBoxCopyClipboard.IsChecked = _language.Settings.CopyToClipboard;
-            CheckBoxLowercaseTerm.IsChecked = _language.Settings.LowercaseTerm;
-            TextBoxStripChars.Text = _language.Settings.StripChars;
         }
 
         private void ButtonSave_OnClick(object sender, RoutedEventArgs e)
@@ -88,12 +115,8 @@ namespace RTWin.Controls
                     Settings = new LanguageSettings()
                     {
                         Direction = RbLTR.IsChecked ?? false ? Direction.LeftToRight : (RbRTL.IsChecked ?? false ? Direction.RightToLeft : Direction.LeftToRight),
-                        PauseOnModal = CheckBoxPauseAudio.IsChecked ?? true,
                         SentenceRegex = TextBoxSentenceRegex.Text,
                         TermRegex = TextBoxTermRegex.Text,
-                        StripChars = TextBoxStripChars.Text,
-                        CopyToClipboard = CheckBoxCopyClipboard.IsChecked ?? false,
-                        LowercaseTerm = CheckBoxLowercaseTerm.IsChecked ?? false
                     }
                 };
             }
@@ -105,17 +128,15 @@ namespace RTWin.Controls
                 var settings = _language.Settings;
 
                 settings.Direction = RbLTR.IsChecked ?? false ? Direction.LeftToRight : (RbRTL.IsChecked ?? false ? Direction.RightToLeft : Direction.LeftToRight);
-                settings.PauseOnModal = CheckBoxPauseAudio.IsChecked ?? true;
                 settings.SentenceRegex = TextBoxSentenceRegex.Text;
                 settings.TermRegex = TextBoxTermRegex.Text;
-                settings.StripChars = TextBoxStripChars.Text;
-                settings.CopyToClipboard = CheckBoxCopyClipboard.IsChecked ?? false;
-                settings.LowercaseTerm = CheckBoxLowercaseTerm.IsChecked ?? false;
 
                 _language.Settings = settings;
             }
 
-            _languageService.Save(_language);
+            var plugins = (from PluginLanguage item in ListBoxPlugins.Items where item != null && item.Enabled select item.PluginId).ToArray();
+
+            _languageService.Save(_language, plugins);
             this.DialogResult = true;
             this.Close();
         }

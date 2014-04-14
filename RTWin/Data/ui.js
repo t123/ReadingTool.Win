@@ -1,17 +1,11 @@
-﻿//var gOldOnError = window.onerror;
+﻿$(function () {
+    var webApiEndPoint = $('#reading').data('webapi');
+    var signalREndPoint = $('#reading').data('signalr') + "/signalr";
 
-//window.onerror = function myErrorHandler(errorMsg, url, lineNumber) {
-//    if (gOldOnError)
-//        return gOldOnError(errorMsg, url, lineNumber);
-
-//    return false;
-//};
-
-$(function () {
     window.reading = undefined;
     jQuery.support.cors = true;
 
-    $.connection.hub.url = "http://localhost:8888/signalr";
+    $.connection.hub.url = signalREndPoint;
     var chat = $.connection.mainHub;
 
     window.hubReady = $.connection.hub.start();
@@ -40,7 +34,7 @@ $(function () {
 
     window.hubReady.done(function () {
         if ($('#reading').data('mediauri') != '') {
-            var mediaUri = 'http://localhost:9000/api/media/' + $('#reading').data('itemid');
+            var mediaUri = webApiEndPoint + '/api/media/' + $('#reading').data('itemid');
 
             if ($('#reading').data('itemtype') == 'text') {
                 $("#jquery_jplayer_1").jPlayer({
@@ -49,7 +43,7 @@ $(function () {
                             mp3: mediaUri
                         });
                     },
-                    swfPath: "http://localhost:9000/api/local/Jplayer.swf",
+                    swfPath: webApiEndPoint + "/api/local/Jplayer.swf",
                     supplied: "mp3",
                     errorAlerts: true
                 });
@@ -60,7 +54,7 @@ $(function () {
                             m4v: mediaUri
                         });
                     },
-                    swfPath: "http://localhost:9000/api/local/Jplayer.swf",
+                    swfPath: webApiEndPoint + "/api/local/Jplayer.swf",
                     supplied: "m4v",
                     errorAlerts: true
                 });
@@ -68,7 +62,7 @@ $(function () {
         }
 
         var reading = new Reading({
-            url: 'http://localhost:9000',
+            url: webApiEndPoint,
             languageId: $('#reading').data('languageid'),
             itemId: $('#reading').data('itemid'),
             chat: chat
@@ -85,45 +79,53 @@ $(function () {
                         case 13: //Enter
                             reading.save();
                             reading.closeModal();
+                            e.preventDefault();
                             break;
 
                         case 82: //R
                             reading.reset();
+                            e.preventDefault();
                             break;
 
                         case 49: //1
                             reading.setDState('known');
+                            e.preventDefault();
                             break;
 
                         case 50: //2
                             reading.setDState('unknown');
+                            e.preventDefault();
                             break;
 
                         case 51: //3
                             reading.setDState('ignored');
+                            e.preventDefault();
                             break;
 
                         case 52: //4
                             reading.setDState('notseen');
+                            e.preventDefault();
                             break;
 
                         case 81: //q
                         case 83: //s
                             reading.setFocus($('#dSentence'));
+                            e.preventDefault();
                             break;
 
                         case 65: //a
                         case 66: //b
                             reading.setFocus($('#dBase'));
+                            e.preventDefault();
                             break;
 
                         case 90: //z
                         case 68: //d
                             reading.setFocus($('#dDefinition'));
+                            e.preventDefault();
                             break;
                     }
 
-                    e.preventDefault();
                     return;
                 }
 
@@ -216,10 +218,9 @@ $(function () {
         });
 
         $('input[type="text"], input[type="radio"], textarea').change(function (e) {
-            $(document).trigger('preDataChanged', e);
-            $(e.target).addClass('changed');
-            reading.changed();
-            $(document).trigger('postDataChanged', e);
+            $(document).trigger('preDataChanged', e, e);
+            reading.changed($(e.target));
+            $(document).trigger('postDataChanged', e, e);
         });
 
         jQuery.fn['any'] = function () {
@@ -250,6 +251,16 @@ $(function () {
 
         $('#dRefresh').click(function () {
             reading.refresh();
+            return false;
+        });
+
+        $('#btnMark').click(function () {
+            if (!confirm('Are you sure you want to mark remaining words as known?')) {
+                return false;
+            }
+
+            reading.markRemainingAsKnown();
+
             return false;
         });
     });

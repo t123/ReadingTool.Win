@@ -76,7 +76,7 @@
                             </Grid.RowDefinitions>
                             <Label Grid.Row="0" Grid.Column="0">Search Items</Label>
                             <TextBox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" Margin="5"></TextBox>
-                            <DataGrid Name="DataGridItems" Grid.Row="1" Grid.ColumnSpan="2" AutoGenerateColumns="False" CanUserReorderColumns="False" AlternatingRowBackground="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" CanUserAddRows="False" CanUserResizeRows="False" SelectedCellsChanged="DataGridItems_OnSelectedCellsChanged" SelectionMode="Single">
+                            <DataGrid Name="DataGridItems" Grid.Row="1" Grid.ColumnSpan="2" AutoGenerateColumns="False" CanUserReorderColumns="False" AlternatingRowBackground="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" CanUserAddRows="False" CanUserResizeRows="False" SelectedCellsChanged="DataGridItems_OnSelectedCellsChanged" SelectionMode="Single" MouseDoubleClick="DataGridItems_OnMouseDoubleClick">
                                 <DataGrid.Columns>
                                     <DataGridCheckBoxColumn IsReadOnly="False"></DataGridCheckBoxColumn>
                                     <DataGridTextColumn IsReadOnly="True" Header="Type" Binding="{Binding ItemType}"></DataGridTextColumn>

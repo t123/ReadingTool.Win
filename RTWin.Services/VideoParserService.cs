@@ -18,12 +18,11 @@ namespace RTWin.Services
 {
     public class VideoParserService : IParserService
     {
-        private readonly ParserInput _pi;
+        private ParserInput _pi;
         private readonly ParserOutput _po;
 
-        public VideoParserService(ParserInput pi)
+        public VideoParserService()
         {
-            _pi = pi;
             _po = new ParserOutput();
         }
 
@@ -86,8 +85,9 @@ namespace RTWin.Services
                 ;
         }
 
-        public ParserOutput Parse()
+        public ParserOutput Parse(ParserInput pi)
         {
+            _pi = pi;
             _po.L1Srt = ParseSubtitles(_pi.Item.L1Content);
             _po.L2Srt = _pi.AsParallel ? ParseSubtitles(_pi.Item.L2Content) : new List<Srt>();
 
@@ -101,6 +101,8 @@ namespace RTWin.Services
             var rootNode = new XElement("root");
 
             var contentNode = new XElement("content");
+            contentNode.SetAttributeValue("signalR", _pi.SignalREndPoint);
+            contentNode.SetAttributeValue("webApi", _pi.WebApiEndPoint);
             contentNode.SetAttributeValue("isParallel", _pi.AsParallel);
             contentNode.SetAttributeValue("collectionName", _pi.Item.CollectionName);
             contentNode.SetAttributeValue("collectionNo", _pi.Item.CollectionNo);
@@ -114,6 +116,8 @@ namespace RTWin.Services
             contentNode.SetAttributeValue("itemType", _pi.Item.ItemType.ToString().ToLowerInvariant());
             contentNode.SetAttributeValue("l1Direction", _pi.Language1.Settings.Direction);
             contentNode.SetAttributeValue("l2Direction", _pi.AsParallel ? _pi.Language2.Settings.Direction.ToString() : "");
+            contentNode.SetAttributeValue("l1Code", _pi.Language1.LanguageCode);
+            contentNode.SetAttributeValue("l2Code", _pi.Language2 == null ? "" : _pi.Language2.LanguageCode);
 
             if (!string.IsNullOrWhiteSpace(_pi.Item.MediaUri) && File.Exists(_pi.Item.MediaUri))
             {

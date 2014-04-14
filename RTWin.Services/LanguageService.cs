@@ -20,7 +20,7 @@ namespace RTWin.Services
             _user = user;
         }
 
-        public void Save(Language language)
+        public void Save(Language language, IEnumerable<long> plugins = null)
         {
             if (language.LanguageId == 0)
             {
@@ -33,6 +33,16 @@ namespace RTWin.Services
             {
                 language.DateModified = DateTime.Now;
                 _db.Update(language);
+            }
+
+            if (plugins != null)
+            {
+                _db.Execute("DELETE FROM language_plugin WHERE LanguageId=@0", language.LanguageId);
+
+                foreach (var plugin in plugins)
+                {
+                    _db.Execute("INSERT INTO language_plugin VALUES ( @0, @1 )", language.LanguageId, plugin);
+                }
             }
         }
 

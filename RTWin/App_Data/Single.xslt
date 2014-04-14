@@ -6,6 +6,12 @@
   </xsl:template>
   <xsl:template match="content">
     <table id="reading">
+      <xsl:attribute name="data-webapi">
+        <xsl:value-of select="/root/content/@webApi"/>
+      </xsl:attribute>
+      <xsl:attribute name="data-signalr">
+        <xsl:value-of select="/root/content/@signalR"/>
+      </xsl:attribute>
       <xsl:attribute name="data-languageid">
         <xsl:value-of select="/root/content/@l1Id"/>
       </xsl:attribute>
@@ -17,6 +23,12 @@
       </xsl:attribute>
       <xsl:attribute name="data-itemtype">
         <xsl:value-of select="/root/content/@itemType"/>
+      </xsl:attribute>
+      <xsl:attribute name="data-l1code">
+        <xsl:value-of select="/root/content/@l1Code"/>
+      </xsl:attribute>
+      <xsl:attribute name="data-l2code">
+        <xsl:value-of select="/root/content/@l2Code"/>
       </xsl:attribute>
 
       <tr class="header">

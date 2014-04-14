@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Configuration;
 using System.IO;
+using System.Threading;
 using System.Windows;
+using System.Windows.Threading;
 using Microsoft.AspNet.SignalR.Client;
 using Microsoft.Owin.Hosting;
 using Ninject;
@@ -19,12 +21,15 @@ namespace RTWin
     /// </summary>
     public partial class App : Application
     {
-        public const string BaseWebAPIAddress = "http://localhost:9000/";
-        public const string BaseWebSignalRAddress = "http://localhost:8888/";
+        //public const string BaseWebAPIAddress = "http://localhost:9000/";
+        //public const string BaseWebSignalRAddress = "http://localhost:8888/";
+
         private HubConnection _hubConnection;
         private IHubProxy _mainHubProxy;
         public static User User { get; set; }
         private static IKernel _container;
+        private DatabaseService _databaseService;
+
         public static IKernel Container
         {
             get { return _container; }
@@ -35,6 +40,9 @@ namespace RTWin
             base.OnStartup(e);
 
             InitContainer();
+
+            _databaseService = Container.Get<DatabaseService>();
+
             InitDb();
             InitWebApi();
             InitSignalR();
@@ -81,19 +89,18 @@ namespace RTWin
 
         private void InitDb()
         {
-            var ds = Container.Get<DatabaseService>();
-            ds.CreateAndUpgradeDatabase();
+            _databaseService.CreateAndUpgradeDatabase();
         }
 
         private void InitWebApi()
         {
-            WebApp.Start<OWINWebAPIConfig>(BaseWebAPIAddress);
+            WebApp.Start<OWINWebAPIConfig>(_databaseService.GetSetting<string>(DbSetting.Keys.BaseWebAPIAddress));
         }
 
         private void InitSignalR()
         {
-            WebApp.Start<OWINSignalRConfig>(BaseWebSignalRAddress);
-            _hubConnection = new HubConnection(App.BaseWebSignalRAddress);
+            WebApp.Start<OWINSignalRConfig>(_databaseService.GetSetting<string>(DbSetting.Keys.BaseWebSignalRAddress));
+            _hubConnection = new HubConnection(_databaseService.GetSetting<string>(DbSetting.Keys.BaseWebSignalRAddress));
             _mainHubProxy = _hubConnection.CreateHubProxy("MainHub");
             InitHub();
         }
@@ -141,11 +148,12 @@ namespace RTWin
                 }
                 else if (element == "modal")
                 {
-                    System.Windows.Application.Current.Dispatcher.Invoke(() => Clipboard.SetText(action, TextDataFormat.UnicodeText));
+                    System.Windows.Application.Current.Dispatcher.InvokeAsync(() => Clipboard.SetText(action, TextDataFormat.UnicodeText), DispatcherPriority.Background);
                 }
             });
 
             _hubConnection.Start();
         }
+
     }
 }

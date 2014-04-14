@@ -50,8 +50,14 @@ namespace RTWin.Services
 
         public IList<Plugin> FindAllForLanguage(long languageId)
         {
-            var result = _db.Query<Plugin>("SELECT a.* FROM plugin a, language_plugin b WHERE a.PluginId=b.PluginId AND b.LanguageId=@0", languageId);
+            var result = _db.Query<Plugin>("SELECT a.* FROM plugin a, language_plugin b WHERE a.PluginId=b.PluginId AND b.LanguageId=@0 ORDER BY a.Name", languageId);
             return result.ToList();
+        }
+
+        public List<object[]> FindAllWithActive(long languageId)
+        {
+            var result = _db.Fetch<object[]>("select a.pluginid, a.name, a.description, b.pluginid as Enabled from plugin a left outer join language_plugin b on a.pluginid=b.pluginid and b.languageid=@0  ORDER BY a.Name", languageId);
+            return result;
         }
     }
 }

@@ -1,3 +1,4 @@
+using Microsoft.AspNet.SignalR;
 using Microsoft.Owin.Cors;
 using Owin;
 
@@ -8,7 +9,11 @@ namespace RTWin.Common
         public void Configuration(IAppBuilder appBuilder)
         {
             appBuilder.UseCors(CorsOptions.AllowAll);
-            appBuilder.MapSignalR();
+            appBuilder.MapSignalR(new HubConfiguration()
+            {
+                EnableJSONP = true,
+                EnableDetailedErrors = true
+            });
         }
     }
 }

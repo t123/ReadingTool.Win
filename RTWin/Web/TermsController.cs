@@ -55,14 +55,18 @@ namespace RTWin.Web
             };
         }
 
-        public TermReponse GetTerm(string phrase = "", int languageId = 0)
+        public async Task<TermReponse> GetTerm(string phrase = "", int languageId = 0)
         {
             if (string.IsNullOrWhiteSpace(phrase) || languageId <= 0)
             {
                 throw new HttpResponseException(HttpStatusCode.NotFound);
             }
 
-            var term = _termService.FindOneByPhraseAndLanguage(phrase, languageId);
+            Term term = null;
+            await Task.Run(() =>
+            {
+                term = _termService.FindOneByPhraseAndLanguage(phrase, languageId);
+            });
 
             if (term == null)
             {

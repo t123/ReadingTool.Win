@@ -29,54 +29,40 @@
                         <RowDefinition/>
                         <RowDefinition/>
                         <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
                     </Grid.RowDefinitions>
                     <Label Content="Language Name" Grid.Row="0" Grid.Column="0"/>
                     <TextBox Grid.Row="0" Grid.Column="1" Name="TextBoxName"/>
                     <Label Content="Language Code" Grid.Row="1" Grid.Column="0"/>
                     <ComboBox Grid.Row="1" Grid.Column="1" Name="ComboBoxLanguageCode"/>
-                    <Label Content="Is Archived?" Grid.Row="2" Grid.Column="0"/>
-                    <CheckBox Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="CheckBoxArchive"/>
-                </Grid>
-            </GroupBox>
-            <GroupBox Margin="0,10,0,0">
-                <GroupBox.Header>Advanced Settings</GroupBox.Header>
-                <Grid>
-                    <Grid.Resources>
-                        <Style TargetType="{x:Type TextBox}">
-                            <Setter Property="Margin" Value="0,5,0,5" />
-                        </Style>
-                    </Grid.Resources>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="150"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
-                    <Label Content="Direction" Grid.Row="0" Grid.Column="0"/>
-                    <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center">
+                    <Label Content="Is Archived?" Grid.Row="5" Grid.Column="0"/>
+                    <CheckBox Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" Name="CheckBoxArchive"/>
+                    <Label Content="Direction" Grid.Row="2" Grid.Column="0"/>
+                    <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center">
                         <RadioButton GroupName="RbDirection" Name="RbLTR">Left to Right</RadioButton>
                         <RadioButton GroupName="RbDirection" Name="RbRTL" Margin="20,0,0,0">Right to Left</RadioButton>
                     </StackPanel>
-                    <Label Content="Lowercase Base Phrase" Grid.Row="1" Grid.Column="0"/>
-                    <CheckBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Name="CheckBoxLowercaseTerm"/>
-                    <Label Content="Pause Audio" Grid.Row="2" Grid.Column="0"/>
-                    <CheckBox Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="CheckBoxPauseAudio"/>
-                    <Label Content="Copy Term To Clipboard" Grid.Row="3" Grid.Column="0"/>
-                    <CheckBox Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Name="CheckBoxCopyClipboard"/>
-                    <Label Content="Sentence Regex" Grid.Row="4" Grid.Column="0"/>
-                    <TextBox Grid.Row="4" Grid.Column="1" Name="TextBoxSentenceRegex"/>
-                    <Label Content="Term Regex" Grid.Row="5" Grid.Column="0"/>
-                    <TextBox Grid.Row="5" Grid.Column="1" Name="TextBoxTermRegex"/>
-                    <Label Content="Strip Characters" Grid.Row="6" Grid.Column="0"/>
-                    <TextBox Grid.Row="6" Grid.Column="1" Name="TextBoxStripChars"/>
+                    <Label Content="Sentence Regex" Grid.Row="3" Grid.Column="0"/>
+                    <TextBox Grid.Row="3" Grid.Column="1" Name="TextBoxSentenceRegex"/>
+                    <Label Content="Term Regex" Grid.Row="4" Grid.Column="0"/>
+                    <TextBox Grid.Row="4" Grid.Column="1" Name="TextBoxTermRegex"/>
                 </Grid>
+            </GroupBox>
+            <GroupBox Margin="0,10,0,0">
+                <GroupBox.Header>Plugins</GroupBox.Header>
+                <ListBox Name="ListBoxPlugins" MinHeight="100" MaxHeight="300">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <WrapPanel>
+                                <CheckBox IsChecked="{Binding Path=Enabled}" Margin="3"></CheckBox>
+                                <TextBlock Text="{Binding Path=Name}" ToolTip="{Binding Path=Description}">
+                                </TextBlock>
+                            </WrapPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
             </GroupBox>
             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                 <Button Content="Save" Margin="5" MinWidth="75" Name="ButtonSave" Click="ButtonSave_OnClick"/>
