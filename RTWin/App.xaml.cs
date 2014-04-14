@@ -64,12 +64,14 @@ namespace RTWin
             _container.Bind<UserService>().ToSelf();
             _container.Bind<LanguageService>().ToSelf();
             _container.Bind<LanguageCodeService>().ToSelf();
+            _container.Bind<PluginService>().ToSelf();
 
             _container.Bind<UserDialog>().ToSelf();
             _container.Bind<LanguageDialog>().ToSelf();
             _container.Bind<ItemDialog>().ToSelf();
             _container.Bind<ReadWindow>().ToSelf();
             _container.Bind<WatchWindow>().ToSelf();
+            _container.Bind<PluginDialog>().ToSelf();
         }
 
         private static Database CreateDb(IContext context)

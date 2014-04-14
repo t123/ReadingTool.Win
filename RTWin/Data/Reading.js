@@ -7,26 +7,22 @@
     self.wasPlaying = false;
     self.jplayer = $('#jquery_jplayer_1');
 
-    self._getCurrentSentence = function () {
-        var sentence = '';
-        var children = self.currentElement.parent('p.__sentence').children('span');
-
-        for (var i = 0; i < children.length; i++) {
-            sentence += $(children[i]).text();
-        }
-
-        return sentence;
-    };
-
-    self._updateOccurencesText = function (occurs) {
+    self.setOccurencesText = function (occurs) {
         switch (occurs) {
             case 1:
-                return 'once';
+                $('#dOccurs').text('once');
+                break;
             case 2:
-                return 'twice';
+                $('#dOccurs').text('twice');
+                break;
             default:
-                return occurs + ' times';
+                $('#dOccurs').text(occurs + ' times');
+                break;
         }
+    };
+
+    self.setFrequencyText = function (freq) {
+        $('#dFrequency').text(freq);
     };
 
     self._getWordFromSpan = function (element) {
@@ -37,8 +33,47 @@
         }
     };
 
-    self._getCurrentWordFromSpan = function () {
-        return self._getWordFromSpan(self.currentElement);
+    self.setFocus = function (element) {
+        if (element.any()) {
+            element.focus();
+        }
+    };
+
+    self.updateCurrentSelected = function (element) {
+        if (element.any()) {
+            var current = self.getCurrentSelected();
+            current.removeClass('__current');
+            element.addClass('__current');
+        }
+
+        $(document).trigger('postUpdateCurrentSelected');
+    };
+
+    self.getCurrentSelected = function () {
+        return $('.__current');
+    };
+
+    self.getCurrentWordAsText = function () {
+        if (self.currentElement.any()) {
+            return self._getWordFromSpan(self.currentElement);
+        }
+
+        return '';
+    };
+
+    self.getCurrentSentence = function () {
+        if (!self.currentElement.any()) {
+            return '';
+        }
+
+        var sentence = '';
+        var children = self.currentElement.parent('p.__sentence').children('span');
+
+        for (var i = 0; i < children.length; i++) {
+            sentence += $(children[i]).text();
+        }
+
+        return sentence;
     };
 
     self._removeChanged = function () {
@@ -47,15 +82,23 @@
         $('#dDefinition').removeClass('changed');
     };
 
-    self._updateModal = function () {
-        var text = self._getCurrentWordFromSpan();
+    self.copyToClipboard = function (toCopy) {
+        $(document).trigger('preCopyToClipboard');
+        self.sendChatMessage('modal', toCopy);
+        $(document).trigger('postCopyToClipboard');
+    };
 
-        $('#dMessage').html('');
+    self.updateModal = function () {
+        $(document).trigger('preUpdateModal');
+
+        var text = self.getCurrentWordAsText();
+
+        self.setDMessage('');
         self._removeChanged();
-        $('#dOccurs').text(self._updateOccurencesText(self.currentElement.data('occurrences')));
-        $('#dFrequency').text(self.currentElement.data('frequency'));
+        self.setOccurencesText(self.getOccurrences());
+        self.setFrequencyText(self.getFrequency());
 
-        self.options.chat.server.send("modal", text);
+        self.copyToClipboard(text);
 
         $.ajax({
             url: self.options.url + '/api/terms/',
@@ -76,13 +119,15 @@
                 $('#dPhrase').html(text);
                 $('#dBase').val('');
                 $('#dDefinition').val('');
-                $('#dSentence').val(self._getCurrentSentence());
+                $('#dSentence').val(self.getCurrentSentence());
                 $('#dSentence').addClass('changed');
                 $('#dMessage').html('New word, defaulting to unknown');
             } else {
                 $('#dPhrase').html(text);
                 $('#dMessage').html('failed to lookup word');
             }
+        }).always(function (data) {
+            $(document).trigger('postUpdateModal');
         });
     };
 
@@ -96,37 +141,88 @@
         }, 125);
     };
 
+    self.getDState = function () {
+        return $('input[name="State"]:checked').val();
+    };
+
+    self.getDBase = function () {
+        return $('#dBase').val();
+    };
+
+    self.getDSentence = function () {
+        return $('#dSentence').val();
+    };
+
+    self.getDDefinition = function () {
+        return $('#dDefinition').val();
+    };
+
+    self.getLanguageId = function () {
+        return self.options.languageId;
+    };
+
+    self.getItemId = function () {
+        return self.options.itemId;
+    };
+
+    self.setDState = function (state) {
+        $('[name=State][value=' + state + ']').prop('checked', 'true');
+        self.changed();
+    };
+
+    self.setDBase = function (val) {
+        $('#dBase').val(val);
+        self.changed();
+    };
+
+    self.setDSentence = function (val) {
+        $('#dSentence').val(val);
+        self.changed();
+    };
+
+    self.setDDefinition = function (val) {
+        $('#dDefinition').val(val);
+        self.changed();
+    };
+
+    self.setDMessage = function (val) {
+        $('#dMessage').html(val);
+        self.changed();
+    };
+
     self.save = function () {
-        var phrase = self._getCurrentWordFromSpan();
-        var state = $('input[name="State"]:checked').val();
+        $(document).trigger('preSave');
+
+        var phrase = self.getCurrentWordAsText();
+        var state = self.getDState();
 
         $.ajax({
             url: self.options.url + "/api/terms/",
             type: 'POST',
             data: {
                 phrase: phrase,
-                basePhrase: $('#dBase').val(),
-                sentence: $('#dSentence').val(),
-                definition: $('#dDefinition').val(),
-                languageId: self.options.languageId,
-                itemId: self.options.itemId,
+                basePhrase: self.getDBase(),
+                sentence: self.getDSentence(),
+                definition: self.getDDefinition(),
+                languageId: self.getLanguageId(),
+                itemId: self.getItemId(),
                 state: state,
             }
         }).done(function (data, status, xhr) {
             if (xhr.status == 200) {
-                $('#dMessage').html('Term updated');
+                self.setDMessage('Term updated');
             } else if (xhr.status == 201) {
-                $('#dMessage').html('New term saved');
+                self.setDMessage('New term saved');
             } else {
-                $('#dMessage').html('Saved');
+                self.setDMessage('Saved');
             }
 
             self._removeChanged();
             var lower = phrase.toLowerCase();
             $('.__' + lower).removeClass('__notseen __known __ignored __unknown').addClass('__' + state.toLowerCase());
 
-            var tempDef = $('#dBase').val().length > 0 ? $('#dBase').val() + "<br/>" : '';
-            if ($('#dDefinition').val().length > 0) tempDef += $('#dDefinition').val().replace(/\n/g, '<br />');
+            var tempDef = self.getDBase().length > 0 ? self.getDBase() + "<br/>" : '';
+            if (self.getDDefinition().length > 0) tempDef += self.getDDefinition().replace(/\n/g, '<br />');
 
             if (tempDef.length > 0) {
                 $('.__' + lower).each(function (index) {
@@ -146,46 +242,47 @@
                 });
             }
         }).fail(function (data) {
-            $('#dMessage').html('Saved failed');
+            self.setDMessage('Save failed');
+        }).always(function (data) {
+            $(document).trigger('postSave');
         });
     };
 
     self.reset = function () {
-        var phrase = self._getCurrentWordFromSpan();
+        $(document).trigger('preReset');
+
+        var phrase = self.getCurrentWordAsText();
 
         $.ajax({
             url: self.options.url + "/api/terms/",
             type: 'DELETE',
             data: {
                 phrase: phrase,
-                basePhrase: '',
-                sentence: '',
-                definition: '',
-                languageId: self.options.languageId,
-                itemId: self.options.itemId,
+                basePhrase: self.setDBase(''),
+                sentence: self.setDSentence(''),
+                definition: self.setDDefinition(''),
+                languageId: self.getLanguageId(),
+                itemId: self.getItemId(),
                 state: 'NotSeen',
             }
         }).done(function (data, status, xhr) {
             if (xhr.status == 200) {
-                $('#dMessage').html('Term reset, use save to keep data.');
+                self.setDMessage('Term reset, use save to keep data.');
             } else {
-                $('#dMessage').html('Reset');
+                self.setDMessage('Term reset');
             }
 
             var lower = phrase.toLowerCase();
-            $('.__' + lower).removeClass('__notseen __known __ignored __unknown __kd __id __ud __t').addClass('__notseen');
+            $('.__' + lower).removeClass('__notseen __known __ignored __unknown __kd __id __ud').addClass('__notseen');
             $('.__' + lower).each(function (index) {
                 $(this).html(phrase);
             });
 
         }).fail(function (data) {
-            $('#dMessage').html('Reset failed');
+            self.setDMessage('Reset failed');
+        }).always(function (data) {
+            $(document).trigger('postReset');
         });
-    };
-
-    self.changeState = function (state) {
-        $('[name=State][value=' + state + ']').prop('checked', 'true');
-        self.changed();
     };
 
     self.changed = function () {
@@ -196,7 +293,7 @@
         return self.hasChanged;
     };
 
-    self.setWasPlaying = function() {
+    self.setWasPlaying = function () {
         self.wasPlaying = self.jplayer.data() == null ? false : !self.jplayer.data().jPlayer.status.paused;
     };
 
@@ -205,17 +302,37 @@
     };
 
     self.copy = function () {
-        $('#dBase').val($('#dPhrase').text());
+        self.setDBase(self.getCurrentWordAsText());
         self.changed();
+
+        $(document).trigger('postWordCopy');
     };
 
     self.refresh = function () {
-        $('#dSentence').val(self._getCurrentSentence());
+        self.setDSentence(self.getCurrentSentence());
         $('#dSentence').addClass('changed');
         self.changed();
+
+        $(document).trigger('postSentenceRefreshed');
     };
 
-    self._displayModal = function () {
+    self.getFrequency = function () {
+        if (self.currentElement.any()) {
+            return self.currentElement.data('frequency');
+        }
+
+        return 0;
+    };
+
+    self.getOccurrences = function () {
+        if (self.currentElement.any()) {
+            return self.currentElement.data('occurrences');
+        }
+
+        return 0;
+    };
+
+    self.displayModal = function () {
         var c = self.currentElement[0].getBoundingClientRect();
 
         var dh = $(window).height();
@@ -240,18 +357,33 @@
         self.modal.offset({ top: nt, left: nl });
     };
 
+    self.addMatching = function (element) {
+        if (element.any()) {
+            element.addClass('__matching');
+        }
+
+        $(document).trigger('postAddMatching');
+    };
+
+    self.removeMatching = function () {
+        $('.__matching').removeClass('__matching');
+
+        $(document).trigger('postRemoveMatching');
+    };
+
     self.showModal = function (element) {
+        $(document).trigger('preShowModal');
+
         if (self.modal.is(':visible') && self.hasChanged) {
             return;
         }
 
         self.currentElement = element;
-        $('.__current').removeClass('__current');
-        $('.__matching').removeClass('__matching');
-        element.addClass('__current');
+        self.removeMatching();
+        self.updateCurrentSelected(element);
 
         var cls = self.currentElement.data('lower');
-        $('.__' + cls).addClass('__matching');
+        self.addMatching($('.__' + cls));
 
         self.setWasPlaying();
 
@@ -259,24 +391,44 @@
             self.jplayer.jPlayer('pause');
         }
 
-        self._updateModal();
-        self._displayModal();
+        self.updateModal();
+        self.displayModal();
+
+        $(document).trigger('postShowModal');
     };
 
     self.closeModal = function () {
+        $(document).trigger('preCloseModal');
+
         self.hasChanged = false;
-        $('.__matching').removeClass('__matching');
+        self.removeMatching();
         self.modal.hide();
 
         if (self.getWasPlaying()) {
             self.jplayer.jPlayer("play", self.jplayer.data().jPlayer.status.currentTime - 1);
             self.jplayer.jPlayer("play");
         }
+
+        $(document).trigger('postCloseModal');
     };
 
-    if ($('#reading').data('itemtype') == 'video') {
-        self.jplayer.bind($.jPlayer.event.timeupdate, function(event) {
-            self.options.chat.server.send("video", event.jPlayer.status.currentTime);
+    self.getItemType = function () {
+        return $('#reading').data('itemtype');
+    };
+
+    self.getPlayer = function () {
+        return self.jplayer;
+    };
+
+    self.sendChatMessage = function (source, message) {
+        self.options.chat.server.send(source, message);
+    };
+
+    if (self.getItemType() == 'video') {
+        self.jplayer.bind($.jPlayer.event.timeupdate, function (event) {
+            self.sendChatMessage('video', event.jPlayer.status.currentTime);
         });
     }
+
+    $(document).trigger('pluginReady');
 }

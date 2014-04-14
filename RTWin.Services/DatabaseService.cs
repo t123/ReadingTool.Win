@@ -17,6 +17,38 @@ namespace RTWin.Services
             _db = db;
         }
 
+        public Dictionary<string, string> GetSettings()
+        {
+            var settings = _db.Fetch<DbSetting>();
+            return settings.ToDictionary(x => x.Key.ToLowerInvariant(), x => x.Value);
+        }
+
+        public string GetSetting(int id)
+        {
+            var setting = _db.SingleById<DbSetting>(id);
+            return setting == null ? null : setting.Value;
+        }
+
+        public string GetSetting(string key)
+        {
+            key = key.ToLowerInvariant();
+            var setting = _db.FetchBy<DbSetting>(sql => sql.Where(x => x.Key == key).Limit(1)).FirstOrDefault();
+            return setting == null ? null : setting.Value;
+        }
+
+        public T GetSetting<T>(string key)
+        {
+            key = key.ToLowerInvariant();
+            var setting = _db.FetchBy<DbSetting>(sql => sql.Where(x => x.Key == key).Limit(1)).FirstOrDefault();
+
+            if (setting == null)
+            {
+                throw new KeyNotFoundException(string.Format("Key '{0}' was not found", key));
+            }
+
+            return (T)Convert.ChangeType(setting.Value, typeof(T));
+        }
+
         public void CreateAndUpgradeDatabase()
         {
             if (!TableExists("dbversion"))
@@ -79,6 +111,10 @@ namespace RTWin.Services
 CREATE TABLE ""dbversion"" (""DbVersionId"" INTEGER PRIMARY KEY  NOT NULL , ""Version"" INTEGER NOT NULL )
 ");
 
+            sql.Add("settings", @"
+CREATE  TABLE ""settings"" (""Id"" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , ""SKey"" TEXT UNIQUE , ""SValue"" TEXT)
+");
+
             sql.Add("user", @"
 CREATE TABLE ""user"" (""UserId"" INTEGER PRIMARY KEY AUTOINCREMENT , ""Username"" TEXT NOT NULL  UNIQUE )
 ");
@@ -120,6 +156,8 @@ CREATE TABLE ""languagecode"" (""LanguageCodeId"" INTEGER PRIMARY KEY  AUTOINCRE
             sql.Add("item", @"CREATE TABLE ""item"" (""ItemId"" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , ""ItemType"" INTEGER, ""CollectionName"" TEXT, ""CollectionNo"" INTEGER, ""L1Title"" TEXT, ""L1Content"" TEXT, ""L1LanguageId"" INTEGER, ""L2Title"" TEXT, ""L2Content"" TEXT, ""L2LanguageId"" INTEGER, ""DateCreated"" TEXT, ""DateModified"" TEXT, ""LastRead"" TEXT, ""MediaUri"" TEXT, ""UserId"" INTEGER, ""ReadTimes"" INTEGER, ""ListenedTimes"" INTEGER)");
 
             sql.Add("termlog", @"CREATE TABLE ""termlog"" (""Id"" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , ""EntryDate"" TEXT, ""TermId"" INTEGER, ""State"" TEXT)");
+
+            sql.Add("plugin", @"CREATE TABLE ""plugin"" (""PluginId"" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , ""Name"" TEXT, ""Description"" TEXT, ""Content"" TEXT, ""UUID"" TEXT)");
 
             foreach (var kvp in sql)
             {

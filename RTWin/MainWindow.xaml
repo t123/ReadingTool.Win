@@ -19,6 +19,9 @@
                     <Button Name="ButtonNewLanguage" Content="Add Language" Click="ButtonNewLanguage_OnClick"/>
                     <Button Name="ButtonNewItem" Content="Add Item" Click="ButtonNewItem_OnClick"/>
                 </ToolBar>
+                <ToolBar>
+                    <Button Name="ButtonPlugins" Content="Plugins" Click="ButtonPlugins_OnClick"/>
+                </ToolBar>
             </ToolBarTray>
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -73,7 +76,7 @@
                             </Grid.RowDefinitions>
                             <Label Grid.Row="0" Grid.Column="0">Search Items</Label>
                             <TextBox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" Margin="5"></TextBox>
-                            <DataGrid Name="DataGridItems" Grid.Row="1" Grid.ColumnSpan="2" AutoGenerateColumns="False" CanUserReorderColumns="False" AlternatingRowBackground="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" CanUserAddRows="False" CanUserResizeRows="False" SelectedCellsChanged="DataGridItems_OnSelectedCellsChanged">
+                            <DataGrid Name="DataGridItems" Grid.Row="1" Grid.ColumnSpan="2" AutoGenerateColumns="False" CanUserReorderColumns="False" AlternatingRowBackground="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" CanUserAddRows="False" CanUserResizeRows="False" SelectedCellsChanged="DataGridItems_OnSelectedCellsChanged" SelectionMode="Single">
                                 <DataGrid.Columns>
                                     <DataGridCheckBoxColumn IsReadOnly="False"></DataGridCheckBoxColumn>
                                     <DataGridTextColumn IsReadOnly="True" Header="Type" Binding="{Binding ItemType}"></DataGridTextColumn>
@@ -90,10 +93,10 @@
                                 </DataGrid.Columns>
                             </DataGrid>
                             <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal">
-                                <Button Name="ButtonEdit" Content="Edit" Margin="5" Click="ButtonEdit_OnClick" MinWidth="75"></Button>
-                                <Button Name="ButtonDelete" Content="Delete" Margin="5" MinWidth="75"></Button>
-                                <Button Name="ButtonRead" Content="Read" Margin="5" Click="ButtonRead_OnClick" MinWidth="75"></Button>
-                                <Button Name="ButtonReadParallel" Content="Read Parallel" Margin="5" Click="ButtonReadParallel_OnClick" MinWidth="75"></Button>
+                                <Button Name="ButtonEdit" Content="Edit" Margin="5" Click="ButtonEdit_OnClick" MinWidth="85"></Button>
+                                <Button Name="ButtonDelete" Content="Delete" Margin="5" MinWidth="85"></Button>
+                                <Button Name="ButtonRead" Content="Read" Margin="5" Click="ButtonRead_OnClick" MinWidth="85"></Button>
+                                <Button Name="ButtonReadParallel" Content="Read Parallel" Margin="5" Click="ButtonReadParallel_OnClick" MinWidth="85"></Button>
                             </StackPanel>
                         </Grid>
                     </GroupBox>
@@ -112,7 +115,7 @@
                             </Grid.RowDefinitions>
                             <Label Grid.Row="0" Grid.Column="0">Search Terms</Label>
                             <TextBox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" Margin="5"></TextBox>
-                            <DataGrid Grid.Row="1" Name="DataGridTerms" Grid.ColumnSpan="2"  AutoGenerateColumns="False" CanUserReorderColumns="False" AlternatingRowBackground="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" CanUserAddRows="False" CanUserResizeRows="False">
+                            <DataGrid Grid.Row="1" Name="DataGridTerms" Grid.ColumnSpan="2"  AutoGenerateColumns="False" CanUserReorderColumns="False" AlternatingRowBackground="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" CanUserAddRows="False" CanUserResizeRows="False"  SelectionMode="Single">
                                 <DataGrid.Columns>
                                     <DataGridCheckBoxColumn IsReadOnly="False"></DataGridCheckBoxColumn>
                                     <DataGridTextColumn IsReadOnly="True" Header="Language" Binding="{Binding Language}"></DataGridTextColumn>

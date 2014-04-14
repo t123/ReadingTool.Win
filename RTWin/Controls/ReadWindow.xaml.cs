@@ -37,6 +37,7 @@ namespace RTWin.Controls
         private LanguageService _languageService;
         private TermService _termService;
         private ItemService _itemService;
+        private PluginService _pluginService;
 
         public ReadWindow(Item item, bool parallel)
         {
@@ -45,6 +46,7 @@ namespace RTWin.Controls
             _itemService = App.Container.Get<ItemService>();
             _languageService = App.Container.Get<LanguageService>();
             _termService = App.Container.Get<TermService>();
+            _pluginService = App.Container.Get<PluginService>();
 
             InitializeComponent();
 
@@ -64,6 +66,33 @@ namespace RTWin.Controls
 
             var ps = new ParserService(pi);
             _output = ps.Parse();
+
+            var plugins = _pluginService.FindAllForLanguage(_item.L1LanguageId);
+
+            if (plugins.Any())
+            {
+                StringBuilder sb = new StringBuilder("<script>");
+                sb.AppendLine("");
+                sb.AppendLine("$(document).on('pluginReady', function() {");
+
+                foreach (var plugin in plugins)
+                {
+                    sb.AppendLine("");
+                    sb.AppendLine("/*");
+                    sb.AppendLine("* " + plugin.Name);
+                    sb.AppendLine("* " + plugin.UUID);
+                    sb.AppendLine("* " + plugin.Description);
+                    sb.AppendLine("*/");
+                    sb.AppendLine("");
+                    sb.AppendLine(plugin.Content);
+                    sb.AppendLine("");
+                }
+
+                sb.AppendLine("});");
+                sb.AppendLine("</script>");
+
+                _output.Html = _output.Html.Replace("<!-- plugins -->", sb.ToString());
+            }
 
             using (StreamWriter sw = new StreamWriter(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", _item.ItemId + ".html"), false, Encoding.UTF8))
             {

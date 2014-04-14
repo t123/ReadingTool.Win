@@ -2,8 +2,14 @@
 	height: 100%;
     width: 100%;
 }
-body {
-	margin: 0px 10px 200px 10px;
+
+body.watching {
+    margin: 0 20px 200px 20px;
+}
+
+body.reading {
+	margin: 0 20px 200px 20px;
+    background-color: #565656;
 }
 
 textarea.changed, input.changed {
@@ -14,36 +20,45 @@ textarea.changed, input.changed {
     display: inline;
 }
 
+/*
 #reading tr {
 	border-left: 2px solid white;
 	border-right: 2px solid white;
 }
 
 #reading tr:hover {
-    border-left: 2px solid red;
-    border-right: 2px solid red;
+    border-left: 2px solid white;
+    border-right: 2px solid white;
 }
+*/
 
 #reading td.__active {
-	padding-bottom: 10px;
-	padding-right: 10px;
+    padding: 0 10px 10px 10px;
     border-right: 1px solid black;
 }
 
 #reading td.disabled {
-	padding-bottom: 10px;
-	padding-right: 10px;
+    padding: 0 10px 10px 0;
 }
 
+/*
+#reading tr.header td {
+}
+*/
+
+#reading tr.footer td {
+    height: 300px;
+}
 
 #reading span.__term {
     display: inline;
 }
 
 #reading {
+    background-color: white;
 	border-collapse: collapse;
 	width: 100%;
-	margin-bottom: 0px;
+	margin-top: 5px;
 	font-family: Arial;
 	font-size: 1.0em;
 	line-height: 20px;
@@ -179,6 +194,8 @@ textarea.changed, input.changed {
 }
 
 #bottombar {
+    background-color: white;
+    border-top: 1px solid black;
     position: fixed;
     z-index: 100; 
     bottom: 0; 

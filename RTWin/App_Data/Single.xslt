@@ -19,6 +19,21 @@
         <xsl:value-of select="/root/content/@itemType"/>
       </xsl:attribute>
 
+      <tr class="header">
+        <xsl:choose>
+          <xsl:when test="/root/content/@isParallel='true'">
+            <td colspan="2">
+              <!--BLANK-->
+            </td>
+          </xsl:when>
+          <xsl:otherwise>
+            <td>
+              <!--BLANK-->
+            </td>
+          </xsl:otherwise>
+        </xsl:choose>
+      </tr>
+      
       <xsl:choose>
         <xsl:when test="/root/content/@isParallel='true'">
           <tr>
@@ -43,19 +58,17 @@
         </xsl:otherwise>
       </xsl:choose>
       <xsl:apply-templates select="join"/>
+      <tr class="footer">
+        <xsl:choose>
+          <xsl:when test="/root/content/@isParallel='true'">
+            <td colspan="2"><!--BLANK--></td>
+          </xsl:when>
+          <xsl:otherwise>
+            <td><!--BLANK--></td>
+          </xsl:otherwise>
+        </xsl:choose>
+      </tr>
     </table>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
   </xsl:template>
   <xsl:template match="join">
     <tr>

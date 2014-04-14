@@ -341,5 +341,11 @@ namespace RTWin
         {
             SetButtonVisibility();
         }
+
+        private void ButtonPlugins_OnClick(object sender, RoutedEventArgs e)
+        {
+            PluginDialog pluginDialog = App.Container.Get<PluginDialog>();
+            pluginDialog.ShowDialog();
+        }
     }
 }

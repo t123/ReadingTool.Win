@@ -8,6 +8,7 @@
 //};
 
 $(function () {
+    window.reading = undefined;
     jQuery.support.cors = true;
 
     $.connection.hub.url = "http://localhost:8888/signalr";
@@ -16,16 +17,11 @@ $(function () {
     window.hubReady = $.connection.hub.start();
 
     chat.client.addMessage = function (name, message) {
-        console.log(name);
-        console.log(message);
-
         if (name == "srtl1") {
             if (message == -1) {
                 $('#l1Main').html('');
             } else {
-                console.log($('#l1_' + message).html());
                 $('#l1Main').html($('#l1_' + message).html());
-                console.log($('#l1Main').html());
             }
         } else if (name == "srtl2") {
             if (message == -1) {
@@ -78,6 +74,8 @@ $(function () {
             chat: chat
         });
 
+        window.reading = reading;
+
         $(document).on('keydown', function (e) {
             var code = (e.keyCode ? e.keyCode : e.which);
 
@@ -94,34 +92,34 @@ $(function () {
                             break;
 
                         case 49: //1
-                            reading.changeState('known');
+                            reading.setDState('known');
                             break;
 
                         case 50: //2
-                            reading.changeState('unknown');
+                            reading.setDState('unknown');
                             break;
 
                         case 51: //3
-                            reading.changeState('ignored');
+                            reading.setDState('ignored');
                             break;
 
                         case 52: //4
-                            reading.changeState('notseen');
+                            reading.setDState('notseen');
                             break;
 
                         case 81: //q
                         case 83: //s
-                            $('#dSentence').focus();
+                            reading.setFocus($('#dSentence'));
                             break;
 
                         case 65: //a
                         case 66: //b
-                            $('#dBase').focus();
+                            reading.setFocus($('#dBase'));
                             break;
 
                         case 90: //z
                         case 68: //d
-                            $('#dDefinition').focus();
+                            reading.setFocus($('#dDefinition'));
                             break;
                     }
 
@@ -173,7 +171,8 @@ $(function () {
             } else {
                 switch (code) {
                     case 32:
-                        var el = $('.__current');
+                        var el = reading.getCurrentSelected();
+
                         if (el.any()) {
                             reading.showModal(el);
                             e.preventDefault();
@@ -182,39 +181,33 @@ $(function () {
                         break;
 
                     case 37: //left
-                        var current = $('.__current');
                         var el = $('.__current').prevAll('.__term.__notseen,.__term.__unknown').first('span');
 
                         if (el.any()) {
-                            current.removeClass('__current');
-                            el.addClass('__current');
+                            reading.updateCurrentSelected(el);
                             return;
                         }
 
                         el = $('.__current').parent().prev('.__sentence').children('.__term.__notseen,.__term.__unknown').last('span');
 
                         if (el.any()) {
-                            current.removeClass('__current');
-                            el.addClass('__current');
+                            reading.updateCurrentSelected(el);
                             return;
                         }
                         break;
 
                     case 39: //right
-                        var current = $('.__current');
                         var el = $('.__current').nextAll('.__term.__notseen,.__term.__unknown').first('span');
 
                         if (el.any()) {
-                            current.removeClass('__current');
-                            el.addClass('__current');
+                            reading.updateCurrentSelected(el);
                             return;
                         }
 
                         el = $('.__current').parent().next('.__sentence').children('.__term.__notseen,.__term.__unknown').first('span');
 
                         if (el.any()) {
-                            current.removeClass('__current');
-                            el.addClass('__current');
+                            reading.updateCurrentSelected(el);
                             return;
                         }
                         break;
@@ -223,8 +216,10 @@ $(function () {
         });
 
         $('input[type="text"], input[type="radio"], textarea').change(function (e) {
+            $(document).trigger('preDataChanged', e);
             $(e.target).addClass('changed');
             reading.changed();
+            $(document).trigger('postDataChanged', e);
         });
 
         jQuery.fn['any'] = function () {
