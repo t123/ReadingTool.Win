@@ -107,8 +107,7 @@ textarea.changed, input.changed {
 #popup {
     border: 1px solid black;
     background-color: #F7F7F7;
-    width: 500px;
-    height: 210px;
+    min-width: 500px;
     position: absolute;
 }
 

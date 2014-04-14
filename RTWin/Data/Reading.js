@@ -94,7 +94,7 @@
         } else {
             self.sendChatMessage('modal', toCopy);
         }
-        
+
         $(document).trigger('postCopyToClipboard');
     };
 
@@ -108,7 +108,7 @@
         var s = date.getSeconds();
         var f = date.getMilliseconds();
 
-        console.log((d < 10 ? '0' + d : d) + '/' + (m < 10 ? '0' + m : m) + y + ' ' + (h < 10 ? '0' + h : h) + ':' + (mn < 10 ? '0' + mn : mn) + ':' + (s < 10 ? '0' + s : s)  + '.' + f + ":-> " + message);
+        console.log((d < 10 ? '0' + d : d) + '/' + (m < 10 ? '0' + m : m) + y + ' ' + (h < 10 ? '0' + h : h) + ':' + (mn < 10 ? '0' + mn : mn) + ':' + (s < 10 ? '0' + s : s) + '.' + f + ":-> " + message);
     };
 
     self.updateModal = function () {
@@ -146,7 +146,7 @@
                 self.changed($('#dSentence'));
 
                 self.setDMessage('New word, defaulting to unknown');
-                
+
                 self.setHasChanged(false);
             } else {
                 self.setDPhrase(text);
@@ -204,7 +204,7 @@
         }
     };
 
-    self.setDPhrase= function (val) {
+    self.setDPhrase = function (val) {
         $('#dPhrase').html(val);
     };
 
@@ -352,7 +352,9 @@
         $(document).trigger('preWordCopy');
 
         self.setDBase(self.getCurrentWordAsText());
-        self.changed();
+        self.changed($('#dBase'));
+        $('#dBase').trigger('change');
+        self.setFocus($('#dBase'));
 
         $(document).trigger('postWordCopy');
     };
@@ -362,6 +364,8 @@
 
         self.setDSentence(self.getCurrentSentence());
         self.changed($('#dSentence'));
+        $('#dSentence').trigger('change');
+        self.setFocus($('#dSentence'));
 
         $(document).trigger('postSentenceRefreshed');
     };
@@ -391,16 +395,19 @@
         var o = self.currentElement.offset();
         var nt, nl;
 
-        if (c.top + 21 + 220 + 70> dh) {
-            nt = o.top - 215;
+        var popupH = $('#popup').height();
+        var popupW = $('#popup').width();
+
+        if (c.top + 21 + popupH + 70 > dh) {
+            nt = o.top - popupH - 5;
         } else {
             nt = o.top + 21;
         }
 
-        if (o.left + 510 < dw) {
+        if (o.left + popupW + 10 < dw) {
             nl = o.left;
         } else {
-            nl = o.left - 430;
+            nl = o.left - popupW + 70;
         }
 
         self.modal.css('display', 'inline-block');
