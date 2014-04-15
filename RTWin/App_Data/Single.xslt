@@ -126,7 +126,7 @@
             <xsl:text> __</xsl:text>
             <xsl:value-of select="@state"/>
             <xsl:text> __</xsl:text>
-            <xsl:value-of select="@phrase"/>
+            <xsl:value-of select="@phraseClass"/>
             <xsl:if test="string-length(@definition)>0 and @state='known'">
               <xsl:text> __kd</xsl:text>
             </xsl:if>

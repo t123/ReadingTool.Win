@@ -47,7 +47,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseParserService.cs" />
     <Compile Include="DatabaseService.cs" />
+    <Compile Include="IParserService.cs" />
+    <Compile Include="ParserInput.cs" />
     <Compile Include="PluginService.cs" />
     <Compile Include="UserService.cs" />
     <Compile Include="LanguageCodeService.cs" />
