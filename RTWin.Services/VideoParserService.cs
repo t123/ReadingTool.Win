@@ -18,9 +18,6 @@ namespace RTWin.Services
 {
     public class VideoParserService : BaseParserService
     {
-        private ParserInput _pi;
-        private readonly ParserOutput _po;
-
         public VideoParserService()
         {
             _po = new ParserOutput();
@@ -99,7 +96,7 @@ namespace RTWin.Services
             var rootNode = new XElement("root");
 
             var contentNode = new XElement("content");
-            AddDataToContentNode(_pi, contentNode);
+            AddDataToContentNode(contentNode);
 
             var frequency = new Dictionary<string, int>();
 
@@ -131,41 +128,7 @@ namespace RTWin.Services
 
                     foreach (var term in terms)
                     {
-                        var termNode = new XElement("term");
-                        var termLower = term.ToLowerInvariant();
-                        termNode.Value = term;
-                        termNode.SetAttributeValue("phrase", termLower);
-                        termNode.SetAttributeValue("phraseClass", termLower.Replace("'", "_").Replace("\"", "_"));
-
-                        if (l1TermRegex.IsMatch(termLower))
-                        {
-                            termNode.SetAttributeValue("isTerm", true);
-
-                            if (frequency.ContainsKey(termLower))
-                            {
-                                frequency[termLower] = frequency[termLower] + 1;
-                            }
-                            else
-                            {
-                                frequency[termLower] = 1;
-                            }
-
-                            if (_pi.Lookup.ContainsKey(termLower))
-                            {
-                                var existing = _pi.Lookup[termLower];
-                                termNode.SetAttributeValue("state", existing.State.ToString().ToLowerInvariant());
-                            }
-                            else
-                            {
-                                termNode.SetAttributeValue("state", TermState.NotSeen.ToString().ToLowerInvariant());
-                            }
-                        }
-                        else
-                        {
-                            termNode.SetAttributeValue("isTerm", false);
-                        }
-
-                        sentenceNode.Add(termNode);
+                        sentenceNode.Add(CreateTermNode(term, l1TermRegex, frequency));
                     }
 
                     l1ParagraphNode.Add(sentenceNode);
@@ -181,13 +144,7 @@ namespace RTWin.Services
             rootNode.Add(contentNode);
             document.Add(rootNode);
 
-            var totalTerms = frequency.Select(x => x.Value).Sum();
-            var termsUpdate = document.Descendants("term").Where(x => x.Attribute("isTerm").Value == "true");
-            foreach (var t in termsUpdate)
-            {
-                t.SetAttributeValue("occurrences", frequency[t.Value.ToLowerInvariant()]);
-                t.SetAttributeValue("frequency", Math.Round((double)frequency[t.Value.ToLowerInvariant()] / (double)totalTerms * 100, 2));
-            }
+            AddFrequencyDataToTermNodes(frequency, document);
 
             _po.Xml = document.ToString();
             _po.Html = _pi.Html.Replace("<!-- table -->", ApplyTransform(document, _xsltFile));
