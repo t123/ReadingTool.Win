@@ -256,7 +256,7 @@
     <Content Include="App_Data\Video.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="App_Data\Single.xslt">
+    <Content Include="App_Data\Text.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Database\ignore.txt">

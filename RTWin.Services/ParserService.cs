@@ -15,7 +15,7 @@ namespace RTWin.Services
         public ParserService()
         {
             _po = new ParserOutput();
-            _xsltFile = "single.xslt";
+            _xsltFile = "text.xslt";
         }
 
         public override ParserOutput Parse(ParserInput pi)
