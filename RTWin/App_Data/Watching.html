@@ -54,10 +54,6 @@
     </div>
 
     <div id="video">
-        <div style="float:left">
-            <input type="button" value="Mark remaining words as known" id="btnMark" />
-            <span id="resultMessage"> </span>
-        </div>
         <div id="jquery_jplayer_1" class="jp-jplayer"></div>
         <div id="jp_container_1" class="jp-audio">
             <div class="jp-type-single">
@@ -88,6 +84,17 @@
                     To play the media you will need to either update your browser to a recent version or update your <a href="http://get.adobe.com/flashplayer/" target="_blank">Flash plugin</a>.
                 </div>
             </div>
+        </div>
+    </div>
+    
+    <div id="bottombar">
+        <div style="float:left">
+            <input type="button" value="Mark remaining words as known" id="btnMark" />
+            <input type="button" value="- Read" onclick="window.reading.changeRead(-1, 'read')" />
+            <input type="button" value="+ Read" onclick="window.reading.changeRead(1, 'read')" />
+            <input type="button" value="- Watch" onclick="window.reading.changeRead(-1, 'listen')" />
+            <input type="button" value="+ Watch" onclick="window.reading.changeRead(1, 'listen')" />
+            <span id="resultMessage"> </span>
         </div>
     </div>
 

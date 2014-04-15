@@ -21,7 +21,7 @@ namespace RTWin.Services
         public VideoParserService()
         {
             _po = new ParserOutput();
-            _xsltFile = "video.xstl";
+            _xsltFile = "video.xslt";
         }
 
         private List<Srt> ParseSubtitles(string content)

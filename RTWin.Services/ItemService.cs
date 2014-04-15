@@ -117,7 +117,14 @@ namespace RTWin.Services
                     item.ListenedTimes--;
                 }
 
-                message = "Item listened to " + item.ListenedTimes + " times";
+                if (item.ItemType == ItemType.Text)
+                {
+                    message = "Item listened to " + item.ListenedTimes + " times";
+                }
+                else
+                {
+                    message = "Item watched " + item.ListenedTimes + " times";
+                }
             }
 
             _db.Update(item);
