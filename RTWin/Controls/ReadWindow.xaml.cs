@@ -17,6 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Awesomium.Core;
 using Awesomium.Core.Data;
+using Awesomium.Windows.Controls;
 using Microsoft.AspNet.SignalR.Client;
 using Ninject;
 using RTWin.Common;

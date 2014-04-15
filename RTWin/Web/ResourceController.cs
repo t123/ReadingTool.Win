@@ -59,7 +59,7 @@ namespace RTWin.Web
         [Route("item/{id}")]
         public HttpResponseMessage GetItem(long id)
         {
-            var filename = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "Resources", id + ".html");
+            var filename = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", id + ".html");
 
             if (!File.Exists(filename))
             {

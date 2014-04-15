@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
+using Awesomium.Core;
 using Microsoft.AspNet.SignalR.Client;
 using Microsoft.Owin.Hosting;
 using Ninject;
@@ -56,6 +57,12 @@ namespace RTWin
                 App.User = new User(); //TODO fixme
                 this.Shutdown();
             }
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            WebCore.Shutdown();
+            base.OnExit(e);
         }
 
         private void InitContainer()
