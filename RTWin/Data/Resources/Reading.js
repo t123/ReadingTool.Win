@@ -257,7 +257,7 @@
 
             self._removeChanged();
             self.setHasChanged(false);
-            var lower = phrase.toLowerCase();
+            var lower = self.phraseToClass(phrase);
             $('.__' + lower).removeClass('__notseen __known __ignored __unknown').addClass('__' + state.toLowerCase());
 
             var tempDef = self.getDBase().length > 0 ? self.getDBase() + "<br/>" : '';
@@ -287,6 +287,10 @@
         });
     };
 
+    self.phraseToClass = function(phrase) {
+        return phrase.toLowerCase().replace("'", "_").replace('"', "_");
+    };
+
     self.reset = function () {
         $(document).trigger('preReset');
 
@@ -311,7 +315,7 @@
                 self.setDMessage('Term reset');
             }
 
-            var lower = phrase.toLowerCase();
+            var lower = self.phraseToClass(phrase);
             $('.__' + lower).removeClass('__notseen __known __ignored __unknown __kd __id __ud').addClass('__notseen');
             $('.__' + lower).each(function (index) {
                 $(this).html(phrase);

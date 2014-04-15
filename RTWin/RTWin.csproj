@@ -160,9 +160,7 @@
     <Compile Include="Common\MainHub.cs" />
     <Compile Include="Common\OWINSignalRConfig.cs" />
     <Compile Include="Common\OWINWebAPIConfig.cs" />
-    <Compile Include="Web\ItemController.cs" />
-    <Compile Include="Web\LocalController.cs" />
-    <Compile Include="Web\MediaController.cs" />
+    <Compile Include="Web\ResourceController.cs" />
     <Compile Include="Web\SyncController.cs" />
     <Compile Include="Web\TermsController.cs" />
     <Page Include="Controls\ItemDialog.xaml">
@@ -264,49 +262,49 @@
     <Content Include="Database\ignore.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Resource Include="Data\iconmonstr-copy-7-icon-24.png">
+    <Resource Include="Data\Resources\iconmonstr-copy-7-icon-24.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Data\iconmonstr-refresh-3-icon-24.png">
+    <Resource Include="Data\Resources\iconmonstr-refresh-3-icon-24.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Content Include="Data\bootstrap.min.css">
+    <Content Include="Data\Resources\bootstrap.min.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Data\bootstrap.min.js">
+    <Content Include="Data\Resources\bootstrap.min.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Data\jplayer.blue.monday.css">
+    <Content Include="Data\Resources\jplayer.blue.monday.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Resource Include="Data\jplayer.blue.monday.jpg">
+    <Resource Include="Data\Resources\jplayer.blue.monday.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Data\jplayer.blue.monday.seeking.gif">
+    <Resource Include="Data\Resources\jplayer.blue.monday.seeking.gif">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Data\jplayer.blue.monday.video.play.png">
+    <Resource Include="Data\Resources\jplayer.blue.monday.video.play.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Content Include="Data\Jplayer.swf">
+    <Content Include="Data\Resources\Jplayer.swf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Data\jquery-2.10.min.js">
+    <Content Include="Data\Resources\jquery-2.10.min.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Data\jquery.jplayer.min.js">
+    <Content Include="Data\Resources\jquery.jplayer.min.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Data\jquery.signalR-2.0.3.min.js">
+    <Content Include="Data\Resources\jquery.signalR-2.0.3.min.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Data\Reading.css">
+    <Content Include="Data\Resources\Reading.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Data\Reading.js">
+    <Content Include="Data\Resources\Reading.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Data\ui.js">
+    <Content Include="Data\Resources\ui.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="x64\SQLite.Interop.dll">

@@ -26,7 +26,7 @@ namespace RTWin.Services
             string[] l2Paragraphs = _pi.AsParallel ? SplitIntoParagraphs(_pi.Item.L2Content) : null;
 
             var l1SentenceRegex = new Regex(_pi.Language1.Settings.SentenceRegex);
-            var l1TermRegex = new Regex(_pi.Language2.Settings.TermRegex);
+            var l1TermRegex = new Regex(_pi.Language1.Settings.TermRegex);
 
             XDocument document = new XDocument();
             var rootNode = new XElement("root");

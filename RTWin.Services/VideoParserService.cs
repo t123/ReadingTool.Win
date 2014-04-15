@@ -90,7 +90,7 @@ namespace RTWin.Services
             _po.L2Srt = _pi.AsParallel ? ParseSubtitles(_pi.Item.L2Content) : new List<Srt>();
 
             var l1SentenceRegex = new Regex(_pi.Language1.Settings.SentenceRegex);
-            var l1TermRegex = new Regex(_pi.Language2.Settings.TermRegex);
+            var l1TermRegex = new Regex(_pi.Language1.Settings.TermRegex);
 
             XDocument document = new XDocument();
             var rootNode = new XElement("root");
