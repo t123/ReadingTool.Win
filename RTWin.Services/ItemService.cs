@@ -83,5 +83,45 @@ namespace RTWin.Services
             item.LastRead = DateTime.Now;
             _db.Update(item);
         }
+
+        public string ChangeStatistics(Item item, string type, int amount)
+        {
+            if (item == null)
+            {
+                return "Not changed";
+            }
+
+            string message = string.Empty;
+
+            if (type == "read")
+            {
+                if (amount > 0)
+                {
+                    item.ReadTimes++;
+                }
+                else if (amount < 0 && item.ReadTimes > 0)
+                {
+                    item.ReadTimes--;
+                }
+
+                message = "Item read " + item.ReadTimes + " times";
+            }
+            else if (type == "listen")
+            {
+                if (amount > 0)
+                {
+                    item.ListenedTimes++;
+                }
+                else if (amount < 0 && item.ListenedTimes > 0)
+                {
+                    item.ListenedTimes--;
+                }
+
+                message = "Item listened to " + item.ListenedTimes + " times";
+            }
+
+            _db.Update(item);
+            return message;
+        }
     }
 }

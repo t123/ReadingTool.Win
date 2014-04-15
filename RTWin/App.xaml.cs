@@ -21,9 +21,6 @@ namespace RTWin
     /// </summary>
     public partial class App : Application
     {
-        //public const string BaseWebAPIAddress = "http://localhost:9000/";
-        //public const string BaseWebSignalRAddress = "http://localhost:8888/";
-
         private HubConnection _hubConnection;
         private IHubProxy _mainHubProxy;
         public static User User { get; set; }

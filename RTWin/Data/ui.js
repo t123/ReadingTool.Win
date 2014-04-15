@@ -1,10 +1,11 @@
 ﻿$(function () {
+    jQuery.ajaxSettings.traditional = true;
+    jQuery.support.cors = true;
+    window.reading = undefined;
+
     var webApiEndPoint = $('#reading').data('webapi');
     var signalREndPoint = $('#reading').data('signalr') + "/signalr";
-
-    window.reading = undefined;
-    jQuery.support.cors = true;
-
+    
     $.connection.hub.url = signalREndPoint;
     var chat = $.connection.mainHub;
 

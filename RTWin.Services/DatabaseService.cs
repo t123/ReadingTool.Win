@@ -181,6 +181,10 @@ CREATE TABLE ""term"" (
 );
 ");
 
+            sql.Add("term_index1", @"
+CREATE UNIQUE INDEX ""LowerPhrase_Language"" ON ""term"" (""LowerPhrase"" ASC, ""LanguageId"" ASC)
+");
+
             sql.Add("languagecode", @"
 CREATE TABLE ""languagecode"" (""LanguageCodeId"" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , ""Name"" TEXT, ""Code"" TEXT)
 ");

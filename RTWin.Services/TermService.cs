@@ -29,7 +29,7 @@ namespace RTWin.Services
         public Term FindOneByPhraseAndLanguage(string phrase, long languageId)
         {
             string lower = (phrase ?? "").ToLowerInvariant().Trim();
-            return _db.FirstOrDefault<Term>("SELECT * FROM term WHERE LowerPhrase=@0 and LanguageId=@1 AND UserId=@2", lower, languageId, _user.UserId);
+            return _db.FirstOrDefault<Term>("SELECT * FROM term WHERE LowerPhrase=@0 and LanguageId=@1 AND UserId=@2 LIMIT 1", lower, languageId, _user.UserId);
         }
 
         public IList<Term> FindAllByLanguage(long languageId)

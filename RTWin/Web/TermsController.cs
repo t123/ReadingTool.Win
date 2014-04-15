@@ -1,24 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Data.SQLite;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using System.Web.Http.Dependencies;
 using System.Windows;
+using Newtonsoft.Json;
 using Ninject;
 using RTWin.Entities;
 using RTWin.Services;
 
 namespace RTWin.Web
 {
-    [EnableCors(origins: "*", headers: "*", methods: "*")]
+    //[EnableCors(origins: "*", headers: "*", methods: "*")]
     public class TermsController : ApiController
     {
-        protected TermService _termService;
+        private TermService _termService;
+        private ItemService _itemService;
 
         public class TermReponse
         {
@@ -33,6 +38,7 @@ namespace RTWin.Web
         public TermsController()
         {
             _termService = App.Container.Get<TermService>();
+            _itemService = App.Container.Get<ItemService>();
         }
 
         public TermReponse Get(long id)
@@ -141,6 +147,72 @@ namespace RTWin.Web
 
                 return new HttpResponseMessage(HttpStatusCode.OK);
             }
+        }
+
+        [HttpPost]
+        [Route("api/terms/markasread")]
+        public HttpResponseMessage MarkAllAsRead(TermPost[] terms)
+        {
+            var response = new HttpResponseMessage(HttpStatusCode.OK);
+
+            if (terms == null)
+            {
+                response.Content = new StringContent("0");
+                return response;
+            }
+
+            int counter = 0;
+            foreach (var term in terms)
+            {
+                try
+                {
+                    var t = new Term()
+                    {
+                        BasePhrase = "",
+                        Definition = "",
+                        Sentence = "",
+                        Phrase = term.Phrase,
+                        State = TermState.Known,
+                        LanguageId = term.LanguageId,
+                        ItemSourceId = term.ItemId,
+                    };
+
+                    _termService.Save(t);
+                    counter++;
+                }
+                catch (SQLiteException exception)
+                {
+                    //Just ignore them
+                }
+            }
+
+            response.Content = new StringContent(counter.ToString());
+            return response;
+        }
+
+        public class ChangeRead
+        {
+            public int Amount { get; set; }
+            public string Type { get; set; }
+            public long ItemId { get; set; }
+        }
+
+        [HttpPost]
+        [Route("api/terms/updatecount")]
+        public HttpResponseMessage Update(ChangeRead change)
+        {
+            var item = _itemService.FindOne(change.ItemId);
+
+            if (item == null)
+            {
+                return new HttpResponseMessage(HttpStatusCode.NotFound);
+            }
+
+            var message = _itemService.ChangeStatistics(item, change.Type, change.Amount);
+
+            var response = new HttpResponseMessage(HttpStatusCode.OK);
+            response.Content = new StringContent(JsonConvert.SerializeObject(message));
+            return response;
         }
 
         public class TermPost

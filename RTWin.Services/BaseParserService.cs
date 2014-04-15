@@ -23,7 +23,7 @@ namespace RTWin.Services
         {
             contentNode.SetAttributeValue("isParallel", _pi.AsParallel);
             contentNode.SetAttributeValue("signalR", _pi.SignalREndPoint);
-            contentNode.SetAttributeValue("webA_pi", _pi.WebApiEndPoint);
+            contentNode.SetAttributeValue("webApi", _pi.WebApiEndPoint);
             contentNode.SetAttributeValue("isParallel", _pi.AsParallel);
             contentNode.SetAttributeValue("collectionName", _pi.Item.CollectionName);
             contentNode.SetAttributeValue("collectionNo", _pi.Item.CollectionNo);

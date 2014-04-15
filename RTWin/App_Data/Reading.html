@@ -62,7 +62,11 @@
 
     <div id="bottombar">
         <div style="float:left">
-            <input type="button" value="Mark remaining words as known" id="btnMark"/>
+            <input type="button" value="Mark remaining words as known" id="btnMark" />
+            <input type="button" value="- Read" onclick="window.reading.changeRead(-1, 'read')" />
+            <input type="button" value="+ Read" onclick="window.reading.changeRead(1, 'read')" />
+            <input type="button" value="- Listen" onclick="window.reading.changeRead(-1, 'listen')" />
+            <input type="button" value="+ Listen" onclick="window.reading.changeRead(1, 'listen')" />
             <span id="resultMessage"> </span>
         </div>
         <div id="jquery_jplayer_1" class="jp-jplayer"></div>

@@ -464,9 +464,59 @@
         $('#resultMessage').html(message);
     };
 
+    self.changeRead = function (amount, type) {
+        $.ajax({
+            url: self.options.url + "/api/terms/updatecount",
+            type: 'POST',
+            dataType: 'json',
+            headers: { "content-type": "application/json" },
+            data: JSON.stringify({ Amount: amount, Type: type, ItemId: self.getItemId() })
+        }).done(function (data, status, xhr) {
+            self.setResultMessage(data);
+        }).fail(function (data) {
+            self.setResultMessage('Change failed');
+        }).always(function (data) {
+        });
+    };
+
     self.markRemainingAsKnown = function () {
         self.setResultMessage('Marking remaining words as known....');
-        self.setResultMessage('1000 words marked as known');
+        $(document).trigger('preMarkRemainingAsKnown');
+
+        var termArray = Array();
+        var languageId = self.getLanguageId();
+        var itemId = self.getItemId();
+
+        $('.__notseen').each(function (index, x) {
+            var word = self._getWordFromSpan($(x));
+
+            termArray.push({
+                languageId: languageId,
+                phrase: word,
+                definition: '',
+                basePhrase: '',
+                sentence: '',
+                itemId: itemId,
+                state: 'Known'
+            });
+        });
+
+        $.ajax({
+            url: self.options.url + "/api/terms/markasread",
+            type: 'POST',
+            dataType: 'json',
+            headers: { "content-type": "application/json" },
+            data: JSON.stringify(termArray)
+        }).done(function (data, status, xhr) {
+            self.setResultMessage('Marked <strong>' + data + '</strong> words as known.');
+            $('.__notseen').each(function (index, x) {
+                $(x).removeClass('__notseen').addClass('__known');
+            });
+        }).fail(function (data) {
+            self.setResultMessage('Marking failed');
+        }).always(function (data) {
+            $(document).trigger('postMarkRemainingAsKnown');
+        });
     };
 
     if (self.getItemType() == 'video') {
