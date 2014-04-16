@@ -60,6 +60,11 @@ namespace RTWin.Controls
 
         private void ButtonOpen_OnClick(object sender, RoutedEventArgs e)
         {
+            OpenProfile();
+        }
+
+        private void OpenProfile()
+        {
             var user = ListBoxUsers.SelectedItem as User;
 
             if (user == null)
@@ -164,6 +169,11 @@ namespace RTWin.Controls
         private void ButtonQuit_OnClick(object sender, RoutedEventArgs e)
         {
             Window.Close();
+        }
+
+        private void ListBoxUsers_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            OpenProfile();
         }
     }
 }

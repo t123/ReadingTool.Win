@@ -15,7 +15,7 @@ namespace RTWin.Entities
     {
         public long LanguageId { get; set; }
         public string Name { get; set; }
-        //public List<LanguageTermMeta> TermMeta { get; set; }
+        
         public DateTime DateCreated { get; set; }
         public DateTime DateModified { get; set; }
         public bool IsArchived { get; set; }

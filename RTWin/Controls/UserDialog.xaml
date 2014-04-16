@@ -26,7 +26,7 @@
             <Button Name="ButtonDelete" Content="Delete" Click="ButtonDelete_OnClick" HorizontalAlignment="Stretch" VerticalAlignment="Top" />
             <Button Name="ButtonQuit" Content="Quit" Click="ButtonQuit_OnClick" HorizontalAlignment="Stretch" VerticalAlignment="Top" />
         </StackPanel>
-        <ListBox Name="ListBoxUsers" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="0" Grid.Row="0">
+        <ListBox Name="ListBoxUsers" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="0" Grid.Row="0" MouseDoubleClick="ListBoxUsers_OnMouseDoubleClick">
         </ListBox>
     </Grid>
 </Window>

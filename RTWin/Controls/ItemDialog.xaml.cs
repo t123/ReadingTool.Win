@@ -28,6 +28,21 @@ namespace RTWin.Controls
         private LanguageService _languageService;
         private Item _item;
 
+        public ItemDialog(long itemId)
+        {
+            _itemService = App.Container.Get<ItemService>();
+            _item = _itemService.FindOne(itemId);
+            _itemService = App.Container.Get<ItemService>();
+            _languageService = App.Container.Get<LanguageService>();
+
+            InitializeComponent();
+            BindLanguages();
+            ResetFields();
+            BindItem();
+
+            ShowInTaskbar = false;
+        }
+
         public ItemDialog(Item item)
         {
             _item = item;
@@ -135,7 +150,7 @@ namespace RTWin.Controls
             OpenFileDialog openFileDialog = new OpenFileDialog();
             var result = openFileDialog.ShowDialog(this);
 
-            if (result==true)
+            if (result == true)
             {
                 TextBoxMediaUri.Text = openFileDialog.FileName;
             }

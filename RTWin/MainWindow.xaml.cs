@@ -28,6 +28,121 @@ namespace RTWin
     /// </summary>
     public partial class MainWindow : Window
     {
+        private UserService _userService;
+        public ReadControl ReadControl { get; private set; }
+        public LanguagesControl LanguagesControl { get; private set; }
+
+        public TermsControl TermsControl { get; private set; }
+
+        public TextsControl TextsControl { get; private set; }
+
+        public IList<User> Users { get; set; }
+
+        public MainWindow()
+        {
+            InitializeComponent();
+            _userService = App.Container.Get<UserService>();
+
+            SetContent();
+        }
+
+        private void SetContent()
+        {
+            LanguagesControl = new LanguagesControl();
+            TermsControl = new TermsControl();
+            TextsControl = new TextsControl();
+            ReadControl = new ReadControl();
+
+            Users = _userService.FindAll();
+            this.DataContext = Users;
+
+            Title = string.Format("ReadingTool - {0}", App.User.Username);
+
+            if (TextsControl.Items.Count > 0)
+            {
+                ContentControl.Content = TextsControl;
+                HyperlinkItems.FontWeight = FontWeights.Heavy;
+            }
+            else
+            {
+                ContentControl.Content = LanguagesControl;
+                HyperlinkLanguages.FontWeight = FontWeights.Heavy;
+            }
+        }
+
+        private void Hyperlink_OnClick(object sender, RoutedEventArgs e)
+        {
+            Hyperlink hl = sender as Hyperlink;
+
+            if (hl == null)
+            {
+                return;
+            }
+
+            HyperlinkTerms.FontWeight = FontWeights.Normal;
+            HyperlinkItems.FontWeight = FontWeights.Normal;
+            HyperlinkLanguages.FontWeight = FontWeights.Normal;
+
+            switch (hl.Tag.ToString())
+            {
+                case "Languages":
+                    HyperlinkLanguages.FontWeight = FontWeights.Heavy;
+                    ContentControl.Content = LanguagesControl;
+                    break;
+
+                case "Terms":
+                    HyperlinkTerms.FontWeight = FontWeights.Heavy;
+                    ContentControl.Content = TermsControl;
+                    break;
+
+                case "Items":
+                    HyperlinkItems.FontWeight = FontWeights.Heavy;
+                    ContentControl.Content = TextsControl;
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        private void MenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = sender as MenuItem;
+
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            switch (menuItem.Tag.ToString())
+            {
+                case "Maange Profiles":
+                    ManageProfiles();
+                    return;
+            }
+        }
+
+        private void ManageProfiles()
+        {
+            var currentUser = App.User;
+            App.User = null;
+            var skip = new Ninject.Parameters.ConstructorArgument("skip", false);
+            var userDialog = App.Container.Get<UserDialog>(skip);
+            var result = userDialog.ShowDialog() ?? false;
+
+            if (result == false)
+            {
+                App.User = currentUser;
+            }
+            else
+            {
+                SetContent();
+            }
+        }
+    }
+}
+
+/*
         public class ItemModel
         {
             public long ItemId { get; set; }
@@ -80,6 +195,9 @@ namespace RTWin
             Title = string.Format("ReadingTool - {0}", App.User.Username);
 
             SetButtonVisibility();
+
+            Temp temp = new Temp();
+            temp.Show();
         }
 
         private void SetButtonVisibility()
@@ -339,5 +457,5 @@ namespace RTWin
             var item = GetSelectedRowAsItem();
             ReadItem(item, !string.IsNullOrWhiteSpace(item.L2Content));
         }
-    }
-}
+    }*/
+

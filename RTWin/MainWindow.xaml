@@ -1,13 +1,50 @@
 ﻿<Window x:Class="RTWin.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:rtWin="clr-namespace:RTWin"
-        xmlns:awe="http://schemas.awesomium.com/winfx"
-        xmlns:common="clr-namespace:RTWin.Common"
         Title="RTWin" WindowState="Maximized" WindowStyle="SingleBorderWindow"
         Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
         >
-    <Window.Resources>
+    <Grid>
+        <DockPanel>
+            <Menu DockPanel.Dock="Top" HorizontalAlignment="Stretch" IsMainMenu="True">
+                <Menu.Resources>
+                    <Style x:Key="ProfileStyle" TargetType="MenuItem">
+                        <Setter Property="Header" Value="{Binding Username}"></Setter>
+                    </Style>
+                </Menu.Resources>
+                <MenuItem Header="_File">
+                    <MenuItem Header="Exit" ></MenuItem>
+                </MenuItem>
+                <MenuItem Header="_Profiles">
+                    <MenuItem Header="Manage Profiles" Click="MenuItem_OnClick" Tag="Maange Profiles"></MenuItem>
+                    <MenuItem Header="Change Profile" ItemsSource="{Binding}" ItemContainerStyle="{StaticResource ProfileStyle}" />
+                </MenuItem>
+                <MenuItem Header="Help">
+                    <MenuItem Header="About"></MenuItem>
+                </MenuItem>
+            </Menu>
+            <Border BorderThickness="0,0,0,1" BorderBrush="Black" DockPanel.Dock="Top">
+                <StackPanel HorizontalAlignment="Stretch" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+                    <StackPanel Height="30" Orientation="Horizontal" HorizontalAlignment="Center" >
+                        <TextBlock VerticalAlignment="Center" Padding="20,0,20,0">
+                        <Hyperlink Name="HyperlinkLanguages" Click="Hyperlink_OnClick" Tag="Languages" Foreground="Black" TextDecorations="None">Languages</Hyperlink>
+                        </TextBlock>
+                        <TextBlock VerticalAlignment="Center" Padding="20,0,20,0">
+                        <Hyperlink Name="HyperlinkItems" Click="Hyperlink_OnClick" Tag="Items" Foreground="Black" TextDecorations="None">Items</Hyperlink>
+                        </TextBlock>
+                        <TextBlock VerticalAlignment="Center" Padding="20,0,20,0">
+                        <Hyperlink Name="HyperlinkTerms" Click="Hyperlink_OnClick" Tag="Terms" Foreground="Black" TextDecorations="None">Terms</Hyperlink>
+                        </TextBlock>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+            <Grid Name="MainGrid">
+                <ContentControl Name="ContentControl" />
+            </Grid>
+        </DockPanel>
+    </Grid>
+    
+    <!--<Window.Resources>
         <common:DateTimeConverter x:Key="dateConverter"/>
         <BooleanToVisibilityConverter  x:Key="BooleanToVisibilityConverter"/>
     </Window.Resources>
@@ -133,5 +170,5 @@
                 </Grid>
             </Grid>
         </DockPanel>
-    </Grid>
+    </Grid>-->
 </Window>

@@ -142,14 +142,23 @@
       <DependentUpon>LanguageDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\CommonWindow.cs" />
+    <Compile Include="Controls\LanguagesControl.xaml.cs">
+      <DependentUpon>LanguagesControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\PluginDialog.xaml.cs">
       <DependentUpon>PluginDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\PromptDialog.xaml.cs">
       <DependentUpon>PromptDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ReadWindow.xaml.cs">
-      <DependentUpon>ReadWindow.xaml</DependentUpon>
+    <Compile Include="Controls\ReadControl.xaml.cs">
+      <DependentUpon>ReadControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TermsControl.xaml.cs">
+      <DependentUpon>TermsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TextsControl.xaml.cs">
+      <DependentUpon>TextsControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\UserDialog.xaml.cs">
       <DependentUpon>UserDialog.xaml</DependentUpon>
@@ -160,6 +169,13 @@
     <Compile Include="Common\MainHub.cs" />
     <Compile Include="Common\OWINSignalRConfig.cs" />
     <Compile Include="Common\OWINWebAPIConfig.cs" />
+    <Compile Include="Common\EnumMatchToBooleanConverter.cs" />
+    <Compile Include="Models\ItemModel.cs" />
+    <Compile Include="Models\LanguageCodeModel.cs" />
+    <Compile Include="Models\LanguageModel.cs" />
+    <Compile Include="Models\LanguageViewModel.cs" />
+    <Compile Include="Models\PluginLanguage.cs" />
+    <Compile Include="Models\TermModel.cs" />
     <Compile Include="Web\ResourceController.cs" />
     <Compile Include="Web\SyncController.cs" />
     <Compile Include="Web\TermsController.cs" />
@@ -171,6 +187,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\LanguagesControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\PluginDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -179,7 +199,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\ReadWindow.xaml">
+    <Page Include="Controls\ReadControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\TermsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\TextsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -60,5 +60,18 @@ namespace RTWin.Services
         {
             return _db.FetchBy<Language>(sql => sql.Where(x => x.UserId == _user.UserId).OrderBy(x => x.IsArchived).ThenBy(x => x.Name));
         }
+
+        public Tuple<int, int, int, int> FindStatistics(long languageId)
+        {
+            var result = new
+            {
+                TotalItems = _db.ExecuteScalar<int>("SELECT COUNT(ItemId) FROM item WHERE L1LanguageId=@0", languageId),
+                TotalTerms = _db.ExecuteScalar<int>("SELECT COUNT(TermId) FROM term WHERE LanguageId=@0", languageId),
+                TotalKnown = _db.ExecuteScalar<int>("SELECT COUNT(TermId) FROM term WHERE LanguageId=@0 AND State=@1", languageId, TermState.Known),
+                TotalUnknown = _db.ExecuteScalar<int>("SELECT COUNT(TermId) FROM term WHERE LanguageId=@0 AND State=@1", languageId, TermState.Unknown)
+            };
+
+            return new Tuple<int, int, int, int>(result.TotalItems, result.TotalTerms, result.TotalKnown, result.TotalUnknown);
+        }
     }
 }
