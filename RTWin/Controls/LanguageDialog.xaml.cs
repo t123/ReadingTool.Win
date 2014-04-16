@@ -23,8 +23,6 @@ namespace RTWin.Controls
     /// </summary>
     public partial class LanguageDialog : Window
     {
-
-
         private LanguageCodeService _languageCodeService;
         private LanguageService _languageService;
         private Language _language = null;
@@ -46,7 +44,7 @@ namespace RTWin.Controls
             if (_language == null)
             {
                 Model.SentenceRegex = "[^\\.!\\?]+[\\.!\\?]+";
-                Model.TermRegex = "([a-zA-ZÀ-ÖØ-öø-ȳ\\-\\']+)";
+                Model.TermRegex = "([a-zA-ZÀ-ÖØ-öø-ȳ\\'-]+)";
                 Model.Direction = Direction.LeftToRight;
             }
             else
@@ -89,6 +87,7 @@ namespace RTWin.Controls
             switch (button.Tag.ToString())
             {
                 case "Save":
+                    SaveLanguage();
                     this.DialogResult = true;
                     this.Close();
                     break;
@@ -99,102 +98,41 @@ namespace RTWin.Controls
             }
         }
 
-        //private void BindPlugins()
-        //{
-        //    var items = _pluginService.FindAllWithActive(_language == null ? 0 : _language.LanguageId);
-        //    List<PluginLanguage> plugins = new List<PluginLanguage>();
+        private void SaveLanguage()
+        {
+            if (_language == null)
+            {
+                _language = new Language()
+                {
+                    IsArchived = CheckBoxArchive.IsChecked ?? false,
+                    Name = TextBoxName.Text,
+                    LanguageCode = ComboBoxLanguageCode.SelectedValue.ToString(),
+                    UserId = App.User.UserId,
+                    Settings = new LanguageSettings()
+                    {
+                        Direction = RbLTR.IsChecked ?? false ? Direction.LeftToRight : (RbRTL.IsChecked ?? false ? Direction.RightToLeft : Direction.LeftToRight),
+                        SentenceRegex = TextBoxSentenceRegex.Text,
+                        TermRegex = TextBoxTermRegex.Text,
+                    }
+                };
+            }
+            else
+            {
+                _language.IsArchived = CheckBoxArchive.IsChecked ?? false;
+                _language.Name = TextBoxName.Text;
+                _language.LanguageCode = ComboBoxLanguageCode.SelectedValue.ToString();
+                var settings = _language.Settings;
 
-        //    foreach (var item in items)
-        //    {
-        //        plugins.Add(new PluginLanguage()
-        //        {
-        //            PluginId = long.Parse(item[0].ToString()),
-        //            Name = item[1].ToString(),
-        //            Description = item[2].ToString(),
-        //            Enabled = item[3] != null
-        //        });
-        //    }
+                settings.Direction = RbLTR.IsChecked ?? false ? Direction.LeftToRight : (RbRTL.IsChecked ?? false ? Direction.RightToLeft : Direction.LeftToRight);
+                settings.SentenceRegex = TextBoxSentenceRegex.Text;
+                settings.TermRegex = TextBoxTermRegex.Text;
 
-        //    ListBoxPlugins.ItemsSource = plugins;
-        //}
+                _language.Settings = settings;
+            }
 
-        //private void ResetFields()
-        //{
-        //    TextBoxSentenceRegex.Text = "[^\\.!\\?]+[\\.!\\?]+";
-        //    TextBoxTermRegex.Text = "([a-zA-ZÀ-ÖØ-öø-ȳ\\-\\']+)";
-        //    RbLTR.IsChecked = true;
-        //    ComboBoxLanguageCode.SelectedIndex = 0;
-        //}
+            var plugins = (from PluginLanguage item in ListBoxPlugins.Items where item != null && item.Enabled select item.PluginId).ToArray();
 
-        //private void BindLanguages()
-        //{
-        //    var languageCodes = _languageCodeService.FindAll();
-        //    ComboBoxLanguageCode.ItemsSource = languageCodes;
-        //    ComboBoxLanguageCode.DisplayMemberPath = "Name";
-        //    ComboBoxLanguageCode.SelectedValuePath = "Code";
-        //}
-
-        //private void BindLanguage()
-        //{
-        //    BindPlugins();
-
-        //    if (_language == null)
-        //    {
-        //        ResetFields();
-        //        return;
-        //    }
-
-        //    CheckBoxArchive.IsChecked = _language.IsArchived;
-        //    TextBoxName.Text = _language.Name;
-        //    RbLTR.IsChecked = _language.Settings.Direction == Direction.LeftToRight;
-        //    RbRTL.IsChecked = _language.Settings.Direction == Direction.RightToLeft;
-        //    TextBoxSentenceRegex.Text = _language.Settings.SentenceRegex;
-        //    TextBoxTermRegex.Text = _language.Settings.TermRegex;
-        //    ComboBoxLanguageCode.SelectedValue = _language.LanguageCode;
-        //}
-
-        //private void ButtonSave_OnClick(object sender, RoutedEventArgs e)
-        //{
-        //    if (_language == null)
-        //    {
-        //        _language = new Language()
-        //        {
-        //            IsArchived = CheckBoxArchive.IsChecked ?? false,
-        //            Name = TextBoxName.Text,
-        //            LanguageCode = ComboBoxLanguageCode.SelectedValue.ToString(),
-        //            UserId = App.User.UserId,
-        //            Settings = new LanguageSettings()
-        //            {
-        //                Direction = RbLTR.IsChecked ?? false ? Direction.LeftToRight : (RbRTL.IsChecked ?? false ? Direction.RightToLeft : Direction.LeftToRight),
-        //                SentenceRegex = TextBoxSentenceRegex.Text,
-        //                TermRegex = TextBoxTermRegex.Text,
-        //            }
-        //        };
-        //    }
-        //    else
-        //    {
-        //        _language.IsArchived = CheckBoxArchive.IsChecked ?? false;
-        //        _language.Name = TextBoxName.Text;
-        //        _language.LanguageCode = ComboBoxLanguageCode.SelectedValue.ToString();
-        //        var settings = _language.Settings;
-
-        //        settings.Direction = RbLTR.IsChecked ?? false ? Direction.LeftToRight : (RbRTL.IsChecked ?? false ? Direction.RightToLeft : Direction.LeftToRight);
-        //        settings.SentenceRegex = TextBoxSentenceRegex.Text;
-        //        settings.TermRegex = TextBoxTermRegex.Text;
-
-        //        _language.Settings = settings;
-        //    }
-
-        //    var plugins = (from PluginLanguage item in ListBoxPlugins.Items where item != null && item.Enabled select item.PluginId).ToArray();
-
-        //    _languageService.Save(_language, plugins);
-        //    this.DialogResult = true;
-        //    this.Close();
-        //}
-
-        //private void ButtonCancel_OnClick(object sender, RoutedEventArgs e)
-        //{
-        //    this.Close();
-        //}
+            _languageService.Save(_language, plugins);
+        }
     }
 }

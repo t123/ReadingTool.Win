@@ -39,8 +39,6 @@ namespace RTWin.Controls
             BindLanguages();
             ResetFields();
             BindItem();
-
-            ShowInTaskbar = false;
         }
 
         public ItemDialog(Item item)
@@ -53,8 +51,6 @@ namespace RTWin.Controls
             BindLanguages();
             ResetFields();
             BindItem();
-
-            ShowInTaskbar = false;
         }
 
         private void BindItem()

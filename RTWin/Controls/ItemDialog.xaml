@@ -4,16 +4,17 @@
 	xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
 	x:Name="Window"
 	Title="Item"
-    WindowState="Maximized"
 	WindowStyle="SingleBorderWindow"
 	x:Class="RTWin.Controls.ItemDialog"
     MinWidth="400"
     MinHeight="300"
     Topmost="True"
+    Width="750"
+    Height="500" ShowInTaskbar="False"
 	>
 
     <DockPanel>
-        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" DockPanel.Dock="Bottom" Height="35">
+        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" DockPanel.Dock="Bottom" Height="30">
             <Button Content="Save" Margin="5" MinWidth="75" Name="ButtonSave" Click="ButtonSave_OnClick" />
             <Button Content="Cancel" Margin="5" MinWidth="75" Name="ButtonCancel" Click="ButtonCancel_OnClick"/>
         </StackPanel>

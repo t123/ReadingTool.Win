@@ -5,7 +5,7 @@ namespace RTWin.Models
     public class ItemModel
     {
         public long ItemId { get; set; }
-        public long? CollectionNo { get; set; }
+        public int? CollectionNo { get; set; }
         public string CollectionName { get; set; }
         public string ItemType { get; set; }
         public bool HasMedia { get; set; }
