@@ -76,8 +76,15 @@ namespace RTWin.Services
         public T GetSetting<T>(string key)
         {
             key = key.ToLowerInvariant();
-            var setting = GetAndCacheSettings().FirstOrDefault(x => x.Key == key);
-            return (T)Convert.ChangeType(setting.Value, typeof(T));
+            var settings = GetAndCacheSettings();
+            var setting = settings.ContainsKey(key) ? settings[key] : null;
+
+            if (setting == null)
+            {
+                return default(T);
+            }
+
+            return (T)Convert.ChangeType(setting, typeof(T));
         }
 
         public void CreateAndUpgradeDatabase()

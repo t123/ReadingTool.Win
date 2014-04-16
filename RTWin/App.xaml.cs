@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Configuration;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
@@ -41,6 +42,8 @@ namespace RTWin
 
             _databaseService = Container.Get<DatabaseService>();
 
+            BackupDb("Start");
+
             InitDb();
             InitWebApi();
             InitSignalR();
@@ -61,6 +64,11 @@ namespace RTWin
 
         protected override void OnExit(ExitEventArgs e)
         {
+            var db = App.Container.Get<Database>();
+            db.CloseSharedConnection();
+
+            BackupDb("Exit");
+
             WebCore.Shutdown();
             base.OnExit(e);
         }
@@ -88,6 +96,60 @@ namespace RTWin
         private static Database CreateDb(IContext context)
         {
             return new Database("db");
+        }
+
+        private void BackupDb(string identifier)
+        {
+            var backupDatabase = _databaseService.GetSetting<bool?>(DbSetting.Keys.BackupDatabase) ?? true;
+
+            if (!backupDatabase)
+            {
+                return;
+            }
+
+            var databaseFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Database", "rtwin.sqlite");
+
+            if (!File.Exists(databaseFile))
+            {
+                return;
+            }
+
+            var backupPath = _databaseService.GetSetting<string>(DbSetting.Keys.BackupDatabasePath);
+            var maxBackups = _databaseService.GetSetting<int?>(DbSetting.Keys.BackupMax) ?? 16;
+
+            if (string.IsNullOrWhiteSpace(backupPath))
+            {
+                backupPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Database", "Backup");
+            }
+
+            if (!Directory.Exists(backupPath))
+            {
+                Directory.CreateDirectory(backupPath);
+            }
+
+            string backupFile;
+            int counter = 1;
+            do
+            {
+                string filename = string.Format("{0:yyyyMMdd}-{1}-{2}.sqlite", DateTime.Now, identifier, counter);
+                backupFile = Path.Combine(backupPath, filename);
+                counter++;
+            } while (File.Exists(backupFile));
+
+            File.Copy(databaseFile, backupFile, false);
+
+            var directory = new DirectoryInfo(backupPath);
+
+            var difference = directory.GetFiles("*.sqlite").Length - maxBackups;
+            if (difference > 0)
+            {
+                var files = directory.GetFiles("*.sqlite").OrderBy(x => x.CreationTime).Take(difference);
+
+                foreach (var file in files)
+                {
+                    File.Delete(file.FullName);
+                }
+            }
         }
 
         private void InitDb()

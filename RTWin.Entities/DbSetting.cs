@@ -15,6 +15,9 @@ namespace RTWin.Entities
         {
             public const string BaseWebAPIAddress = @"basewebapiaddress";
             public const string BaseWebSignalRAddress = @"basewebsignalraddress";
+            public const string BackupDatabase = "backup_database";
+            public const string BackupDatabasePath = "backup_database_path";
+            public const string BackupMax = "backup_max";
         }
 
         public int Id { get; set; }
