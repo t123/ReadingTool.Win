@@ -10,6 +10,8 @@
                 <Menu.Resources>
                     <Style x:Key="ProfileStyle" TargetType="MenuItem">
                         <Setter Property="Header" Value="{Binding Username}"></Setter>
+                        <Setter Property="Tag" Value="{Binding UserId}"></Setter>
+                        <EventSetter Event="Click" Handler="Profile_OnClick"></EventSetter>
                     </Style>
                 </Menu.Resources>
                 <MenuItem Header="_File">

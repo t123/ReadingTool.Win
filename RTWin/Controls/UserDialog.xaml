@@ -6,6 +6,7 @@
 	Title="User profiles"
     Width="400"
     Height="300"
+    ShowInTaskbar="False"
 	WindowStartupLocation="CenterScreen"
 	MinHeight="220" MinWidth="200" Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"
 	>
@@ -24,7 +25,6 @@
             <Button Name="ButtonAdd" Content="Add" Click="ButtonAdd_OnClick" HorizontalAlignment="Stretch" VerticalAlignment="Top" />
             <Button Name="ButtonRename" Content="Rename" Click="ButtonRename_OnClick" HorizontalAlignment="Stretch" VerticalAlignment="Top" />
             <Button Name="ButtonDelete" Content="Delete" Click="ButtonDelete_OnClick" HorizontalAlignment="Stretch" VerticalAlignment="Top" />
-            <Button Name="ButtonQuit" Content="Quit" Click="ButtonQuit_OnClick" HorizontalAlignment="Stretch" VerticalAlignment="Top" />
         </StackPanel>
         <ListBox Name="ListBoxUsers" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="0" Grid.Row="0" MouseDoubleClick="ListBoxUsers_OnMouseDoubleClick">
         </ListBox>

@@ -26,8 +26,6 @@ namespace RTWin.Controls
         public PromptDialog(string title, string input)
         {
             InitializeComponent();
-            this.ShowInTaskbar = false;
-            this.ResizeMode = ResizeMode.NoResize;
             this.Title = title;
             TitleText = title;
             InputText = input;

@@ -48,6 +48,10 @@ namespace RTWin
 
         private void SetContent()
         {
+            HyperlinkTerms.FontWeight = FontWeights.Normal;
+            HyperlinkItems.FontWeight = FontWeights.Normal;
+            HyperlinkLanguages.FontWeight = FontWeights.Normal;
+
             LanguagesControl = new LanguagesControl();
             TermsControl = new TermsControl();
             TextsControl = new TextsControl();
@@ -134,10 +138,34 @@ namespace RTWin
             {
                 App.User = currentUser;
             }
-            else
+
+            SetContent();
+        }
+
+        private void Profile_OnClick(object sender, RoutedEventArgs e)
+        {
+            var menuItem = sender as MenuItem;
+
+            if (menuItem == null)
             {
-                SetContent();
+                return;
             }
+
+            if (App.User.UserId.ToString() == menuItem.Tag.ToString())
+            {
+                return;
+            }
+
+            var currentUser = App.User;
+            App.User = _userService.FindOne(int.Parse(menuItem.Tag.ToString()));
+
+            if (App.User == null)
+            {
+                App.User = currentUser;
+                return;
+            }
+
+            SetContent();
         }
     }
 }

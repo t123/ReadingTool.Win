@@ -30,8 +30,6 @@ namespace RTWin.Controls
             _skip = skip;
             InitializeComponent();
 
-            this.ShowInTaskbar = false;
-
             BindUsers();
 
             this.Loaded += (sender, args) =>
