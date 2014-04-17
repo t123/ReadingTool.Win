@@ -29,6 +29,22 @@
         $('#dFrequency').text(freq);
     };
 
+    self.getCommonness = function () {
+        if (self.currentElement.hasClass('__high')) return ' high';
+        if (self.currentElement.hasClass('__medium')) return ' medium';
+        if (self.currentElement.hasClass('__low')) return ' low';
+
+        return '';
+    };
+
+    self.setHeaderText = function() {
+        self.setOccurencesText(self.getOccurrences());
+
+        var frequency = self.getFrequency();
+        var commoness = self.getCommonness();
+        self.setFrequencyText(frequency + '%' + commoness);
+    };
+
     self._getWordFromSpan = function (element) {
         if (element[0].childNodes[0].nodeType == 3) {
             return element[0].childNodes[0].nodeValue;
@@ -122,8 +138,7 @@
 
         self.setDMessage('');
         self._removeChanged();
-        self.setOccurencesText(self.getOccurrences());
-        self.setFrequencyText(self.getFrequency());
+        self.setHeaderText();
 
         $.ajax({
             url: self.options.url + '/api/terms/',
