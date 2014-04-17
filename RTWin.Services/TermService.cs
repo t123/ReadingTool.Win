@@ -59,18 +59,27 @@ namespace RTWin.Services
                 EntryDate = DateTime.Now,
                 State = term.State,
                 TermId = term.TermId,
-                Type = isNew ? TermType.Create : TermType.Modify
+                Type = isNew ? TermType.Create : TermType.Modify,
+                LanguageId = term.LanguageId
             });
         }
 
         public void DeleteOne(long id)
         {
+            var term = FindOne(id);
+
+            if (term == null)
+            {
+                return;
+            }
+
             _db.Insert(new TermLog()
             {
                 EntryDate = DateTime.Now,
-                State = TermState.None,
+                State = term.State,
                 TermId = id,
-                Type = TermType.Delete
+                Type = TermType.Delete,
+                LanguageId = term.LanguageId
             });
 
             _db.Delete<Term>(id);
@@ -79,6 +88,54 @@ namespace RTWin.Services
         public IList<Term> FindAll()
         {
             return _db.Fetch<Term>("WHERE UserId=@0 ORDER BY LowerPhrase", _user.UserId);
+        }
+
+        public TermStatistics GetStatistics()
+        {
+            var log = _db.Fetch<TermLog>();
+            TermStatistics stats = new TermStatistics();
+
+            foreach (var t in log)
+            {
+                var date = new DateTime(t.EntryDate.Year, t.EntryDate.Month, t.EntryDate.Day);
+                TermStatistic stat;
+
+                if (!stats.Statistics.ContainsKey(date))
+                {
+                    stats.Statistics.Add(date, new TermStatistic());
+                }
+
+                stat = stats.Statistics[date];
+
+                if (!stat.PerLanguage.ContainsKey(t.LanguageId))
+                {
+                    stat.PerLanguage.Add(t.LanguageId, new TermStatistic.Types());
+                }
+
+                var language = stat.PerLanguage[t.LanguageId];
+
+                switch (t.Type)
+                {
+                    case TermType.Create:
+                        language.Created[t.State]++;
+                        break;
+
+                    case TermType.Delete:
+                        language.Deleted[t.State]++;
+                        break;
+
+                    case TermType.Modify:
+                        language.Modified[t.State]++;
+                        break;
+
+                    case TermType.Unknown:
+                        break;
+                }
+
+                stat.PerLanguage[t.LanguageId] = language;
+            }
+
+            return stats;
         }
     }
 }

@@ -1,0 +1,46 @@
+﻿<UserControl x:Class="RTWin.Controls.TextsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="clr-namespace:RTWin.Controls"
+             xmlns:common="clr-namespace:RTWin.Common"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="600">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <common:DateTimeConverter x:Key="dateConverter"/>
+    </UserControl.Resources>
+    <Grid>
+        <DockPanel Name="DockPanel">
+            <Border DockPanel.Dock="Bottom" BorderThickness="0,1,0,0" BorderBrush="Black">
+                <StackPanel Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+                    <StackPanel Height="30" Orientation="Horizontal" HorizontalAlignment="Center"  VerticalAlignment="Top">
+                        <Button Content="Add" Name="ButtonAdd" Margin="5" MinWidth="75" Tag="Add" Click="Button_OnClick"></Button>
+                        <Button Content="Edit" Name="ButtonEdit" Margin="5" MinWidth="75" Tag="Edit" Click="Button_OnClick"></Button>
+                        <Button Content="Copy" Name="ButtonCopy" Margin="5" MinWidth="75" Tag="Copy" Click="Button_OnClick"></Button>
+                        <Button Content="Delete" Name="ButtonDelete" Margin="5" MinWidth="75" Tag="Delete" Click="Button_OnClick"></Button>
+                        <Button Content="Edit" Name="ButtonRead" Margin="5" MinWidth="75" Tag="Read" Click="Button_OnClick"></Button>
+                        <Button Content="Edit" Name="ButtonReadParallel" Margin="5" MinWidth="75" Tag="Read Parallel" Click="Button_OnClick"></Button>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+            <DataGrid Name="DataGridTexts" ItemsSource="{Binding}" AutoGenerateColumns="False" CanUserReorderColumns="False" AlternatingRowBackground="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" CanUserAddRows="False" CanUserResizeRows="False" SelectionChanged="DataGridTexts_OnSelectionChanged" SelectionMode="Single" MouseDoubleClick="DataGridTexts_OnMouseDoubleClick">
+                <DataGrid.Columns>
+                    <DataGridCheckBoxColumn IsReadOnly="False"></DataGridCheckBoxColumn>
+                    <DataGridTextColumn IsReadOnly="True" Header="Type" Binding="{Binding ItemType}"></DataGridTextColumn>
+                    <DataGridTextColumn IsReadOnly="True" Header="Language" Binding="{Binding Language}"></DataGridTextColumn>
+                    <DataGridTextColumn IsReadOnly="True" Header="No" Binding="{Binding CollectionNo}"></DataGridTextColumn>
+                    <DataGridTextColumn IsReadOnly="True" Header="Collection" Binding="{Binding CollectionName}"></DataGridTextColumn>
+                    <DataGridTextColumn IsReadOnly="True" Header="L1 Title" Binding="{Binding L1Title}"></DataGridTextColumn>
+                    <DataGridTextColumn IsReadOnly="True" Header="L1 Title" Binding="{Binding L2Title}"></DataGridTextColumn>
+                    <DataGridTextColumn IsReadOnly="True" Header="LastRead" Binding="{Binding LastRead, Converter={StaticResource dateConverter}}"></DataGridTextColumn>
+                    <DataGridTextColumn IsReadOnly="True" Header="Read" Binding="{Binding ReadTimes}"></DataGridTextColumn>
+                    <DataGridTextColumn IsReadOnly="True" Header="Listened" Binding="{Binding ListenedTimes}"></DataGridTextColumn>
+                    <DataGridCheckBoxColumn IsReadOnly="True" Header="Media?" Binding="{Binding HasMedia}"></DataGridCheckBoxColumn>
+                    <DataGridCheckBoxColumn IsReadOnly="True" Header="Is Parallel?" Binding="{Binding IsParallel}"></DataGridCheckBoxColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
+    </Grid>
+</UserControl>

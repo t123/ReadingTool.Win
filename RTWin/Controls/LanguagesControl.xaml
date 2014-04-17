@@ -1,0 +1,34 @@
+﻿<UserControl x:Class="RTWin.Controls.LanguagesControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="clr-namespace:RTWin.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </UserControl.Resources>
+    <Grid>
+        <DockPanel>
+            <Border DockPanel.Dock="Bottom" BorderThickness="0,1,0,0" BorderBrush="Black">
+                <StackPanel Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+                    <StackPanel Height="30" Orientation="Horizontal" HorizontalAlignment="Center"  VerticalAlignment="Top">
+                        <Button Content="Add" Name="ButtonAdd" Margin="5" MinWidth="75" Tag="Add" Click="Button_OnClick"></Button>
+                        <Button Content="Edit" Name="ButtonEdit" Margin="5" MinWidth="75" Tag="Edit" Click="Button_OnClick"></Button>
+                        <Button Content="Delete" Name="ButtonDelete" Margin="5" MinWidth="75" Tag="Delete" Click="Button_OnClick"></Button>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+            <DataGrid ItemsSource="{Binding}" Name="DataGridLanguages" AutoGenerateColumns="False" SelectionChanged="DataGridLanguages_OnSelectionChanged" MouseDoubleClick="DataGridLanguages_OnMouseDoubleClick">
+                <DataGrid.Columns>
+                    <DataGridTextColumn IsReadOnly="True" Header="Language" Binding="{Binding Name}"></DataGridTextColumn>
+                    <DataGridTextColumn IsReadOnly="True" Header="Total Items" Binding="{Binding TotalItems}"></DataGridTextColumn>
+                    <DataGridTextColumn IsReadOnly="True" Header="Total Terms" Binding="{Binding TotalTerms}"></DataGridTextColumn>
+                    <DataGridTextColumn IsReadOnly="True" Header="Known Terms" Binding="{Binding TotalKnown}"></DataGridTextColumn>
+                    <DataGridTextColumn IsReadOnly="True" Header="Unknown Terms" Binding="{Binding TotalUnknown}"></DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
+    </Grid>
+</UserControl>
