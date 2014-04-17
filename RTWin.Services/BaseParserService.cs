@@ -46,6 +46,23 @@ namespace RTWin.Services
             }
         }
 
+        protected class NodeComparer : IEqualityComparer<XElement>
+        {
+            public bool Equals(XElement x, XElement y)
+            {
+                if (x == null || y == null)
+                {
+                    return false;
+                }
+
+                return x.Attribute("phrase").Value == y.Attribute("phrase").Value;
+            }
+
+            public int GetHashCode(XElement obj)
+            {
+                return obj.Attribute("phrase").Value.GetHashCode();
+            }
+        }
         protected void AddFrequencyDataToTermNodes(Dictionary<string, int> frequency, XDocument document)
         {
             var totalTerms = frequency.Select(x => x.Value).Sum();
@@ -58,6 +75,7 @@ namespace RTWin.Services
 
             var common = document.Descendants("term")
                 .Where(x => x.Attribute("isTerm").Value == "true")
+                .Distinct(new NodeComparer())
                 .OrderByDescending(x => double.Parse(x.Attribute("frequency").Value))
                 .Take(60);
 
