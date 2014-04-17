@@ -39,8 +39,10 @@ namespace RTWin.Services
 
         public void Save(Term term)
         {
+            var isNew = false;
             if (term.TermId == 0)
             {
+                isNew = true;
                 term.UserId = _user.UserId;
                 term.DateCreated = DateTime.Now;
                 term.DateModified = DateTime.Now;
@@ -56,12 +58,21 @@ namespace RTWin.Services
             {
                 EntryDate = DateTime.Now,
                 State = term.State,
-                TermId = term.TermId
+                TermId = term.TermId,
+                Type = isNew ? TermType.Create : TermType.Modify
             });
         }
 
         public void DeleteOne(long id)
         {
+            _db.Insert(new TermLog()
+            {
+                EntryDate = DateTime.Now,
+                State = TermState.None,
+                TermId = id,
+                Type = TermType.Delete
+            });
+
             _db.Delete<Term>(id);
         }
 
