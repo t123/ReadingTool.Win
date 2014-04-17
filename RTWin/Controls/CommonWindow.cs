@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using System.Windows.Controls;
 using Awesomium.Core;
 using Awesomium.Windows.Controls;
 using Ninject;
@@ -59,7 +60,7 @@ namespace RTWin.Controls
                 .WithItem(_item)
                 .IsParallel(_parallel)
                 .WithLanguage1(_languageService.FindOne(_item.L1LanguageId))
-                .WithLanguage2(_languageService.FindOne(_item.L2LanguageId))
+                .WithLanguage2(_languageService.FindOne(_item.L2LanguageId ?? 0))
                 .WithTerms(_termService.FindAllByLanguage(_item.L1LanguageId))
                 .WithHtml(html)
                 .WithSignalREndPoint(signalR)
@@ -76,7 +77,6 @@ namespace RTWin.Controls
 
             var sourceUri = _databaseService.GetSetting<string>(DbSetting.Keys.BaseWebAPIAddress) + "/api/resource/item/" + _item.ItemId;
             _control.Source = sourceUri.ToUri();
-            _control.Reload(true);
         }
 
         public string GetTitle()
@@ -166,7 +166,6 @@ namespace RTWin.Controls
             control.DocumentReady += WebControl_OnDocumentReady;
             control.ShowCreatedWebView += WebControl_ShowCreatedWebView;
             control.Source = sourceUri.ToUri();
-            control.Reload(true);
         }
 
         void WebControl_ShowCreatedWebView(object sender, ShowCreatedWebViewEventArgs e)

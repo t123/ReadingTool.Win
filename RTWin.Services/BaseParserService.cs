@@ -82,6 +82,7 @@ namespace RTWin.Services
                 {
                     var existing = _pi.Lookup[termLower];
                     termNode.SetAttributeValue("state", existing.State.ToString().ToLowerInvariant());
+                    termNode.SetAttributeValue("definition", existing.FullDefinition);
                 }
                 else
                 {

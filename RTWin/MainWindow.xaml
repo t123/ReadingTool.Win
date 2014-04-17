@@ -40,6 +40,9 @@
                         <TextBlock VerticalAlignment="Center" Padding="20,0,20,0">
                         <Hyperlink Name="HyperlinkPlugins" Click="Hyperlink_OnClick" Tag="Plugins" Foreground="Black" TextDecorations="None">Plugins</Hyperlink>
                         </TextBlock>
+                        <!--<Button Content="Languages" Click="ButtonBase_OnClick" Tag="Languages"></Button>
+                        <Button Content="Items" Click="ButtonBase_OnClick" Tag="Items"></Button>
+                        <Button Content="Terms" Click="ButtonBase_OnClick" Tag="Terms"></Button>-->
                     </StackPanel>
                 </StackPanel>
             </Border>

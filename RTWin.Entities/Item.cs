@@ -21,7 +21,7 @@ namespace RTWin.Entities
         public long L1LanguageId { get; set; }
         public string L2Title { get; set; }
         public string L2Content { get; set; }
-        public long L2LanguageId { get; set; }
+        public long? L2LanguageId { get; set; }
         public long UserId { get; set; }
 
         public int ReadTimes { get; set; }

@@ -164,5 +164,25 @@ namespace RTWin
 
             SetContent();
         }
+
+        //private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        //{
+        //    var btn = sender as Button;
+        //    var tag = btn.Tag.ToString();
+
+        //    Temp temp = new Temp();
+        //    if (tag == "Languages")
+        //    {
+        //        temp.Languages();
+        //    }
+        //    if (tag == "Items")
+        //    {
+        //        temp.Items();
+        //    }
+        //    if (tag == "Terms")
+        //    {
+        //        temp.Terms();
+        //    }
+        //}
     }
 }
