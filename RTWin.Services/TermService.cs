@@ -60,7 +60,8 @@ namespace RTWin.Services
                 State = term.State,
                 TermId = term.TermId,
                 Type = isNew ? TermType.Create : TermType.Modify,
-                LanguageId = term.LanguageId
+                LanguageId = term.LanguageId,
+                UserId = term.UserId
             });
         }
 
@@ -79,7 +80,8 @@ namespace RTWin.Services
                 State = term.State,
                 TermId = id,
                 Type = TermType.Delete,
-                LanguageId = term.LanguageId
+                LanguageId = term.LanguageId,
+                UserId = term.UserId
             });
 
             _db.Delete<Term>(id);
@@ -90,9 +92,30 @@ namespace RTWin.Services
             return _db.Fetch<Term>("WHERE UserId=@0 ORDER BY LowerPhrase", _user.UserId);
         }
 
+        public IEnumerable<Term> Search(long? languageId, DateTime? modified)
+        {
+            var sql = Sql.Builder.Append("SELECT * FROM term");
+
+            sql.Append("WHERE UserId=@0", _user.UserId);
+
+            if (languageId.HasValue)
+            {
+                sql.Append("WHERE LanguageId=@0", languageId.Value);
+            }
+
+            if (modified.HasValue)
+            {
+                sql.Append("WHERE DateModified>=@0", modified);
+            }
+
+            sql.OrderBy("TermId");
+
+            return _db.Query<Term>(sql);
+        }
+
         public TermStatistics GetStatistics()
         {
-            var log = _db.Fetch<TermLog>();
+            var log = _db.Fetch<TermLog>("WHERE UserId=@0", _user.UserId);
             TermStatistics stats = new TermStatistics();
 
             foreach (var t in log)

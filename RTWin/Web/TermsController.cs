@@ -19,7 +19,6 @@ using RTWin.Services;
 
 namespace RTWin.Web
 {
-    //[EnableCors(origins: "*", headers: "*", methods: "*")]
     public class TermsController : ApiController
     {
         private TermService _termService;

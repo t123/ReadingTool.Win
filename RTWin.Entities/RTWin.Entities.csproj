@@ -42,6 +42,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -67,6 +68,7 @@
     <Compile Include="TermDictionary.cs" />
     <Compile Include="TermLog.cs" />
     <Compile Include="TermState.cs" />
+    <Compile Include="TermStatistic.cs" />
     <Compile Include="TermTag.cs" />
     <Compile Include="User.cs" />
   </ItemGroup>

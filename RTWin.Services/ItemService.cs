@@ -130,5 +130,64 @@ namespace RTWin.Services
             _db.Update(item);
             return message;
         }
+
+        public IEnumerable<Item> Search(ItemType? itemType, DateTime? modified, string collectionName, string title, long? languageId, bool? isParallel, bool? hasMedia)
+        {
+            var sql = Sql.Builder.Append("SELECT * FROM item");
+            sql.Append("WHERE UserId=@0", _user.UserId);
+
+            if (!string.IsNullOrWhiteSpace(collectionName))
+            {
+                sql.Append("WHERE CollectionName LIKE @0", collectionName + "%");
+            }
+
+            if (!string.IsNullOrWhiteSpace(title))
+            {
+                sql.Append("WHERE L1Title LIKE @0", title + "%");
+            }
+
+            if (isParallel.HasValue)
+            {
+                if (isParallel.Value)
+                {
+                    sql.Append("WHERE (L2Content IS NOT NULL AND L2Content<>'')");
+                }
+                else
+                {
+                    sql.Append("WHERE (L2Content IS NULL OR L2Content='')");
+                }
+            }
+
+            if (hasMedia.HasValue)
+            {
+                if (hasMedia.Value)
+                {
+                    sql.Append("WHERE (MediaUri IS NOT NULL AND MediaUri<>'')");
+                }
+                else
+                {
+                    sql.Append("WHERE (MediaUri IS NULL OR MediaUri='')");
+                }
+            }
+
+            if (itemType.HasValue)
+            {
+                sql.Append("WHERE ItemType=@0", itemType.Value);
+            }
+
+            if (languageId.HasValue)
+            {
+                sql.Append("WHERE L1LanguageId=@0", languageId.Value);
+            }
+
+            if (modified.HasValue)
+            {
+                sql.Append("WHERE DateModified>=@0", modified);
+            }
+
+            sql.OrderBy("ItemId");
+
+            return _db.Query<Item>(sql).ToList();
+        }
     }
 }
