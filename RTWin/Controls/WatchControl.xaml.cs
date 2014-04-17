@@ -28,16 +28,28 @@ namespace RTWin.Controls
     /// <summary>
     /// Interaction logic for WatchWindow.xaml
     /// </summary>
-    public partial class WatchWindow
+    public partial class WatchControl
     {
         private readonly CommonWindow _cw;
+        private ItemService _itemService;
 
-        public WatchWindow(Item item, bool parallel)
+        public WatchControl()
         {
             InitializeComponent();
 
-            _cw = new CommonWindow(item, parallel, new VideoParserService(), WebControl);
-            this.Title = _cw.GetTitle();
+            _itemService = App.Container.Get<ItemService>();
+            _cw = new CommonWindow(WebControl);
+        }
+
+        public void View(long itemId, bool parallel)
+        {
+            var item = _itemService.FindOne(itemId);
+            View(item, parallel);
+        }
+
+        public void View(Item item, bool parallel)
+        {
+            _cw.Read(item, parallel);
         }
 
         public Tuple<long, long> GetSub(double time)

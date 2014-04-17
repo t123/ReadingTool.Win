@@ -1,22 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Awesomium.Core;
 using Ninject;
-using RTWin.Common;
 using RTWin.Controls;
 using RTWin.Entities;
 using RTWin.Services;
@@ -30,6 +16,8 @@ namespace RTWin
     {
         private UserService _userService;
         public ReadControl ReadControl { get; private set; }
+        public WatchControl WatchControl { get; private set; }
+
         public LanguagesControl LanguagesControl { get; private set; }
 
         public TermsControl TermsControl { get; private set; }
@@ -56,6 +44,7 @@ namespace RTWin
             TermsControl = new TermsControl();
             TextsControl = new TextsControl();
             ReadControl = new ReadControl();
+            WatchControl = new WatchControl();
 
             Users = _userService.FindAll();
             this.DataContext = Users;

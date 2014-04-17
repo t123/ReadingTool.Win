@@ -89,7 +89,6 @@ namespace RTWin
             _container.Bind<UserDialog>().ToSelf();
             _container.Bind<LanguageDialog>().ToSelf();
             _container.Bind<ItemDialog>().ToSelf();
-            _container.Bind<WatchWindow>().ToSelf();
             _container.Bind<PluginDialog>().ToSelf();
         }
 
@@ -170,23 +169,6 @@ namespace RTWin
             InitHub();
         }
 
-        private WatchWindow FindWatchWindow()
-        {
-            Window owner = System.Windows.Application.Current.MainWindow;
-            WatchWindow watchWindow = null;
-
-            foreach (var window in owner.OwnedWindows)
-            {
-                if (window is WatchWindow)
-                {
-                    watchWindow = window as WatchWindow;
-                    break;
-                }
-            }
-
-            return watchWindow;
-        }
-
         private void InitHub()
         {
             _mainHubProxy.On<string, string>("addMessage", (element, action) =>
@@ -196,16 +178,21 @@ namespace RTWin
                     System.Windows.Application.Current.Dispatcher.Invoke(() =>
                     {
                         double time;
-                        var window = FindWatchWindow();
+                        MainWindow owner = System.Windows.Application.Current.MainWindow as MainWindow;
 
-                        if (!double.TryParse(action, out time) || window == null)
+                        if (owner == null)
+                        {
+                            return;
+                        }
+
+                        if (!double.TryParse(action, out time) || owner.WatchControl == null)
                         {
                             _mainHubProxy.Invoke("Send", new object[] { "srtl1", -1 });
                             _mainHubProxy.Invoke("Send", new object[] { "srtl2", -1 });
                         }
                         else
                         {
-                            var sub = window.GetSub(time);
+                            var sub = owner.WatchControl.GetSub(time);
                             _mainHubProxy.Invoke("Send", new object[] { "srtl1", sub.Item1 });
                             _mainHubProxy.Invoke("Send", new object[] { "srtl2", sub.Item2 });
                         }
@@ -219,6 +206,5 @@ namespace RTWin
 
             _hubConnection.Start();
         }
-
     }
 }
