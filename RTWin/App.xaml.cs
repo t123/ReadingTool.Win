@@ -185,14 +185,14 @@ namespace RTWin
                             return;
                         }
 
-                        if (!double.TryParse(action, out time) || owner.WatchControl == null)
+                        if (!double.TryParse(action, out time) || owner.ReadControl == null)
                         {
                             _mainHubProxy.Invoke("Send", new object[] { "srtl1", -1 });
                             _mainHubProxy.Invoke("Send", new object[] { "srtl2", -1 });
                         }
                         else
                         {
-                            var sub = owner.WatchControl.GetSub(time);
+                            var sub = owner.ReadControl.GetSub(time);
                             _mainHubProxy.Invoke("Send", new object[] { "srtl1", sub.Item1 });
                             _mainHubProxy.Invoke("Send", new object[] { "srtl2", sub.Item2 });
                         }

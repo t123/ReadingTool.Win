@@ -16,7 +16,6 @@ namespace RTWin
     {
         private UserService _userService;
         public ReadControl ReadControl { get; private set; }
-        public WatchControl WatchControl { get; private set; }
 
         public LanguagesControl LanguagesControl { get; private set; }
 
@@ -44,7 +43,6 @@ namespace RTWin
             TermsControl = new TermsControl();
             TextsControl = new TextsControl();
             ReadControl = new ReadControl();
-            WatchControl = new WatchControl();
 
             Users = _userService.FindAll();
             this.DataContext = Users;
