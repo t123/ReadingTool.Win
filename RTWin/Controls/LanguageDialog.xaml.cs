@@ -47,23 +47,13 @@ namespace RTWin.Controls
             Model = new LanguageModel();
             _language = language;
 
-            if (_language == null)
-            {
-                Model.SentenceRegex = "[^\\.!\\?]+[\\.!\\?]+";
-                Model.TermRegex = "([a-zA-ZÀ-ÖØ-öø-ȳ\\'-]+)";
-                Model.Direction = Direction.LeftToRight;
-            }
-            else
-            {
-                Model.LanguageId = _language.LanguageId;
-                Model.LanguageCode = _language.LanguageCode;
-                Model.IsArchived = _language.IsArchived;
-                Model.Name = _language.Name;
-                Model.SentenceRegex = _language.Settings.SentenceRegex;
-                Model.TermRegex = _language.Settings.TermRegex;
-                Model.Direction = _language.Settings.Direction;
-            }
-
+            Model.LanguageId = _language.LanguageId;
+            Model.LanguageCode = _language.LanguageCode;
+            Model.IsArchived = _language.IsArchived;
+            Model.Name = _language.Name;
+            Model.SentenceRegex = _language.Settings.SentenceRegex;
+            Model.TermRegex = _language.Settings.TermRegex;
+            Model.Direction = _language.Settings.Direction;
             Model.Codes = _languageCodeService.FindAll().Select(x => new LanguageCodeModel { Code = x.Code, Name = x.Name }).ToList();
             var items = _pluginService.FindAllWithActive(_language == null ? 0 : _language.LanguageId);
 

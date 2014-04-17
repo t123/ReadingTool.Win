@@ -152,7 +152,18 @@ namespace RTWin.Services
 
         protected string[] SplitIntoSentences(string paragraph, Regex regex)
         {
+            if (!paragraph.EndsWith("\n"))
+            {
+                paragraph += "\n";
+            }
+
             var matches = regex.Matches(paragraph);
+
+            if (matches.Count == 0)
+            {
+                return new[] { paragraph.Trim() };
+            }
+
             return (from Match m in matches select m.Value).ToArray();
         }
 

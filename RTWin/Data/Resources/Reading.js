@@ -461,6 +461,10 @@
     };
 
     self.getPlayer = function () {
+        if ($('#reading').data('mediauri') == '') {
+            return null;
+        }
+
         return self.jplayer;
     };
 

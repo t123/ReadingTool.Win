@@ -39,7 +39,7 @@
 
             if ($('#reading').data('itemtype') == 'text') {
                 $("#jquery_jplayer_1").jPlayer({
-                    ready: function () {
+                    ready: function() {
                         $(this).jPlayer("setMedia", {
                             mp3: mediaUri
                         });
@@ -50,7 +50,7 @@
                 });
             } else {
                 $("#jquery_jplayer_1").jPlayer({
-                    ready: function () {
+                    ready: function() {
                         $(this).jPlayer("setMedia", {
                             m4v: mediaUri
                         });
@@ -60,6 +60,8 @@
                     errorAlerts: true
                 });
             }
+        } else {
+            $('#jp_container_1').hide();
         }
 
         var reading = new Reading({

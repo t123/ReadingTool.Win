@@ -65,7 +65,7 @@ namespace RTWin.Controls
                             Settings = new LanguageSettings()
                             {
                                 Direction = Direction.LeftToRight,
-                                SentenceRegex = "[^\\.!\\?]+[\\.!\\?]+",
+                                SentenceRegex = "[^\\.!\\?]+[\\.!\\?\n]+",
                                 TermRegex = "([a-zA-ZÀ-ÖØ-öø-ȳ\\'-]+)"
                             }
                         };
