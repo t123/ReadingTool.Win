@@ -77,6 +77,7 @@ namespace RTWin
             HyperlinkTerms.FontWeight = FontWeights.Normal;
             HyperlinkItems.FontWeight = FontWeights.Normal;
             HyperlinkLanguages.FontWeight = FontWeights.Normal;
+            HyperlinkPlugins.FontWeight = FontWeights.Normal;
 
             switch (hl.Tag.ToString())
             {

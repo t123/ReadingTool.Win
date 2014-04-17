@@ -59,5 +59,42 @@ namespace RTWin.Services
             var result = _db.Fetch<object[]>("select a.pluginid, a.name, a.description, b.pluginid as Enabled from plugin a left outer join language_plugin b on a.pluginid=b.pluginid and b.languageid=@0  ORDER BY a.Name", languageId);
             return result;
         }
+
+        public void Store(PluginStorage storage)
+        {
+            storage.Key = (storage.Key ?? "").Trim();
+            if (storage.Id == 0)
+            {
+                _db.Insert(storage);
+            }
+            else
+            {
+                _db.Update(storage);
+            }
+        }
+
+        public PluginStorage Get(Guid uuid, string key)
+        {
+            key = (key ?? "").Trim();
+            return _db.FetchWhere<PluginStorage>(x => x.UUID == uuid.ToString() && x.Key == key).FirstOrDefault();
+        }
+
+        public IEnumerable<PluginStorage> Get(Guid uuid)
+        {
+            return _db.FetchWhere<PluginStorage>(x => x.UUID == uuid.ToString());
+        }
+
+        public void Remove(Guid uuid, string key)
+        {
+            key = (key ?? "").Trim();
+            if (string.IsNullOrWhiteSpace(key))
+            {
+                _db.DeleteWhere<PluginStorage>(x => x.UUID == uuid.ToString());
+            }
+            else
+            {
+                _db.DeleteWhere<PluginStorage>(x => x.UUID == uuid.ToString() && x.Key == key);
+            }
+        }
     }
 }

@@ -123,23 +123,45 @@ namespace RTWin.Services
             }
         }
 
-        private void DropAllTables()
-        {
-            string[] names = new[] { "language", "term", "languagecode", "item", "user", "dbversion" };
+        //private void DropAllTables()
+        //{
+        //    string[] names = new[] { "language", "term", "languagecode", "item", "user", "dbversion" };
 
-            foreach (var name in names)
-            {
-                if (TableExists(name))
-                {
-                    _db.Execute(string.Format(@"DROP TABLE ""main"".""{0}""", name));
-                }
-            }
-        }
+        //    foreach (var name in names)
+        //    {
+        //        if (TableExists(name))
+        //        {
+        //            _db.Execute(string.Format(@"DROP TABLE ""main"".""{0}""", name));
+        //        }
+        //    }
+        //}
 
         private bool TableExists(string tableName)
         {
             int rows = _db.ExecuteScalar<int>("SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name=@0", tableName);
             return rows > 0;
+        }
+
+        private bool IndexExists(string indexName)
+        {
+            int rows = _db.ExecuteScalar<int>("SELECT COUNT(name) FROM sqlite_master WHERE type='index' AND name=@0", indexName);
+            return rows > 0;
+        }
+
+        private void CreateIndexes()
+        {
+            Dictionary<string, string> sql = new Dictionary<string, string>();
+
+            sql.Add("term_index1", @"CREATE UNIQUE INDEX ""LowerPhrase_Language"" ON ""term"" (""LowerPhrase"" ASC, ""LanguageId"" ASC)");
+            sql.Add("pluginstorage_index", @"CREATE UNIQUE INDEX ""main"".""Plugin_Storage_UUID"" ON ""plugin_storage"" (""Uuid"" ASC, ""Key"" ASC)");
+
+            foreach (var kvp in sql)
+            {
+                if (!IndexExists(kvp.Key))
+                {
+                    _db.Execute(kvp.Value);
+                }
+            }
         }
 
         private void CreateDatabase()
@@ -188,10 +210,6 @@ CREATE TABLE ""term"" (
 );
 ");
 
-            sql.Add("term_index1", @"
-CREATE UNIQUE INDEX ""LowerPhrase_Language"" ON ""term"" (""LowerPhrase"" ASC, ""LanguageId"" ASC)
-");
-
             sql.Add("languagecode", @"
 CREATE TABLE ""languagecode"" (""LanguageCodeId"" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , ""Name"" TEXT, ""Code"" TEXT)
 ");
@@ -201,6 +219,8 @@ CREATE TABLE ""languagecode"" (""LanguageCodeId"" INTEGER PRIMARY KEY  AUTOINCRE
             sql.Add("termlog", @"CREATE TABLE ""termlog"" (""Id"" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , ""EntryDate"" TEXT, ""TermId"" INTEGER, ""State"" INTEGER, ""Type"" INTEGER DEFAULT 0, ""LanguageId"" INTEGER, ""UserId"" INTEGER)");
 
             sql.Add("plugin", @"CREATE TABLE ""plugin"" (""PluginId"" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , ""Name"" TEXT, ""Description"" TEXT, ""Content"" TEXT, ""UUID"" TEXT)");
+
+            sql.Add("pluginstorage", @"CREATE TABLE ""plugin_storage"" (""Id"" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , ""Uuid"" TEXT, ""Key"" TEXT, ""Value"" TEXT)");
 
             foreach (var kvp in sql)
             {
@@ -228,6 +248,8 @@ CREATE TABLE ""languagecode"" (""LanguageCodeId"" INTEGER PRIMARY KEY  AUTOINCRE
             }
 
             _db.Insert(new DbVersion() { Version = 1 });
+
+            CreateIndexes();
         }
 
         private void CheckSettings()

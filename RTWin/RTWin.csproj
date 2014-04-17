@@ -176,6 +176,7 @@
     <Compile Include="Models\LanguageViewModel.cs" />
     <Compile Include="Models\PluginLanguage.cs" />
     <Compile Include="Models\TermModel.cs" />
+    <Compile Include="Web\PluginController.cs" />
     <Compile Include="Web\ResourceController.cs" />
     <Compile Include="Web\SyncController.cs" />
     <Compile Include="Web\TermsController.cs" />

@@ -39,8 +39,7 @@ namespace RTWin.Controls
                 ContentControl.Content = "";
             }
         }
-
-
+        
         private void Button_OnClick(object sender, RoutedEventArgs e)
         {
             Button button = sender as Button;

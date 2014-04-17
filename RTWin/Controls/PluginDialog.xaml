@@ -30,7 +30,10 @@
             <Label Content="Description" Grid.Row="1" Grid.Column="0"/>
             <TextBox Grid.Row="1" Grid.Column="1" Name="TextBoxDescription" MinLines="5" Margin="5" AcceptsReturn="True" AcceptsTab="True" Text="{Binding Description}"/>
             <Label Content="Javascript" Grid.Row="2" Grid.Column="0"/>
-            <avalonedit:TextEditor MinHeight="100" MaxHeight="500" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Name="TextBoxContent" WordWrap="True" VerticalScrollBarVisibility="Auto" ShowLineNumbers="True" VerticalAlignment="Top">
+            <avalonedit:TextEditor 
+                    Height="300"
+                    Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Name="TextBoxContent" WordWrap="True" VerticalScrollBarVisibility="Visible" 
+                    ShowLineNumbers="True" VerticalAlignment="Top">
             </avalonedit:TextEditor>
         </Grid>
     </DockPanel>

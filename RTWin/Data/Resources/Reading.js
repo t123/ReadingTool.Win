@@ -7,6 +7,10 @@
     self.wasPlaying = false;
     self.jplayer = $('#jquery_jplayer_1');
 
+    self.getOptions = function () {
+        return self.options;
+    };
+
     self.setOccurencesText = function (occurs) {
         switch (occurs) {
             case 1:
@@ -528,6 +532,4 @@
             self.sendChatMessage('video', event.jPlayer.status.currentTime);
         });
     }
-
-    $(document).trigger('pluginReady');
 }
