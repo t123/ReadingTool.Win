@@ -78,12 +78,12 @@ namespace RTWin.Controls
 
         private void ButtonAdd_OnClick(object sender, RoutedEventArgs e)
         {
-            PromptDialog promptDialog = new PromptDialog("Please enter a name for your profile", "");
+            PromptDialog promptDialog = new PromptDialog("Create a profile", "Profile name");
             var result = promptDialog.ShowDialog();
 
             if (result == true)
             {
-                string username = promptDialog.InputText.Trim();
+                string username = promptDialog.Input;
 
                 if (string.IsNullOrWhiteSpace(username))
                 {
@@ -136,12 +136,12 @@ namespace RTWin.Controls
                 return;
             }
 
-            PromptDialog promptDialog = new PromptDialog("Please enter a new name for your profile", "");
+            PromptDialog promptDialog = new PromptDialog("Rename a profile", "New profile name", user.Username);
             var result = promptDialog.ShowDialog();
 
             if (result == true)
             {
-                string username = promptDialog.InputText.Trim();
+                string username = promptDialog.Input;
 
                 if (string.IsNullOrWhiteSpace(username))
                 {
@@ -162,11 +162,6 @@ namespace RTWin.Controls
 
                 BindUsers();
             }
-        }
-
-        private void ButtonQuit_OnClick(object sender, RoutedEventArgs e)
-        {
-            Window.Close();
         }
 
         private void ListBoxUsers_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)

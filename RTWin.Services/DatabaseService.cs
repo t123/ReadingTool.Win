@@ -216,6 +216,7 @@ CREATE TABLE ""languagecode"" (""LanguageCodeId"" INTEGER PRIMARY KEY  AUTOINCRE
                 new LanguageCode() {Code = "de", Name = "German"},
                 new LanguageCode() {Code = "fr", Name = "French"},
                 new LanguageCode() {Code = "af", Name = "Afrikaans"},
+                new LanguageCode() {Code = "--", Name = "Not Set"},
             };
 
             _db.Execute("DELETE FROM LanguageCode");

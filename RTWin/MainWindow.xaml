@@ -37,6 +37,9 @@
                         <TextBlock VerticalAlignment="Center" Padding="20,0,20,0">
                         <Hyperlink Name="HyperlinkTerms" Click="Hyperlink_OnClick" Tag="Terms" Foreground="Black" TextDecorations="None">Terms</Hyperlink>
                         </TextBlock>
+                        <TextBlock VerticalAlignment="Center" Padding="20,0,20,0">
+                        <Hyperlink Name="HyperlinkPlugins" Click="Hyperlink_OnClick" Tag="Plugins" Foreground="Black" TextDecorations="None">Plugins</Hyperlink>
+                        </TextBlock>
                     </StackPanel>
                 </StackPanel>
             </Border>
@@ -45,132 +48,4 @@
             </Grid>
         </DockPanel>
     </Grid>
-    
-    <!--<Window.Resources>
-        <common:DateTimeConverter x:Key="dateConverter"/>
-        <BooleanToVisibilityConverter  x:Key="BooleanToVisibilityConverter"/>
-    </Window.Resources>
-    <Grid x:Name="RootGrid">
-        <DockPanel>
-            <ToolBarTray DockPanel.Dock="Top">
-                <ToolBar>
-                    <Button Name="ButtonChangeUser" Content="Change Profile" Click="ButtonChangeProfile_OnClick"/>
-                    <Button Name="ButtonNewLanguage" Content="Add Language" Click="ButtonNewLanguage_OnClick"/>
-                    <Button Name="ButtonNewItem" Content="Add Item" Click="ButtonNewItem_OnClick"/>
-                </ToolBar>
-                <ToolBar>
-                    <Button Name="ButtonPlugins" Content="Plugins" Click="ButtonPlugins_OnClick"/>
-                </ToolBar>
-            </ToolBarTray>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition MinWidth="100" Width="300"></ColumnDefinition>
-                    <ColumnDefinition Width="5"></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <Grid Grid.Column="0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition MinHeight="100"></RowDefinition>
-                        <RowDefinition Height="5"></RowDefinition>
-                        <RowDefinition MinHeight="100"></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <GroupBox Grid.Row="0">
-                        <GroupBox.Header>Languages</GroupBox.Header>
-                        <ListBox Name="ListBoxLanguageNames" MouseDoubleClick="ListBoxLanguageNames_OnMouseDoubleClick">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding Name}"></TextBlock>
-                                        <TextBlock HorizontalAlignment="Right" Text="(archived)" Visibility="{Binding IsArchived, Converter={StaticResource BooleanToVisibilityConverter}}"></TextBlock>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </GroupBox>
-                    <GridSplitter HorizontalAlignment="Stretch" Grid.Row="1" Height="5"></GridSplitter>
-                    <GroupBox Grid.Row="2">
-                        <GroupBox.Header>Collection Names</GroupBox.Header>
-                        <ListBox Name="ListBoxCollectionNames">
-                        </ListBox>
-                    </GroupBox>
-                </Grid>
-                <GridSplitter HorizontalAlignment="Stretch" Grid.Column="1" Width="5" ResizeDirection="Columns"></GridSplitter>
-                <Grid Grid.Column="2">
-                    <Grid.RowDefinitions>
-                        <RowDefinition MinHeight="100"></RowDefinition>
-                        <RowDefinition Height="5"></RowDefinition>
-                        <RowDefinition MinHeight="100"></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <GroupBox Grid.Row="0">
-                        <GroupBox.Header>Items</GroupBox.Header>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="100"></ColumnDefinition>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="30"></RowDefinition>
-                                <RowDefinition Height="*"></RowDefinition>
-                                <RowDefinition Height="30"></RowDefinition>
-                            </Grid.RowDefinitions>
-                            <Label Grid.Row="0" Grid.Column="0">Search Items</Label>
-                            <TextBox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" Margin="5"></TextBox>
-                            <DataGrid Name="DataGridItems" Grid.Row="1" Grid.ColumnSpan="2" AutoGenerateColumns="False" CanUserReorderColumns="False" AlternatingRowBackground="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" CanUserAddRows="False" CanUserResizeRows="False" SelectedCellsChanged="DataGridItems_OnSelectedCellsChanged" SelectionMode="Single" MouseDoubleClick="DataGridItems_OnMouseDoubleClick">
-                                <DataGrid.Columns>
-                                    <DataGridCheckBoxColumn IsReadOnly="False"></DataGridCheckBoxColumn>
-                                    <DataGridTextColumn IsReadOnly="True" Header="Type" Binding="{Binding ItemType}"></DataGridTextColumn>
-                                    <DataGridTextColumn IsReadOnly="True" Header="Language" Binding="{Binding Language}"></DataGridTextColumn>
-                                    <DataGridTextColumn IsReadOnly="True" Header="No" Binding="{Binding CollectionNo}"></DataGridTextColumn>
-                                    <DataGridTextColumn IsReadOnly="True" Header="Collection" Binding="{Binding CollectionName}"></DataGridTextColumn>
-                                    <DataGridTextColumn IsReadOnly="True" Header="L1 Title" Binding="{Binding L1Title}"></DataGridTextColumn>
-                                    <DataGridTextColumn IsReadOnly="True" Header="L1 Title" Binding="{Binding L2Title}"></DataGridTextColumn>
-                                    <DataGridTextColumn IsReadOnly="True" Header="LastRead" Binding="{Binding LastRead, Converter={StaticResource dateConverter}}"></DataGridTextColumn>
-                                    <DataGridTextColumn IsReadOnly="True" Header="Read" Binding="{Binding ReadTimes}"></DataGridTextColumn>
-                                    <DataGridTextColumn IsReadOnly="True" Header="Listened" Binding="{Binding ListenedTimes}"></DataGridTextColumn>
-                                    <DataGridCheckBoxColumn IsReadOnly="True" Header="Media?" Binding="{Binding HasMedia}"></DataGridCheckBoxColumn>
-                                    <DataGridCheckBoxColumn IsReadOnly="True" Header="Is Parallel?" Binding="{Binding IsParallel}"></DataGridCheckBoxColumn>
-                                </DataGrid.Columns>
-                            </DataGrid>
-                            <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal">
-                                <Button Name="ButtonEdit" Content="Edit" Margin="5" Click="ButtonEdit_OnClick" MinWidth="85"></Button>
-                                <Button Name="ButtonDelete" Content="Delete" Margin="5" MinWidth="85"></Button>
-                                <Button Name="ButtonRead" Content="Read" Margin="5" Click="ButtonRead_OnClick" MinWidth="85"></Button>
-                                <Button Name="ButtonReadParallel" Content="Read Parallel" Margin="5" Click="ButtonReadParallel_OnClick" MinWidth="85"></Button>
-                            </StackPanel>
-                        </Grid>
-                    </GroupBox>
-
-                    <GridSplitter HorizontalAlignment="Stretch" Grid.Row="1" Height="5"></GridSplitter>
-                    <GroupBox Grid.Row="2">
-                        <GroupBox.Header>Terms</GroupBox.Header>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="100"></ColumnDefinition>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="30"></RowDefinition>
-                                <RowDefinition Height="*"></RowDefinition>
-                            </Grid.RowDefinitions>
-                            <Label Grid.Row="0" Grid.Column="0">Search Terms</Label>
-                            <TextBox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" Margin="5"></TextBox>
-                            <DataGrid Grid.Row="1" Name="DataGridTerms" Grid.ColumnSpan="2"  AutoGenerateColumns="False" CanUserReorderColumns="False" AlternatingRowBackground="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" CanUserAddRows="False" CanUserResizeRows="False"  SelectionMode="Single">
-                                <DataGrid.Columns>
-                                    <DataGridCheckBoxColumn IsReadOnly="False"></DataGridCheckBoxColumn>
-                                    <DataGridTextColumn IsReadOnly="True" Header="Language" Binding="{Binding Language}"></DataGridTextColumn>
-                                    <DataGridTextColumn IsReadOnly="True" Header="State" Binding="{Binding State}"></DataGridTextColumn>
-                                    <DataGridTextColumn IsReadOnly="True" Header="Phrase" Binding="{Binding Phrase}"></DataGridTextColumn>
-                                    <DataGridTextColumn IsReadOnly="True" Header="BasePhrase" Binding="{Binding BasePhrase}"></DataGridTextColumn>
-                                    <DataGridTextColumn IsReadOnly="True" Header="Sentence" Binding="{Binding Sentence}"></DataGridTextColumn>
-                                    <DataGridTextColumn IsReadOnly="True" Header="Definition" Binding="{Binding Definition}"></DataGridTextColumn>
-                                    <DataGridTextColumn IsReadOnly="True" Header="Created" Binding="{Binding DateCreated, Converter={StaticResource dateConverter}}"></DataGridTextColumn>
-                                    <DataGridTextColumn IsReadOnly="True" Header="Modified" Binding="{Binding DateModified, Converter={StaticResource dateConverter}}"></DataGridTextColumn>
-                                </DataGrid.Columns>
-                            </DataGrid>
-                        </Grid>
-                    </GroupBox>
-                </Grid>
-            </Grid>
-        </DockPanel>
-    </Grid>-->
 </Window>

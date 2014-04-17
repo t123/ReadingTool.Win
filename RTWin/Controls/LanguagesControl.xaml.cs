@@ -16,59 +16,30 @@ namespace RTWin.Controls
     public partial class LanguagesControl : UserControl
     {
         private LanguageService _languageService;
-        public IList<LanguageViewModel> Languages { get; set; }
+        public IList<Language> Languages { get; set; }
 
         public LanguagesControl()
         {
             InitializeComponent();
             BindLanguages();
-            SetButtonVisibility();
         }
 
         private void BindLanguages()
         {
             _languageService = App.Container.Get<LanguageService>();
-            var languages = _languageService.FindAll();
-            Languages = new List<LanguageViewModel>();
-
-            foreach (var language in languages)
-            {
-                var stats = _languageService.FindStatistics(language.LanguageId);
-
-                var lvm = new LanguageViewModel()
-                {
-                    LanguageId = language.LanguageId,
-                    Name = language.Name,
-                    TotalItems = stats.Item1,
-                    TotalTerms = stats.Item2,
-                    TotalKnown = stats.Item3,
-                    TotalUnknown = stats.Item4
-                };
-
-                Languages.Add(lvm);
-            }
-
+            Languages = _languageService.FindAll();
             this.DataContext = Languages;
-        }
 
-        private void SetButtonVisibility()
-        {
-            if (DataGridLanguages.SelectedIndex >= 0)
+            if (ListBoxLanguages.Items.Count > 0)
             {
-                ButtonEdit.Visibility = Visibility.Visible;
-                ButtonDelete.Visibility = Visibility.Visible;
+                ListBoxLanguages.SelectedIndex = 0;
             }
             else
             {
-                ButtonEdit.Visibility = Visibility.Hidden;
-                ButtonDelete.Visibility = Visibility.Hidden;
+                ContentControl.Content = "";
             }
         }
 
-        private void DataGridLanguages_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            SetButtonVisibility();
-        }
 
         private void Button_OnClick(object sender, RoutedEventArgs e)
         {
@@ -82,66 +53,53 @@ namespace RTWin.Controls
             switch (button.Tag.ToString())
             {
                 case "Add":
+                    PromptDialog promptDialog = new PromptDialog("Language Name", "Name ");
+                    var result = promptDialog.ShowDialog();
+
+                    if (result == true)
                     {
-                        LanguageDialog languageDialog = new LanguageDialog(null);
-                        if (languageDialog.ShowDialog() ?? false)
+                        var language = new Language()
                         {
-                            BindLanguages();
-                            SetButtonVisibility();
-                        }
+                            Name = promptDialog.Input,
+                            IsArchived = false,
+                            LanguageCode = "--",
+                            Settings = new LanguageSettings()
+                            {
+                                Direction = Direction.LeftToRight,
+                                SentenceRegex = "[^\\.!\\?]+[\\.!\\?]+",
+                                TermRegex = "([a-zA-ZÀ-ÖØ-öø-ȳ\\'-]+)"
+                            }
+                        };
+
+                        _languageService.Save(language);
+                        BindLanguages();
                     }
-                    break;
-
-                case "Edit":
-                    {
-                        var selected = DataGridLanguages.SelectedItem as LanguageViewModel;
-
-                        if (selected == null)
-                        {
-                            return;
-                        }
-
-                        var language = _languageService.FindOne(selected.LanguageId);
-
-                        if (language == null)
-                        {
-                            return;
-                        }
-
-                        LanguageDialog languageDialog = new LanguageDialog(language);
-                        languageDialog.ShowDialog();
-                    }
-                    break;
+                    return;
 
                 case "Delete":
+                    var item = ListBoxLanguages.SelectedItem as Language;
+
+                    if (item == null)
+                    {
+                        return;
+                    }
+
+                    _languageService.DeleteOne(item.LanguageId);
+                    BindLanguages();
                     break;
             }
         }
 
-        private void DataGridLanguages_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void ListBoxLanguages_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var selected = DataGridLanguages.SelectedItem as LanguageViewModel;
-
-            if (selected == null)
-            {
-                return;
-            }
-
-            var language = _languageService.FindOne(selected.LanguageId);
+            var language = ListBoxLanguages.SelectedItem as Language;
 
             if (language == null)
             {
                 return;
             }
 
-            LanguageDialog languageDialog = new LanguageDialog(language);
-            var result = languageDialog.ShowDialog();
-
-            if (result == true)
-            {
-                BindLanguages();
-                SetButtonVisibility();
-            }
+            ContentControl.Content = new LanguageDialog(language);
         }
     }
 }

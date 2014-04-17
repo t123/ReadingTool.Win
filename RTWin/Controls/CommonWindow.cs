@@ -26,7 +26,7 @@ namespace RTWin.Controls
         protected DatabaseService _databaseService;
         protected IParserService _parserService;
         protected WebControl _control;
-
+        
         public ParserOutput Output
         {
             get { return _output; }
@@ -76,7 +76,7 @@ namespace RTWin.Controls
 
             var sourceUri = _databaseService.GetSetting<string>(DbSetting.Keys.BaseWebAPIAddress) + "/api/resource/item/" + _item.ItemId;
             _control.Source = sourceUri.ToUri();
-            //_control.Reload(true);
+            _control.Reload(true);
         }
 
         public string GetTitle()

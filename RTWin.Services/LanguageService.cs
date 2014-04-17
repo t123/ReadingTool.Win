@@ -53,12 +53,16 @@ namespace RTWin.Services
 
         public void DeleteOne(long id)
         {
+            _db.DeleteWhere<Item>(x => x.L1LanguageId == id);
+            _db.DeleteWhere<Term>(x => x.LanguageId == id);
+            _db.DeleteWhere<TermLog>(x => x.LanguageId == id);
+            _db.DeleteWhere<LanguagePlugin>(x => x.LanguageId == id);
             _db.Delete<Language>(id);
         }
 
         public IList<Language> FindAll()
         {
-            return _db.FetchBy<Language>(sql => sql.Where(x => x.UserId == _user.UserId).OrderBy(x => x.IsArchived).ThenBy(x => x.Name));
+            return _db.FetchBy<Language>(sql => sql.Where(x => x.UserId == _user.UserId).OrderBy("ORDER BY Name COLLATE NOCASE"));
         }
 
         public Tuple<int, int, int, int> FindStatistics(long languageId)

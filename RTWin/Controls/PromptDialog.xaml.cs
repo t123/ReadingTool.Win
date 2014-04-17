@@ -19,35 +19,28 @@ namespace RTWin.Controls
     /// </summary>
     public partial class PromptDialog : Window
     {
-        public PromptDialog() : this("Prompt", "")
-        {
-        }
-
-        public PromptDialog(string title, string input)
+        public PromptDialog(string title, string prompt, string input = "")
         {
             InitializeComponent();
-            this.Title = title;
-            TitleText = title;
-            InputText = input;
-        }
 
-        public string TitleText
-        {
-            get { return TextBoxTitle.Text; }
-            set { TextBoxTitle.Text = value; }
-        }
-
-        public string InputText
-        {
-            get { return TextBoxInput.Text; }
-            set { TextBoxInput.Text = value; }
+            Title = title;
+            TextBlockPrompt.Text = prompt;
+            TextBoxInput.Text = input;
+            TextBoxInput.Focus();
         }
 
         private void ButtonOk_OnClick(object sender, RoutedEventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(Input))
+            {
+                return;
+            }
+
             DialogResult = true;
             Close();
         }
+
+        public string Input { get { return TextBoxInput.Text.Trim(); } }
 
         private void ButtonCancel_OnClick(object sender, RoutedEventArgs e)
         {

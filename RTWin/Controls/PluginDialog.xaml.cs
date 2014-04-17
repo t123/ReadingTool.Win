@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Xml;
 using log4net.Plugin;
+using Ninject;
 using RTWin.Entities;
 using RTWin.Services;
 
@@ -22,111 +23,51 @@ namespace RTWin.Controls
     /// <summary>
     /// Interaction logic for PluginDialog.xaml
     /// </summary>
-    public partial class PluginDialog : Window
+    public partial class PluginDialog : UserControl
     {
         private readonly PluginService _pluginService;
+        public Plugin Plugin { get; set; }
 
-        public PluginDialog(PluginService pluginService)
+        public PluginDialog(Plugin plugin)
         {
-            _pluginService = pluginService;
+            _pluginService = App.Container.Get<PluginService>();
             InitializeComponent();
-
-            BindPlugins();
 
             Stream xshd_stream = File.OpenRead(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "App_Data", "Javascript-Mode.xshd"));
             XmlTextReader xshd_reader = new XmlTextReader(xshd_stream);
             TextBoxContent.SyntaxHighlighting = ICSharpCode.AvalonEdit.Highlighting.Xshd.HighlightingLoader.Load(xshd_reader, ICSharpCode.AvalonEdit.Highlighting.HighlightingManager.Instance);
             xshd_reader.Close();
             xshd_stream.Close();
-        }
 
-        private void BindPlugins()
-        {
-            ListBoxPlugins.ItemsSource = _pluginService.FindAll();
+            BindPlugin(plugin);
         }
 
         private void BindPlugin(Plugin plugin)
         {
             if (plugin == null)
             {
-                Reset();
-                return;
+                plugin = new Plugin();
             }
 
-            TextBoxName.Text = plugin.Name;
-            TextBoxDescription.Text = plugin.Description;
             TextBoxContent.Text = plugin.Content;
-        }
-
-        private void Reset()
-        {
-            ListBoxPlugins.SelectedIndex = -1;
-            TextBoxName.Text = "";
-            TextBoxDescription.Text = "";
-            TextBoxContent.Text = "";
-        }
-
-        private void ButtonNewPlugin_OnClick(object sender, RoutedEventArgs e)
-        {
-            Reset();
+            Plugin = plugin;
+            this.DataContext = Plugin;
         }
 
         private void ButtonSave_OnClick(object sender, RoutedEventArgs e)
         {
-            Plugin plugin;
+            Plugin.Name = TextBoxName.Text;
+            Plugin.Content = TextBoxContent.Text;
+            Plugin.Description = TextBoxDescription.Text;
 
-            if (ListBoxPlugins.SelectedIndex < 0)
-            {
-                plugin = new Plugin()
-                {
-                    Name = TextBoxName.Text,
-                    Content = TextBoxContent.Text,
-                    Description = TextBoxDescription.Text,
-                    UUID = Guid.NewGuid().ToString()
-                };
-            }
-            else
-            {
-                plugin = ListBoxPlugins.SelectedItem as Plugin;
-
-                if (plugin == null)
-                {
-                    MessageBox.Show("Could not save changes to plugin", "Save error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
-
-                plugin.Name = TextBoxName.Text;
-                plugin.Content = TextBoxContent.Text;
-                plugin.Description = TextBoxDescription.Text;
-            }
-
-            _pluginService.Save(plugin);
-            BindPlugins();
+            _pluginService.Save(Plugin);
+            BindPlugin(Plugin);
         }
 
         private void ButtonCancel_OnClick(object sender, RoutedEventArgs e)
         {
-            int index = ListBoxPlugins.SelectedIndex;
-            Reset();
-            ListBoxPlugins.SelectedIndex = index;
-        }
-
-        private void ListBoxPlugins_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            BindPlugin(ListBoxPlugins.SelectedItem as Plugin);
-        }
-
-        private void ButtonDeletePlugin_OnClick(object sender, RoutedEventArgs e)
-        {
-            var plugin = ListBoxPlugins.SelectedItem as Plugin;
-
-            if (plugin == null)
-            {
-                return;
-            }
-
-            _pluginService.DeleteOne(plugin.PluginId);
-            BindPlugins();
+            var plugin = _pluginService.FindOne(Plugin.PluginId);
+            BindPlugin(plugin);
         }
     }
 }

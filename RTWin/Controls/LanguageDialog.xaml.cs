@@ -21,7 +21,7 @@ namespace RTWin.Controls
     /// <summary>
     /// Interaction logic for LanguageDialog.xaml
     /// </summary>
-    public partial class LanguageDialog : Window
+    public partial class LanguageDialog : UserControl
     {
         private LanguageCodeService _languageCodeService;
         private LanguageService _languageService;
@@ -34,12 +34,18 @@ namespace RTWin.Controls
         {
             InitializeComponent();
 
-            _language = language;
             _languageCodeService = App.Container.Get<LanguageCodeService>();
             _languageService = App.Container.Get<LanguageService>();
             _pluginService = App.Container.Get<PluginService>();
 
+
+            BindLanguage(language);
+        }
+
+        private void BindLanguage(Language language)
+        {
             Model = new LanguageModel();
+            _language = language;
 
             if (_language == null)
             {
@@ -88,51 +94,33 @@ namespace RTWin.Controls
             {
                 case "Save":
                     SaveLanguage();
-                    this.DialogResult = true;
-                    this.Close();
                     break;
 
                 case "Cancel":
-                    this.Close();
+                    var language = _languageService.FindOne(_language.LanguageId);
+                    BindLanguage(language);
                     break;
             }
         }
 
         private void SaveLanguage()
         {
-            if (_language == null)
-            {
-                _language = new Language()
-                {
-                    IsArchived = CheckBoxArchive.IsChecked ?? false,
-                    Name = TextBoxName.Text,
-                    LanguageCode = ComboBoxLanguageCode.SelectedValue.ToString(),
-                    UserId = App.User.UserId,
-                    Settings = new LanguageSettings()
-                    {
-                        Direction = RbLTR.IsChecked ?? false ? Direction.LeftToRight : (RbRTL.IsChecked ?? false ? Direction.RightToLeft : Direction.LeftToRight),
-                        SentenceRegex = TextBoxSentenceRegex.Text,
-                        TermRegex = TextBoxTermRegex.Text,
-                    }
-                };
-            }
-            else
-            {
-                _language.IsArchived = CheckBoxArchive.IsChecked ?? false;
-                _language.Name = TextBoxName.Text;
-                _language.LanguageCode = ComboBoxLanguageCode.SelectedValue.ToString();
-                var settings = _language.Settings;
+            _language.IsArchived = CheckBoxArchive.IsChecked ?? false;
+            _language.Name = TextBoxName.Text;
+            _language.LanguageCode = ComboBoxLanguageCode.SelectedValue.ToString();
+            var settings = _language.Settings;
 
-                settings.Direction = RbLTR.IsChecked ?? false ? Direction.LeftToRight : (RbRTL.IsChecked ?? false ? Direction.RightToLeft : Direction.LeftToRight);
-                settings.SentenceRegex = TextBoxSentenceRegex.Text;
-                settings.TermRegex = TextBoxTermRegex.Text;
+            settings.Direction = RbLTR.IsChecked ?? false ? Direction.LeftToRight : (RbRTL.IsChecked ?? false ? Direction.RightToLeft : Direction.LeftToRight);
+            settings.SentenceRegex = TextBoxSentenceRegex.Text;
+            settings.TermRegex = TextBoxTermRegex.Text;
 
-                _language.Settings = settings;
-            }
+            _language.Settings = settings;
 
             var plugins = (from PluginLanguage item in ListBoxPlugins.Items where item != null && item.Enabled select item.PluginId).ToArray();
 
             _languageService.Save(_language, plugins);
+
+            BindLanguage(_language);
         }
     }
 }

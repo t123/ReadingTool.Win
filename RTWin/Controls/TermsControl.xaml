@@ -15,7 +15,7 @@
         <DockPanel>
             <Border DockPanel.Dock="Bottom" BorderThickness="0,1,0,0" BorderBrush="Black">
                 <StackPanel Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
-                    <StackPanel Height="30" Orientation="Horizontal" HorizontalAlignment="Center"  VerticalAlignment="Top">
+                    <StackPanel Height="40" Orientation="Horizontal" HorizontalAlignment="Center"  VerticalAlignment="Top">
                         <Button Content="Edit" Name="ButtonEdit" Margin="5" MinWidth="75" Tag="Edit" Click="Button_OnClick"></Button>
                         <Button Content="Delete" Name="ButtonDelete" Margin="5" MinWidth="75" Tag="Delete" Click="Button_OnClick"></Button>
                     </StackPanel>

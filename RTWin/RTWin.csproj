@@ -148,6 +148,9 @@
     <Compile Include="Controls\PluginDialog.xaml.cs">
       <DependentUpon>PluginDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\PluginsControl.xaml.cs">
+      <DependentUpon>PluginsControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\PromptDialog.xaml.cs">
       <DependentUpon>PromptDialog.xaml</DependentUpon>
     </Compile>
@@ -189,6 +192,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\PluginDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\PluginsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -331,6 +338,9 @@
     <Content Include="Data\Resources\ui.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Plugins\ignore.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Content Include="x64\SQLite.Interop.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
