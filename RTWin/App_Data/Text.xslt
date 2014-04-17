@@ -45,7 +45,7 @@
           </xsl:otherwise>
         </xsl:choose>
       </tr>
-      
+
       <xsl:choose>
         <xsl:when test="/root/content/@isParallel='true'">
           <tr>
@@ -73,10 +73,14 @@
       <tr class="footer">
         <xsl:choose>
           <xsl:when test="/root/content/@isParallel='true'">
-            <td colspan="2"><!--BLANK--></td>
+            <td colspan="2">
+              <!--BLANK-->
+            </td>
           </xsl:when>
           <xsl:otherwise>
-            <td><!--BLANK--></td>
+            <td>
+              <!--BLANK-->
+            </td>
           </xsl:otherwise>
         </xsl:choose>
       </tr>
@@ -136,6 +140,9 @@
             <xsl:if test="string-length(@definition)>0 and @state='unknown'">
               <xsl:text> __ud</xsl:text>
             </xsl:if>
+            <xsl:if test="@commonness">
+              <xsl:text> __</xsl:text><xsl:value-of select="@commonness"/>
+            </xsl:if>
           </xsl:attribute>
           <xsl:attribute name="data-frequency">
             <xsl:value-of select="@frequency"/>
@@ -162,7 +169,10 @@
         </span>
       </xsl:when>
       <xsl:otherwise>
-        <span class="__punctuation">
+        <span>
+          <xsl:attribute name="class">__punctuation
+            <xsl:if test="@isWhitespace='true'"> __whitespace</xsl:if>
+          </xsl:attribute>
           <xsl:value-of select="."/>
         </span>
       </xsl:otherwise>

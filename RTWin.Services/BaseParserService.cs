@@ -55,6 +55,30 @@ namespace RTWin.Services
                 t.SetAttributeValue("occurrences", frequency[t.Value.ToLowerInvariant()]);
                 t.SetAttributeValue("frequency", Math.Round((double)frequency[t.Value.ToLowerInvariant()] / (double)totalTerms * 100, 2));
             }
+
+            var common = document.Descendants("term")
+                .Where(x => x.Attribute("isTerm").Value == "true")
+                .OrderByDescending(x => double.Parse(x.Attribute("frequency").Value))
+                .Take(60);
+
+            int counter = 0;
+            foreach (var node in common)
+            {
+                if (counter < 20)
+                {
+                    node.SetAttributeValue("commonness", "high");
+                }
+                else if (counter < 40)
+                {
+                    node.SetAttributeValue("commonness", "medium");
+                }
+                else
+                {
+                    node.SetAttributeValue("commonness", "low");
+                }
+
+                counter++;
+            }
         }
 
         protected XElement CreateTermNode(string term, Regex l1TermRegex, Dictionary<string, int> frequency)
@@ -92,6 +116,11 @@ namespace RTWin.Services
             else
             {
                 termNode.SetAttributeValue("isTerm", false);
+
+                if (string.IsNullOrWhiteSpace(termLower))
+                {
+                    termNode.SetAttributeValue("isWhitespace", true);
+                }
             }
 
             return termNode;

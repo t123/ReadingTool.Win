@@ -79,6 +79,10 @@
             <xsl:value-of select="@state"/>
             <xsl:text> __</xsl:text>
             <xsl:value-of select="@phraseClass"/>
+            <xsl:if test="@commonness">
+              <xsl:text> __</xsl:text>
+              <xsl:value-of select="@commonness"/>
+            </xsl:if>
           </xsl:attribute>
           <xsl:attribute name="data-frequency">
             <xsl:value-of select="@frequency"/>
