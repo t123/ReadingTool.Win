@@ -185,10 +185,12 @@
     <Compile Include="Models\Entities\LanguageViewModel.cs" />
     <Compile Include="Models\Entities\PluginLanguage.cs" />
     <Compile Include="Models\Entities\TermModel.cs" />
+    <Compile Include="Models\Views\ItemDialogViewModel.cs" />
     <Compile Include="Models\Views\LanguagesControlViewModel.cs" />
     <Compile Include="Models\Views\MainWindowViewModel.cs" />
     <Compile Include="Models\Views\PluginsControlViewModel.cs" />
     <Compile Include="Models\Views\RelayCommand.cs" />
+    <Compile Include="Models\Views\TextsControlViewModel.cs" />
     <Compile Include="Models\Views\UserDialogViewModel.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Setup.cs" />

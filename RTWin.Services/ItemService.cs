@@ -49,14 +49,23 @@ namespace RTWin.Services
             _db.Delete<Item>(id);
         }
 
-        public IList<Item> FindAll()
+        public IEnumerable<Item> FindAll()
         {
             var items = _db.Fetch<Item>("WHERE UserId=@0 ORDER BY CollectionName, CollectionNo, L1Title", _user.UserId);
 
             return items;
         }
 
-        public IList<string> FindAllCollectionNames(long? languageId)
+        public IEnumerable<string> FindCollectionsPerLanguage()
+        {
+            var builder = Sql.Builder.Append(@"SELECT DISTINCT('""' || b.Name || '"" - ""' || a.CollectionName || '""') as cName FROM item a, language b");
+            builder.Append("WHERE a.L1Languageid=b.LanguageId AND a.Userid=@0 and b.IsArchived=0", _user.UserId);
+            builder.OrderBy("cName COLLATE NOCASE");
+
+            return _db.Fetch<string>(builder);
+        }
+
+        public IEnumerable<string> FindAllCollectionNames(long? languageId)
         {
             var builder = Sql.Builder.Append("SELECT DISTINCT(CollectionName) as X FROM item");
             builder.Append("WHERE UserId=@0", _user.UserId);
@@ -66,7 +75,7 @@ namespace RTWin.Services
                 builder.Append(" AND LanguageId=@0", languageId.Value);
             }
 
-            builder.OrderBy("x");
+            builder.OrderBy("x COLLATE NOCASE");
 
             return _db.Fetch<string>(builder);
         }

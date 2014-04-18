@@ -90,7 +90,8 @@ namespace RTWin.Models.Views
 
             Users = new ObservableCollection<User>(_userService.FindAll());
             CurrentUser = App.User;
-            CurrentView = _languagesControl;
+
+            CurrentView = _textsControl;
 
             _changeProfileCommand = new RelayCommand(x =>
             {

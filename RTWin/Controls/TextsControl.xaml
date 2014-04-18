@@ -6,7 +6,7 @@
              xmlns:controls="clr-namespace:RTWin.Controls"
              xmlns:common="clr-namespace:RTWin.Common"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="600">
+             d:DesignHeight="500" d:DesignWidth="600">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
         <common:DateTimeConverter x:Key="dateConverter"/>
@@ -16,16 +16,30 @@
             <Border DockPanel.Dock="Bottom" BorderThickness="0,1,0,0" BorderBrush="Black">
                 <StackPanel Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
                     <StackPanel Height="40" Orientation="Horizontal" HorizontalAlignment="Center"  VerticalAlignment="Top">
-                        <Button Content="Add" Name="ButtonAdd" Margin="5" MinWidth="75" Tag="Add" Click="Button_OnClick"></Button>
-                        <Button Content="Edit" Name="ButtonEdit" Margin="5" MinWidth="75" Tag="Edit" Click="Button_OnClick"></Button>
-                        <Button Content="Copy" Name="ButtonCopy" Margin="5" MinWidth="75" Tag="Copy" Click="Button_OnClick"></Button>
-                        <Button Content="Delete" Name="ButtonDelete" Margin="5" MinWidth="75" Tag="Delete" Click="Button_OnClick"></Button>
-                        <Button Content="Edit" Name="ButtonRead" Margin="5" MinWidth="75" Tag="Read" Click="Button_OnClick"></Button>
-                        <Button Content="Edit" Name="ButtonReadParallel" Margin="5" MinWidth="75" Tag="Read Parallel" Click="Button_OnClick"></Button>
+                        <Button Content="Add" Margin="5" MinWidth="75" Command="{Binding AddCommand}"/>
+                        <Button Content="Edit" Margin="5" MinWidth="75"  Command="{Binding EditCommand}"/>
+                        <Button Content="Copy" Margin="5" MinWidth="75"  Command="{Binding CopyCommand}"/>
+                        <Button Content="Delete" Margin="5" MinWidth="75"  Command="{Binding DeleteCommand}"/>
+                        <Button Content="{Binding ItemType}" Margin="5" MinWidth="75" Command="{Binding ReadCommand}" CommandParameter="Single"/>
+                        <Button Content="Parallel" IsEnabled="{Binding SelectedItem.IsParallel}" Margin="5" MinWidth="75" Command="{Binding ReadCommand}" CommandParameter="Parallel"/>
                     </StackPanel>
                 </StackPanel>
             </Border>
-            <DataGrid Name="DataGridTexts" ItemsSource="{Binding}" AutoGenerateColumns="False" CanUserReorderColumns="False" AlternatingRowBackground="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" CanUserAddRows="False" CanUserResizeRows="False" SelectionChanged="DataGridTexts_OnSelectionChanged" SelectionMode="Single" MouseDoubleClick="DataGridTexts_OnMouseDoubleClick">
+            <Grid DockPanel.Dock="Top" Height="50">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto" MinWidth="200"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Label Content="Filter" Grid.Column="0" Margin="5" VerticalAlignment="Center"></Label>
+                <TextBox Width="Auto" Grid.Column="1" Margin="5" VerticalAlignment="Center" Text="{Binding FilterText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                <ComboBox Grid.Column="2" Margin="5" VerticalAlignment="Center" ItemsSource="{Binding CollectionNames}" SelectedItem="{Binding SelectedCollectionName}" IsEditable="True" Text="Choose to filter"/>
+            </Grid>
+
+            <DataGrid ItemsSource="{Binding Items}" AutoGenerateColumns="False" CanUserReorderColumns="False" 
+                      AlternatingRowBackground="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" 
+                      CanUserAddRows="False" CanUserResizeRows="False" Margin="5"
+                      SelectionMode="Single" SelectedItem="{Binding SelectedItem}">
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn IsReadOnly="False"></DataGridCheckBoxColumn>
                     <DataGridTextColumn IsReadOnly="True" Header="Type" Binding="{Binding ItemType}"></DataGridTextColumn>
