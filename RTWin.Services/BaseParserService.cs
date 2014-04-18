@@ -82,17 +82,20 @@ namespace RTWin.Services
             int counter = 0;
             foreach (var node in common)
             {
-                if (counter < 20)
+                foreach (var x in document.Descendants("term").Where(x => x.Attribute("phrase").Value == node.Attribute("phrase").Value))
                 {
-                    node.SetAttributeValue("commonness", "high");
-                }
-                else if (counter < 40)
-                {
-                    node.SetAttributeValue("commonness", "medium");
-                }
-                else
-                {
-                    node.SetAttributeValue("commonness", "low");
+                    if (counter < 20)
+                    {
+                        x.SetAttributeValue("commonness", "high");
+                    }
+                    else if (counter < 40)
+                    {
+                        x.SetAttributeValue("commonness", "medium");
+                    }
+                    else
+                    {
+                        x.SetAttributeValue("commonness", "low");
+                    }
                 }
 
                 counter++;

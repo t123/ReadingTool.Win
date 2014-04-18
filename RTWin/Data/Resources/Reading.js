@@ -11,40 +11,6 @@
         return self.options;
     };
 
-    self.setOccurencesText = function (occurs) {
-        switch (occurs) {
-            case 1:
-                $('#dOccurs').text('once');
-                break;
-            case 2:
-                $('#dOccurs').text('twice');
-                break;
-            default:
-                $('#dOccurs').text(occurs + ' times');
-                break;
-        }
-    };
-
-    self.setFrequencyText = function (freq) {
-        $('#dFrequency').text(freq);
-    };
-
-    self.getCommonness = function () {
-        if (self.currentElement.hasClass('__high')) return ' high';
-        if (self.currentElement.hasClass('__medium')) return ' medium';
-        if (self.currentElement.hasClass('__low')) return ' low';
-
-        return '';
-    };
-
-    self.setHeaderText = function() {
-        self.setOccurencesText(self.getOccurrences());
-
-        var frequency = self.getFrequency();
-        var commoness = self.getCommonness();
-        self.setFrequencyText(frequency + '%' + commoness);
-    };
-
     self._getWordFromSpan = function (element) {
         if (element[0].childNodes[0].nodeType == 3) {
             return element[0].childNodes[0].nodeValue;
@@ -138,7 +104,6 @@
 
         self.setDMessage('');
         self._removeChanged();
-        self.setHeaderText();
 
         $.ajax({
             url: self.options.url + '/api/terms/',
@@ -221,6 +186,10 @@
         } else {
             alert('state value is unknown: ' + state);
         }
+    };
+
+    self.setHeaderText = function (val) {
+        $('#dHeader').html(val);
     };
 
     self.setDPhrase = function (val) {
@@ -391,6 +360,14 @@
         self.setFocus($('#dSentence'));
 
         $(document).trigger('postSentenceRefreshed');
+    };
+
+    self.getCommonness = function () {
+        if (self.currentElement.hasClass('__high')) return ' high';
+        if (self.currentElement.hasClass('__medium')) return ' medium';
+        if (self.currentElement.hasClass('__low')) return ' low';
+
+        return '';
     };
 
     self.getFrequency = function () {
