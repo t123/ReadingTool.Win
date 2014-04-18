@@ -11,6 +11,7 @@ using NPoco;
 using RTWin.Common;
 using RTWin.Controls;
 using RTWin.Entities;
+using RTWin.Models.Views;
 using RTWin.Services;
 
 namespace RTWin
@@ -61,10 +62,14 @@ namespace RTWin
             _container.Bind<LanguageCodeService>().ToSelf();
             _container.Bind<PluginService>().ToSelf();
 
+            _container.Bind<MainWindow>().ToSelf();
             _container.Bind<UserDialog>().ToSelf();
+            _container.Bind<PromptDialog>().ToSelf();
             //_container.Bind<LanguageDialog>().ToSelf();
             //_container.Bind<ItemDialog>().ToSelf();
             //_container.Bind<PluginDialog>().ToSelf();
+
+            _container.Bind<MainWindowViewModel>().ToSelf();
 
             _databaseService = Container.Get<DatabaseService>();
         }

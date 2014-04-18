@@ -45,10 +45,21 @@ namespace RTWin.Services
 
         public void DeleteOne(long id)
         {
-            throw new NotImplementedException();
+            var languages = _db.FetchWhere<Language>(x => x.UserId == id);
+
+            foreach (var language in languages)
+            {
+                _db.DeleteWhere<Item>(x => x.L1LanguageId == language.LanguageId);
+                _db.DeleteWhere<Term>(x => x.LanguageId == language.LanguageId);
+                _db.DeleteWhere<TermLog>(x => x.LanguageId == language.LanguageId);
+                _db.DeleteWhere<LanguagePlugin>(x => x.LanguageId == language.LanguageId);
+                _db.Delete<Language>(language.LanguageId);
+            }
+
+            _db.DeleteWhere<User>(x => x.UserId == id);
         }
 
-        public IList<User> FindAll()
+        public IEnumerable<User> FindAll()
         {
             return _db.FetchBy<User>(sql => sql.OrderBy(x => x.Username));
         }
