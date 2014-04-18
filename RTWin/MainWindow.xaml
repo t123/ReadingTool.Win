@@ -11,15 +11,14 @@
                     <Style x:Key="ProfileStyle" TargetType="MenuItem">
                         <Setter Property="Header" Value="{Binding Username}"></Setter>
                         <Setter Property="Tag" Value="{Binding UserId}"></Setter>
-                        <EventSetter Event="Click" Handler="Profile_OnClick"></EventSetter>
                     </Style>
                 </Menu.Resources>
                 <MenuItem Header="_File">
                     <MenuItem Header="Exit" ></MenuItem>
                 </MenuItem>
                 <MenuItem Header="_Profiles">
-                    <MenuItem Header="Manage Profiles" Click="MenuItem_OnClick" Tag="Maange Profiles"></MenuItem>
-                    <MenuItem Header="Change Profile" ItemsSource="{Binding}" ItemContainerStyle="{StaticResource ProfileStyle}" />
+                    <MenuItem Header="Manage Profiles"></MenuItem>
+                    <MenuItem Header="Change Profile" ItemContainerStyle="{StaticResource ProfileStyle}" />
                 </MenuItem>
                 <MenuItem Header="Help">
                     <MenuItem Header="About"></MenuItem>
@@ -29,20 +28,17 @@
                 <StackPanel HorizontalAlignment="Stretch" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
                     <StackPanel Height="30" Orientation="Horizontal" HorizontalAlignment="Center" >
                         <TextBlock VerticalAlignment="Center" Padding="20,0,20,0">
-                        <Hyperlink Name="HyperlinkLanguages" Click="Hyperlink_OnClick" Tag="Languages" Foreground="Black" TextDecorations="None">Languages</Hyperlink>
+                        <Hyperlink Name="HyperlinkLanguages" Foreground="Black" TextDecorations="None">Languages</Hyperlink>
                         </TextBlock>
                         <TextBlock VerticalAlignment="Center" Padding="20,0,20,0">
-                        <Hyperlink Name="HyperlinkItems" Click="Hyperlink_OnClick" Tag="Items" Foreground="Black" TextDecorations="None">Items</Hyperlink>
+                        <Hyperlink Name="HyperlinkItems" Foreground="Black" TextDecorations="None">Items</Hyperlink>
                         </TextBlock>
                         <TextBlock VerticalAlignment="Center" Padding="20,0,20,0">
-                        <Hyperlink Name="HyperlinkTerms" Click="Hyperlink_OnClick" Tag="Terms" Foreground="Black" TextDecorations="None">Terms</Hyperlink>
+                        <Hyperlink Name="HyperlinkTerms" Tag="Terms" Foreground="Black" TextDecorations="None">Terms</Hyperlink>
                         </TextBlock>
                         <TextBlock VerticalAlignment="Center" Padding="20,0,20,0">
-                        <Hyperlink Name="HyperlinkPlugins" Click="Hyperlink_OnClick" Tag="Plugins" Foreground="Black" TextDecorations="None">Plugins</Hyperlink>
+                        <Hyperlink Name="HyperlinkPlugins" Foreground="Black" TextDecorations="None">Plugins</Hyperlink>
                         </TextBlock>
-                        <!--<Button Content="Languages" Click="ButtonBase_OnClick" Tag="Languages"></Button>
-                        <Button Content="Items" Click="ButtonBase_OnClick" Tag="Items"></Button>
-                        <Button Content="Terms" Click="ButtonBase_OnClick" Tag="Terms"></Button>-->
                     </StackPanel>
                 </StackPanel>
             </Border>

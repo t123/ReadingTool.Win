@@ -132,33 +132,8 @@
     </ApplicationDefinition>
     <Compile Include="Common\DateTimeConverter.cs" />
     <Compile Include="Common\HtmlLoader.cs" />
-    <Compile Include="Controls\ItemDialog.xaml.cs">
-      <DependentUpon>ItemDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\LanguageDialog.xaml.cs">
-      <DependentUpon>LanguageDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\CommonWindow.cs" />
-    <Compile Include="Controls\LanguagesControl.xaml.cs">
-      <DependentUpon>LanguagesControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\PluginDialog.xaml.cs">
-      <DependentUpon>PluginDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\PluginsControl.xaml.cs">
-      <DependentUpon>PluginsControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\PromptDialog.xaml.cs">
       <DependentUpon>PromptDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ReadControl.xaml.cs">
-      <DependentUpon>ReadControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\TermsControl.xaml.cs">
-      <DependentUpon>TermsControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\TextsControl.xaml.cs">
-      <DependentUpon>TextsControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\UserDialog.xaml.cs">
       <DependentUpon>UserDialog.xaml</DependentUpon>
@@ -167,50 +142,19 @@
     <Compile Include="Common\OWINSignalRConfig.cs" />
     <Compile Include="Common\OWINWebAPIConfig.cs" />
     <Compile Include="Common\EnumMatchToBooleanConverter.cs" />
-    <Compile Include="Models\ItemModel.cs" />
-    <Compile Include="Models\LanguageCodeModel.cs" />
-    <Compile Include="Models\LanguageModel.cs" />
-    <Compile Include="Models\LanguageViewModel.cs" />
-    <Compile Include="Models\PluginLanguage.cs" />
-    <Compile Include="Models\TermModel.cs" />
+    <Compile Include="Models\Entities\ItemModel.cs" />
+    <Compile Include="Models\Entities\LanguageCodeModel.cs" />
+    <Compile Include="Models\Entities\LanguageModel.cs" />
+    <Compile Include="Models\Entities\LanguageViewModel.cs" />
+    <Compile Include="Models\Entities\PluginLanguage.cs" />
+    <Compile Include="Models\Entities\TermModel.cs" />
+    <Compile Include="Setup.cs" />
     <Compile Include="Temp.cs" />
     <Compile Include="Web\PluginController.cs" />
     <Compile Include="Web\ResourceController.cs" />
     <Compile Include="Web\SyncController.cs" />
     <Compile Include="Web\TermsController.cs" />
-    <Page Include="Controls\ItemDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\LanguageDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\LanguagesControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\PluginDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\PluginsControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Controls\PromptDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\ReadControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\TermsControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\TextsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -346,6 +290,9 @@
     <Content Include="x86\SQLite.Interop.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\Views\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
