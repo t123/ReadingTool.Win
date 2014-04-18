@@ -198,13 +198,13 @@ namespace RTWin.Controls
                     }
 
                 case "Read":
-                    mainWindow.ContentControl.Content = mainWindow.ReadControl;
-                    mainWindow.ReadControl.View(item.ItemId, false);
+                    //mainWindow.ContentControl.Content = mainWindow.ReadControl;
+                    //mainWindow.ReadControl.View(item.ItemId, false);
                     break;
 
                 case "Read Parallel":
-                    mainWindow.ContentControl.Content = mainWindow.ReadControl;
-                    mainWindow.ReadControl.View(item.ItemId, true);
+                    //mainWindow.ContentControl.Content = mainWindow.ReadControl;
+                    //mainWindow.ReadControl.View(item.ItemId, true);
                     break;
             }
         }
@@ -227,8 +227,8 @@ namespace RTWin.Controls
 
             Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
             {
-                mainWindow.ContentControl.Content = mainWindow.ReadControl;
-                mainWindow.ReadControl.View(item.ItemId, item.IsParallel);
+                //mainWindow.ContentControl.Content = mainWindow.ReadControl;
+                //mainWindow.ReadControl.View(item.ItemId, item.IsParallel);
             }));
         }
     }

@@ -36,6 +36,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper, Version=3.1.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AutoMapper.3.1.1\lib\net40\AutoMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoMapper.Net4, Version=3.1.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AutoMapper.3.1.1\lib\net40\AutoMapper.Net4.dll</HintPath>
+    </Reference>
     <Reference Include="Awesomium.Core, Version=1.7.4.1, Culture=neutral, PublicKeyToken=e1a0d7c8071a5214, processorArchitecture=x86" />
     <Reference Include="Awesomium.Windows.Controls, Version=1.7.4.1, Culture=neutral, PublicKeyToken=7a34e179b8b61c39, processorArchitecture=x86" />
     <Reference Include="ICSharpCode.AvalonEdit">
@@ -130,11 +138,39 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Common\MvvmTextEditor.cs" />
     <Compile Include="Common\DateTimeConverter.cs" />
     <Compile Include="Common\DialogCloser.cs" />
     <Compile Include="Common\HtmlLoader.cs" />
+    <Compile Include="Controls\CommonWindow.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Controls\ItemDialog.xaml.cs">
+      <DependentUpon>ItemDialog.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Controls\LanguagesControl.xaml.cs">
+      <DependentUpon>LanguagesControl.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Controls\PluginsControl.xaml.cs">
+      <DependentUpon>PluginsControl.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Controls\PromptDialog.xaml.cs">
       <DependentUpon>PromptDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ReadControl.xaml.cs">
+      <DependentUpon>ReadControl.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Controls\TermsControl.xaml.cs">
+      <DependentUpon>TermsControl.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Controls\TextsControl.xaml.cs">
+      <DependentUpon>TextsControl.xaml</DependentUpon>
+      <SubType>Code</SubType>
     </Compile>
     <Compile Include="Controls\UserDialog.xaml.cs">
       <DependentUpon>UserDialog.xaml</DependentUpon>
@@ -149,7 +185,9 @@
     <Compile Include="Models\Entities\LanguageViewModel.cs" />
     <Compile Include="Models\Entities\PluginLanguage.cs" />
     <Compile Include="Models\Entities\TermModel.cs" />
+    <Compile Include="Models\Views\LanguagesControlViewModel.cs" />
     <Compile Include="Models\Views\MainWindowViewModel.cs" />
+    <Compile Include="Models\Views\PluginsControlViewModel.cs" />
     <Compile Include="Models\Views\RelayCommand.cs" />
     <Compile Include="Models\Views\UserDialogViewModel.cs" />
     <Compile Include="Properties\Annotations.cs" />
@@ -159,7 +197,31 @@
     <Compile Include="Web\ResourceController.cs" />
     <Compile Include="Web\SyncController.cs" />
     <Compile Include="Web\TermsController.cs" />
+    <Page Include="Controls\ItemDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\LanguagesControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\PluginsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\PromptDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ReadControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\TermsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\TextsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -194,6 +256,10 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Content Include="..\packages\AutoMapper.3.1.1\lib\net40\AutoMapper.Net4.dll">
+      <Link>AutoMapper.Net4.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

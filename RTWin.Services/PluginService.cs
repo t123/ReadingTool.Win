@@ -43,20 +43,20 @@ namespace RTWin.Services
             _db.Delete<Plugin>(id);
         }
 
-        public IList<Plugin> FindAll()
+        public IEnumerable<Plugin> FindAll()
         {
-            return _db.FetchBy<Plugin>(sql => sql.OrderBy(x => x.Name));
+            return _db.FetchBy<Plugin>(sql => sql.OrderBy(x => x.Name).OrderBy("ORDER BY Name COLLATE NOCASE"));
         }
 
-        public IList<Plugin> FindAllForLanguage(long languageId)
+        public IEnumerable<Plugin> FindAllForLanguage(long languageId)
         {
             var result = _db.Query<Plugin>("SELECT a.* FROM plugin a, language_plugin b WHERE a.PluginId=b.PluginId AND b.LanguageId=@0 ORDER BY a.Name", languageId);
             return result.ToList();
         }
 
-        public List<object[]> FindAllWithActive(long languageId)
+        public IEnumerable<PluginLanguage> FindAllWithActive(long languageId)
         {
-            var result = _db.Fetch<object[]>("select a.pluginid, a.name, a.description, b.pluginid as Enabled from plugin a left outer join language_plugin b on a.pluginid=b.pluginid and b.languageid=@0  ORDER BY a.Name", languageId);
+            var result = _db.Fetch<PluginLanguage>("select a.PluginId, a.Name, a.Description, b.pluginid as Enabled from plugin a left outer join language_plugin b on a.pluginid=b.pluginid and b.languageid=@0  ORDER BY a.Name", languageId);
             return result;
         }
 

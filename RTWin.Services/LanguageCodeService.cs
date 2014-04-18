@@ -18,7 +18,7 @@ namespace RTWin.Services
             _db = new Database("db");
         }
 
-        public IList<LanguageCode> FindAll()
+        public IEnumerable<LanguageCode> FindAll()
         {
             return _db.FetchBy<LanguageCode>(x=>x.OrderBy(y=>y.Name));
         }

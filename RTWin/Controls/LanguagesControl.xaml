@@ -4,18 +4,20 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:RTWin.Controls"
+             xmlns:common="clr-namespace:RTWin.Common"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="500">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <common:EnumMatchToBooleanConverter x:Key="enumConverter" />
     </UserControl.Resources>
     <Grid>
         <DockPanel>
             <Border DockPanel.Dock="Bottom" BorderThickness="0,1,0,0" BorderBrush="Black">
                 <StackPanel Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
                     <StackPanel Height="40" Orientation="Horizontal" HorizontalAlignment="Center"  VerticalAlignment="Top">
-                        <Button Content="Add" Name="ButtonAdd" Margin="5" MinWidth="75" Tag="Add" Click="Button_OnClick"></Button>
-                        <Button Content="Delete" Name="ButtonDelete" Margin="5" MinWidth="75" Tag="Delete" Click="Button_OnClick"></Button>
+                        <Button Content="Add" Margin="5" MinWidth="75" Command="{Binding AddCommand}" />
+                        <Button Content="Delete" Margin="5" MinWidth="75" Command="{Binding DeleteCommand}"/>
                     </StackPanel>
                 </StackPanel>
             </Border>
@@ -29,16 +31,75 @@
                     <GroupBox.Header>
                         <TextBlock Margin="5" FontWeight="Heavy">Languages</TextBlock>
                     </GroupBox.Header>
-                    <ListBox Name="ListBoxLanguages" ItemsSource="{Binding}" DisplayMemberPath="Name" MinWidth="100" SelectionChanged="ListBoxLanguages_OnSelectionChanged">
+                    <ListBox Name="ListBoxLanguages" ItemsSource="{Binding Languages}" DisplayMemberPath="Name" MinWidth="100" 
+                             SelectedItem="{Binding Path=SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             >
                     </ListBox>
                 </GroupBox>
                 <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
-                <GroupBox Grid.Column="2">
-                    <GroupBox.Header>
-                        <TextBlock Margin="5" FontWeight="Heavy">Details</TextBlock>
-                    </GroupBox.Header>
-                    <ContentControl Name="ContentControl"></ContentControl>
-                </GroupBox>
+                <DockPanel Grid.Column="2" >
+                    <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" DockPanel.Dock="Bottom" Height="40">
+                        <Button Content="Save" Margin="5" MinWidth="75" Command="{Binding SaveCommand}"/>
+                        <Button Content="Cancel" Margin="5" MinWidth="75" Command="{Binding CancelCommand}"/>
+                    </StackPanel>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <GroupBox Grid.Row="0">
+                            <GroupBox.Header>
+                                <TextBlock Margin="5" FontWeight="Heavy">Details</TextBlock>
+                            </GroupBox.Header>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Label Content="Language Name" Grid.Row="0" Grid.Column="0"/>
+                                <TextBox Grid.Row="0" Grid.Column="1"  Text="{Binding Language.Name}" Margin="5"/>
+                                <Label Content="Language Code" Grid.Row="1" Grid.Column="0"/>
+                                <ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Codes}" SelectedValuePath="Code" DisplayMemberPath="Name"  SelectedValue="{Binding Language.LanguageCode}" Margin="5"/>
+                                <Label Content="Is Archived?" Grid.Row="5" Grid.Column="0"/>
+                                <CheckBox Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" IsChecked="{Binding Language.IsArchived}" Margin="5"/>
+                                <Label Content="Direction" Grid.Row="2" Grid.Column="0"/>
+                                <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center"  Margin="5">
+                                    <RadioButton GroupName="RbDirection" IsChecked="{Binding Path=Language.Direction, Converter={StaticResource enumConverter}, ConverterParameter=LeftToRight}">Left to Right</RadioButton>
+                                    <RadioButton GroupName="RbDirection" IsChecked="{Binding Path=Language.Direction, Converter={StaticResource enumConverter}, ConverterParameter=RightToLeft}" Margin="20,0,0,0">Right to Left</RadioButton>
+                                </StackPanel>
+                                <Label Content="Sentence Regex" Grid.Row="3" Grid.Column="0"/>
+                                <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Language.SentenceRegex}" Margin="5" />
+                                <Label Content="Term Regex" Grid.Row="4" Grid.Column="0"/>
+                                <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Language.TermRegex}" Margin="5"/>
+                            </Grid>
+                        </GroupBox>
+                        <GroupBox Grid.Row="1">
+                            <GroupBox.Header>
+                                <TextBlock Margin="5" FontWeight="Heavy">Plugins</TextBlock>
+                            </GroupBox.Header>
+                            <ListBox Name="ListBoxPlugins" ItemsSource="{Binding Language.Plugins}">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <WrapPanel>
+                                            <CheckBox IsChecked="{Binding Path=Enabled}" Margin="3"></CheckBox>
+                                            <TextBlock Text="{Binding Path=Name}" ToolTip="{Binding Path=Description}">
+                                            </TextBlock>
+                                        </WrapPanel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </GroupBox>
+                    </Grid>
+                </DockPanel>
             </Grid>
         </DockPanel>
     </Grid>

@@ -52,7 +52,7 @@ namespace RTWin.Services
                 _db.DeleteWhere<Item>(x => x.L1LanguageId == language.LanguageId);
                 _db.DeleteWhere<Term>(x => x.LanguageId == language.LanguageId);
                 _db.DeleteWhere<TermLog>(x => x.LanguageId == language.LanguageId);
-                _db.DeleteWhere<LanguagePlugin>(x => x.LanguageId == language.LanguageId);
+                _db.Execute("DELETE FROM Language_Plugin WHERE LanguageId=@0", language.LanguageId);
                 _db.Delete<Language>(language.LanguageId);
             }
 

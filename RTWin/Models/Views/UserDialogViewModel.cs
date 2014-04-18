@@ -94,7 +94,7 @@ namespace RTWin.Models.Views
             }, param => SelectedUser != null);
 
             RenameCommand = new RelayCommand(param => Rename(), param => SelectedUser != null);
-            DeleteCommand = new RelayCommand(param => Delete(), param => SelectedUser != null);
+            DeleteCommand = new RelayCommand(param => Delete(), param => SelectedUser != null && Users.Count>1);
             AddCommand = new RelayCommand(param => Add());
         }
 

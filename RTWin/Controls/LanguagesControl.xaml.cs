@@ -6,6 +6,7 @@ using System.Windows.Markup;
 using Ninject;
 using RTWin.Entities;
 using RTWin.Models;
+using RTWin.Models.Views;
 using RTWin.Services;
 
 namespace RTWin.Controls
@@ -15,90 +16,20 @@ namespace RTWin.Controls
     /// </summary>
     public partial class LanguagesControl : UserControl
     {
-        private LanguageService _languageService;
-        public IList<Language> Languages { get; set; }
+        private LanguagesControlViewModel _languagesControlViewModel;
 
-        public LanguagesControl()
+        public LanguagesControlViewModel LanguagesControlViewModel
         {
+            get { return _languagesControlViewModel; }
+            set { _languagesControlViewModel = value; }
+        }
+
+        public LanguagesControl(LanguagesControlViewModel languagesControlViewModel)
+        {
+            _languagesControlViewModel = languagesControlViewModel;
             InitializeComponent();
-            BindLanguages();
-        }
 
-        private void BindLanguages()
-        {
-            _languageService = App.Container.Get<LanguageService>();
-            Languages = _languageService.FindAll();
-            this.DataContext = Languages;
-
-            if (ListBoxLanguages.Items.Count > 0)
-            {
-                ListBoxLanguages.SelectedIndex = 0;
-            }
-            else
-            {
-                ContentControl.Content = "";
-            }
-        }
-        
-        private void Button_OnClick(object sender, RoutedEventArgs e)
-        {
-            Button button = sender as Button;
-
-            if (button == null)
-            {
-                return;
-            }
-
-            switch (button.Tag.ToString())
-            {
-                case "Add":
-                    PromptDialog promptDialog = new PromptDialog("Language Name", "Name ");
-                    var result = promptDialog.ShowDialog();
-
-                    if (result == true)
-                    {
-                        var language = new Language()
-                        {
-                            Name = promptDialog.Input,
-                            IsArchived = false,
-                            LanguageCode = "--",
-                            Settings = new LanguageSettings()
-                            {
-                                Direction = Direction.LeftToRight,
-                                SentenceRegex = "[^\\.!\\?]+[\\.!\\?\n]+",
-                                TermRegex = "([a-zA-ZÀ-ÖØ-öø-ȳ\\'-]+)"
-                            }
-                        };
-
-                        _languageService.Save(language);
-                        BindLanguages();
-                    }
-                    return;
-
-                case "Delete":
-                    var item = ListBoxLanguages.SelectedItem as Language;
-
-                    if (item == null)
-                    {
-                        return;
-                    }
-
-                    _languageService.DeleteOne(item.LanguageId);
-                    BindLanguages();
-                    break;
-            }
-        }
-
-        private void ListBoxLanguages_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var language = ListBoxLanguages.SelectedItem as Language;
-
-            if (language == null)
-            {
-                return;
-            }
-
-            ContentControl.Content = new LanguageDialog(language);
+            this.DataContext = LanguagesControlViewModel;
         }
     }
 }

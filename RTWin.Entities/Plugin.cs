@@ -27,12 +27,20 @@ namespace RTWin.Entities
         }
     }
 
-    [TableName("language_plugin")]
-    [PrimaryKey("LanguageId, PluginId")]
-    public class LanguagePlugin
+    //[TableName("language_plugin")]
+    //[PrimaryKey("LanguageId, PluginId")]
+    //public class LanguagePlugin
+    //{
+    //    public long LanguageId { get; set; }
+    //    public long PluginId { get; set; }
+    //}
+
+    public class PluginLanguage
     {
-        public long LanguageId { get; set; }
         public long PluginId { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public bool Enabled { get; set; }
     }
 
     [TableName("plugin_storage")]

@@ -18,8 +18,6 @@ namespace RTWin.Models
         public Direction Direction { get; set; }
 
         public IList<PluginLanguage> Plugins { get; set; }
-        public List<LanguageCodeModel> Codes { get; set; }
-
         public LanguageModel()
         {
             Plugins = new List<PluginLanguage>();

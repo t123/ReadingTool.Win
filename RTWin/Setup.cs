@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
+using AutoMapper;
 using Microsoft.AspNet.SignalR.Client;
 using Microsoft.Owin.Hosting;
 using Ninject;
@@ -11,6 +12,7 @@ using NPoco;
 using RTWin.Common;
 using RTWin.Controls;
 using RTWin.Entities;
+using RTWin.Models;
 using RTWin.Models.Views;
 using RTWin.Services;
 
@@ -34,6 +36,7 @@ namespace RTWin
         {
             var s = new Setup(container);
             s.InitContainer();
+            s.CreateMappings();
             s.BackupDb("Start");
             s.InitDb();
             s.InitWebApi();
@@ -63,13 +66,18 @@ namespace RTWin
             _container.Bind<PluginService>().ToSelf();
 
             _container.Bind<MainWindow>().ToSelf();
+            _container.Bind<LanguagesControl>().ToSelf();
+            _container.Bind<PluginsControl>().ToSelf();
+            _container.Bind<TextsControl>().ToSelf();
+            _container.Bind<TermsControl>().ToSelf();
+
             _container.Bind<UserDialog>().ToSelf();
             _container.Bind<PromptDialog>().ToSelf();
-            //_container.Bind<LanguageDialog>().ToSelf();
-            //_container.Bind<ItemDialog>().ToSelf();
-            //_container.Bind<PluginDialog>().ToSelf();
+            _container.Bind<ItemDialog>().ToSelf();
 
             _container.Bind<MainWindowViewModel>().ToSelf();
+            _container.Bind<PluginsControlViewModel>().ToSelf();
+            _container.Bind<LanguagesControlViewModel>().ToSelf();
 
             _databaseService = Container.Get<DatabaseService>();
         }
@@ -77,6 +85,16 @@ namespace RTWin
         private static Database CreateDb(IContext context)
         {
             return new Database("db");
+        }
+
+        private void CreateMappings()
+        {
+            Mapper.CreateMap<Language, LanguageModel>()
+                .ForMember(x => x.SentenceRegex, y => y.MapFrom(z => z.Settings.SentenceRegex.Replace("\n", "\\n")))
+                .ForMember(x => x.TermRegex, y => y.MapFrom(z => z.Settings.TermRegex.Replace("\n", "\\n")))
+                .ForMember(x => x.Direction, y => y.MapFrom(z => z.Settings.Direction))
+                .ForMember(x => x.Plugins, y => y.MapFrom(z => App.Container.Get<PluginService>().FindAllWithActive(z.LanguageId)))
+                ;
         }
 
         public void BackupDb(string identifier)

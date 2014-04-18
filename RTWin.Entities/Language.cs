@@ -13,9 +13,12 @@ namespace RTWin.Entities
     [PrimaryKey("LanguageId")]
     public class Language
     {
+        public const string TermRegex = "([a-zA-ZÀ-ÖØ-öø-ȳ\\'-]+)";
+        public const string SentenceRegex = "[^\\.!\\?]+[\\.!\\?\n]+";
+
         public long LanguageId { get; set; }
         public string Name { get; set; }
-        
+
         public DateTime DateCreated { get; set; }
         public DateTime DateModified { get; set; }
         public bool IsArchived { get; set; }
