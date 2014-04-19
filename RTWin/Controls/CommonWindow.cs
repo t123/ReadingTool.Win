@@ -27,7 +27,7 @@ namespace RTWin.Controls
         protected DatabaseService _databaseService;
         protected IParserService _parserService;
         protected WebControl _control;
-        
+
         public ParserOutput Output
         {
             get { return _output; }
@@ -94,33 +94,7 @@ namespace RTWin.Controls
 
         private ParserOutput InjectPlugins(ParserOutput po)
         {
-            var plugins = _pluginService.FindAllForLanguage(_item.L1LanguageId);
-
-            if (plugins.Any())
-            {
-                StringBuilder sb = new StringBuilder("<script>");
-                sb.AppendLine("");
-                sb.AppendLine("$(document).on('pluginReady', function() {");
-
-                foreach (var plugin in plugins)
-                {
-                    sb.AppendLine("");
-                    sb.AppendLine("/*");
-                    sb.AppendLine("* " + plugin.Name);
-                    sb.AppendLine("* " + plugin.UUID);
-                    sb.AppendLine("* " + plugin.Description);
-                    sb.AppendLine("*/");
-                    sb.AppendLine(plugin.Content);
-                    sb.AppendLine("");
-                }
-
-                sb.AppendLine("$(document).trigger('pluginInit');");
-                sb.AppendLine("});");
-                sb.AppendLine("</script>");
-
-                po.Html = _output.Html.Replace("<!-- plugins -->", sb.ToString());
-            }
-
+            po.Html = _output.Html.Replace("<!-- plugins -->", string.Format(@"<script src=""<!-- webapi -->/api/resource/plugins/{0}""></script>", _item.L1LanguageId));
             return po;
         }
 

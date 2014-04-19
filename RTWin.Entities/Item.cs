@@ -32,16 +32,22 @@ namespace RTWin.Entities
         {
             get { return !string.IsNullOrWhiteSpace(L2Content); }
         }
-        
+
         [Ignore]
         public bool HasMedia
         {
             get { return !string.IsNullOrWhiteSpace(MediaUri); }
         }
 
+        /// <summary>
+        /// This property is not guarenteed to be NOT NULL
+        /// </summary>
         [ResultColumn]
         public string L1Language { get; set; }
 
+        /// <summary>
+        /// This property is not guarenteed to be NOT NULL
+        /// </summary>
         [ResultColumn]
         public string L2Language { get; set; }
     }

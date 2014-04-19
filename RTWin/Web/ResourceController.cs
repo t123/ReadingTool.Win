@@ -17,6 +17,44 @@ namespace RTWin.Web
     public class ResourceController : ApiController
     {
         [HttpGet]
+        [Route("plugins/{id}")]
+        public HttpResponseMessage GetPlugins(long id)
+        {
+            var pluginService = App.Container.Get<PluginService>();
+            var plugins = pluginService.FindAllForLanguage(id);
+
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine(string.Format("//Generated at {0}", DateTime.Now));
+
+            if (plugins.Any())
+            {
+                sb.AppendLine("$(document).on('pluginReady', function() {");
+
+                foreach (var plugin in plugins)
+                {
+                    sb.AppendLine("");
+                    sb.AppendLine("/*");
+                    sb.AppendLine("* " + plugin.Name);
+                    sb.AppendLine("* " + plugin.UUID);
+                    sb.AppendLine("* " + plugin.Description);
+                    sb.AppendLine("*/");
+                    sb.AppendLine(plugin.Content);
+                    sb.AppendLine("");
+                }
+
+                sb.AppendLine("$(document).trigger('pluginInit');");
+                sb.AppendLine("});");
+            }
+
+            var response = new HttpResponseMessage(HttpStatusCode.OK);
+            response.Content = new StringContent(sb.ToString());
+            response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/javascript");
+
+            return response;
+        }
+
+
+        [HttpGet]
         [Route("media/{id}")]
         public HttpResponseMessage GetMedia(long id)
         {
