@@ -35,13 +35,6 @@ namespace RTWin.Controls
             _itemDialogViewModel = App.Container.Get<ItemDialogViewModel>(paramenter);
             InitializeComponent();
             this.DataContext = _itemDialogViewModel;
-
-            Closing += ItemDialog_Closing;
-        }
-
-        void ItemDialog_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            this.DialogResult = _itemDialogViewModel.Refresh;
         }
     }
 }

@@ -7,9 +7,11 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Win32;
 using RTWin.Annotations;
 using RTWin.Entities;
+using RTWin.Messages;
 using RTWin.Services;
 
 namespace RTWin.Models.Views
@@ -63,8 +65,6 @@ namespace RTWin.Models.Views
             }
         }
 
-        public bool Refresh { get; set; }
-
         public ObservableCollection<Language> Languages
         {
             get { return _languages; }
@@ -107,7 +107,7 @@ namespace RTWin.Models.Views
 
                 _itemService.Save(item);
 
-                Refresh = true;
+                Messenger.Default.Send<RefreshItemsMessage>(new RefreshItemsMessage());
             });
 
             _cancelCommand = new RelayCommand(param =>
