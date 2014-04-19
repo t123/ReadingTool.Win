@@ -190,6 +190,7 @@
     <Compile Include="Models\Views\MainWindowViewModel.cs" />
     <Compile Include="Models\Views\PluginsControlViewModel.cs" />
     <Compile Include="Models\Views\RelayCommand.cs" />
+    <Compile Include="Models\Views\TermsControlViewModel.cs" />
     <Compile Include="Models\Views\TextsControlViewModel.cs" />
     <Compile Include="Models\Views\UserDialogViewModel.cs" />
     <Compile Include="Properties\Annotations.cs" />

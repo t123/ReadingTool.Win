@@ -16,6 +16,7 @@ using RTWin.Entities;
 using RTWin.Models;
 using RTWin.Models.Views;
 using RTWin.Services;
+using RTWin.Web;
 
 namespace RTWin
 {
@@ -79,6 +80,7 @@ namespace RTWin
             _container.Bind<MainWindowViewModel>().ToSelf();
             _container.Bind<PluginsControlViewModel>().ToSelf();
             _container.Bind<LanguagesControlViewModel>().ToSelf();
+            _container.Bind<TermsControlViewModel>().ToSelf();
 
             _databaseService = Container.Get<DatabaseService>();
         }
@@ -95,12 +97,6 @@ namespace RTWin
                 .ForMember(x => x.TermRegex, y => y.MapFrom(z => z.Settings.TermRegex.Replace("\n", "\\n")))
                 .ForMember(x => x.Direction, y => y.MapFrom(z => z.Settings.Direction))
                 .ForMember(x => x.Plugins, y => y.MapFrom(z => App.Container.Get<PluginService>().FindAllWithActive(z.LanguageId)))
-                ;
-
-            Mapper.CreateMap<Item, ItemModel>()
-                .ForMember(x => x.Language, y => y.MapFrom(z => App.Container.Get<LanguageService>().FindOne(z.L1LanguageId).Name))
-                .ForMember(x => x.IsParallel, y => y.MapFrom(z => !string.IsNullOrWhiteSpace(z.L2Content)))
-                .ForMember(x => x.HasMedia, y => y.MapFrom(z => !string.IsNullOrWhiteSpace(z.MediaUri)))
                 ;
         }
 

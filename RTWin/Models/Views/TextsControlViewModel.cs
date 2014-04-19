@@ -20,11 +20,11 @@ namespace RTWin.Models.Views
     public class TextsControlViewModel : INotifyPropertyChanged
     {
         private readonly ItemService _itemService;
-        private ObservableCollection<ItemModel> _items;
+        private ObservableCollection<Item> _items;
         private string _filterText;
         private ObservableCollection<string> _collectionNames;
         private string _selectedCollectionName;
-        private ItemModel _selectedItem;
+        private Item _selectedItem;
         private ICommand _addCommand;
         private ICommand _editCommand;
         private ICommand _copyCommand;
@@ -57,7 +57,7 @@ namespace RTWin.Models.Views
         public string FilterText
         {
             get { return _filterText; }
-            set { _filterText = value; OnPropertyChanged("FilterText"); }
+            set { _filterText = value; OnPropertyChanged("FilterText"); MapCollection(); }
         }
 
         public ObservableCollection<string> CollectionNames
@@ -84,14 +84,14 @@ namespace RTWin.Models.Views
             set { _itemType = value; OnPropertyChanged("ItemType"); }
         }
 
-        public ItemModel SelectedItem
+        public Item SelectedItem
         {
             get { return _selectedItem; }
             set
             {
                 _selectedItem = value;
 
-                if (_selectedItem.ItemType == Entities.ItemType.Text.ToString())
+                if (_selectedItem.ItemType == Entities.ItemType.Text)
                 {
                     ItemType = "Read";
                 }
@@ -104,7 +104,7 @@ namespace RTWin.Models.Views
             }
         }
 
-        public ObservableCollection<ItemModel> Items
+        public ObservableCollection<Item> Items
         {
             get { return _items; }
             set { _items = value; OnPropertyChanged("Items"); }
@@ -113,6 +113,7 @@ namespace RTWin.Models.Views
         public TextsControlViewModel(ItemService itemService)
         {
             _itemService = itemService;
+            CollectionNames = new ObservableCollection<string>(_itemService.FindCollectionsPerLanguage());
             MapCollection();
             SelectedItem = Items.FirstOrDefault();
 
@@ -124,6 +125,7 @@ namespace RTWin.Models.Views
 
                 if (result == true)
                 {
+                    CollectionNames = new ObservableCollection<string>(_itemService.FindCollectionsPerLanguage());
                     MapCollection();
                 }
             });
@@ -138,6 +140,7 @@ namespace RTWin.Models.Views
                 if (result == true)
                 {
                     var id = SelectedItem.ItemId;
+                    CollectionNames = new ObservableCollection<string>(_itemService.FindCollectionsPerLanguage());
                     MapCollection();
                     SelectedItem = Items.FirstOrDefault(x => x.ItemId == id);
                 }
@@ -169,6 +172,7 @@ namespace RTWin.Models.Views
             _deleteCommand = new RelayCommand(param =>
             {
                 _itemService.DeleteOne(SelectedItem.ItemId);
+                CollectionNames = new ObservableCollection<string>(_itemService.FindCollectionsPerLanguage());
                 MapCollection();
                 SelectedItem = Items.FirstOrDefault();
             }, param => SelectedItem != null);
@@ -181,9 +185,7 @@ namespace RTWin.Models.Views
 
         private void MapCollection()
         {
-            var items = Mapper.Map<IEnumerable<Item>, IEnumerable<ItemModel>>(_itemService.FindAll()).OrderBy(x => x.Language).ThenBy(x => x.CollectionName).ThenBy(x => x.CollectionNo).ThenBy(x => x.L1Title);
-            Items = new ObservableCollection<ItemModel>(items);
-            CollectionNames = new ObservableCollection<string>(_itemService.FindCollectionsPerLanguage());
+            Items = new ObservableCollection<Item>(_itemService.Search(maxResults: 200, filter: FilterText));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

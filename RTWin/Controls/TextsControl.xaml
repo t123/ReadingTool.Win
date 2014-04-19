@@ -32,27 +32,25 @@
                     <ColumnDefinition Width="Auto" MinWidth="200"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <Label Content="Filter" Grid.Column="0" Margin="5" VerticalAlignment="Center"></Label>
-                <TextBox Width="Auto" Grid.Column="1" Margin="5" VerticalAlignment="Center" Text="{Binding FilterText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                <TextBox Width="Auto" Grid.Column="1" Margin="5" VerticalAlignment="Center" Text="{Binding FilterText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=200}"></TextBox>
                 <ComboBox Grid.Column="2" Margin="5" VerticalAlignment="Center" ItemsSource="{Binding CollectionNames}" SelectedItem="{Binding SelectedCollectionName}" IsEditable="True" Text="Choose to filter"/>
             </Grid>
 
-            <DataGrid ItemsSource="{Binding Items}" AutoGenerateColumns="False" CanUserReorderColumns="False" 
-                      AlternatingRowBackground="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" 
-                      CanUserAddRows="False" CanUserResizeRows="False" Margin="5"
-                      SelectionMode="Single" SelectedItem="{Binding SelectedItem}">
+            <DataGrid ItemsSource="{Binding Items}" AutoGenerateColumns="False" CanUserReorderColumns="True" 
+                      AlternatingRowBackground="#f9f9f9" FontSize="14"
+                      CanUserAddRows="False" CanUserResizeRows="False" SelectionMode="Single" SelectedItem="{Binding SelectedItem}"
+                      EnableRowVirtualization="True" IsReadOnly="True" CanUserDeleteRows="False"
+                      >
                 <DataGrid.Columns>
-                    <DataGridCheckBoxColumn IsReadOnly="False"></DataGridCheckBoxColumn>
-                    <DataGridTextColumn IsReadOnly="True" Header="Type" Binding="{Binding ItemType}"></DataGridTextColumn>
-                    <DataGridTextColumn IsReadOnly="True" Header="Language" Binding="{Binding Language}"></DataGridTextColumn>
-                    <DataGridTextColumn IsReadOnly="True" Header="No" Binding="{Binding CollectionNo}"></DataGridTextColumn>
-                    <DataGridTextColumn IsReadOnly="True" Header="Collection" Binding="{Binding CollectionName}"></DataGridTextColumn>
-                    <DataGridTextColumn IsReadOnly="True" Header="L1 Title" Binding="{Binding L1Title}"></DataGridTextColumn>
-                    <DataGridTextColumn IsReadOnly="True" Header="L1 Title" Binding="{Binding L2Title}"></DataGridTextColumn>
-                    <DataGridTextColumn IsReadOnly="True" Header="LastRead" Binding="{Binding LastRead, Converter={StaticResource dateConverter}}"></DataGridTextColumn>
-                    <DataGridTextColumn IsReadOnly="True" Header="Read" Binding="{Binding ReadTimes}"></DataGridTextColumn>
-                    <DataGridTextColumn IsReadOnly="True" Header="Listened" Binding="{Binding ListenedTimes}"></DataGridTextColumn>
-                    <DataGridCheckBoxColumn IsReadOnly="True" Header="Media?" Binding="{Binding HasMedia}"></DataGridCheckBoxColumn>
-                    <DataGridCheckBoxColumn IsReadOnly="True" Header="Is Parallel?" Binding="{Binding IsParallel}"></DataGridCheckBoxColumn>
+                    <DataGridTextColumn Width="45" Header="Type" Binding="{Binding ItemType, Mode=OneWay}"></DataGridTextColumn>
+                    <DataGridTextColumn Width="120" Header="Language" Binding="{Binding L1Language, Mode=OneWay}"></DataGridTextColumn>
+                    <DataGridTextColumn Width="*" Header="Collection" Binding="{Binding CollectionName, Mode=OneWay}"></DataGridTextColumn>
+                    <DataGridTextColumn Width="35" Header="No" Binding="{Binding CollectionNo, Mode=OneWay}"></DataGridTextColumn>
+                    <DataGridTextColumn Width="*" Header="L1 Title" Binding="{Binding L1Title, Mode=OneWay}"></DataGridTextColumn>
+                    <DataGridTextColumn Width="40" Header="Read" Binding="{Binding ReadTimes, Mode=OneWay}"></DataGridTextColumn>
+                    <DataGridTextColumn Width="55" Header="Listened" Binding="{Binding ListenedTimes, Mode=OneWay}"></DataGridTextColumn>
+                    <DataGridCheckBoxColumn Width="50" Header="Media?" Binding="{Binding Path=HasMedia, Mode=OneWay}"></DataGridCheckBoxColumn>
+                    <DataGridCheckBoxColumn Width="80" Header="Is Parallel?" Binding="{Binding Path=IsParallel, Mode=OneWay}"></DataGridCheckBoxColumn>
                 </DataGrid.Columns>
             </DataGrid>
         </DockPanel>

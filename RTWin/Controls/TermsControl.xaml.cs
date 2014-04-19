@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using Ninject;
 using RTWin.Entities;
 using RTWin.Models;
+using RTWin.Models.Views;
 using RTWin.Services;
 
 namespace RTWin.Controls
@@ -24,66 +25,14 @@ namespace RTWin.Controls
     /// </summary>
     public partial class TermsControl : UserControl
     {
-        private TermService _termService;
+        private readonly TermsControlViewModel _termsControlViewModel;
         public IList<TermModel> Terms { get; set; }
 
-        public TermsControl()
+        public TermsControl(TermsControlViewModel termsControlViewModel)
         {
+            _termsControlViewModel = termsControlViewModel;
             InitializeComponent();
-            SetButtonVisibility();
-            BindTerms();
-        }
-
-        private void BindTerms()
-        {
-            _termService = App.Container.Get<TermService>();
-            var languageService = App.Container.Get<LanguageService>();
-
-            var terms = _termService.FindAll();
-            var languages = languageService.FindAll().ToDictionary(x => x.LanguageId, x => x.Name);
-
-            Terms = new List<TermModel>();
-
-            foreach (var term in terms)
-            {
-                Terms.Add(new TermModel()
-                {
-                    TermId = term.TermId,
-                    DateCreated = term.DateCreated,
-                    DateModified = term.DateModified,
-                    Phrase = term.Phrase,
-                    Sentence = term.Sentence,
-                    BasePhrase = term.BasePhrase,
-                    Definition = term.Definition,
-                    State = term.State.ToString(),
-                    Language = languages.ContainsKey(term.LanguageId) ? languages[term.LanguageId] : "Unknown"
-                });
-            }
-
-            this.DataContext = Terms.OrderBy(x => x.Language).ThenBy(x => x.Phrase, StringComparer.InvariantCultureIgnoreCase);
-        }
-
-        private void SetButtonVisibility()
-        {
-            if (DataGridTerms.SelectedIndex >= 0)
-            {
-                ButtonEdit.Visibility = Visibility.Visible;
-                ButtonDelete.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                ButtonEdit.Visibility = Visibility.Hidden;
-                ButtonDelete.Visibility = Visibility.Hidden;
-            }
-        }
-
-        private void DataGridTerms_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            SetButtonVisibility();
-        }
-
-        private void Button_OnClick(object sender, RoutedEventArgs e)
-        {
+            DataContext = _termsControlViewModel;
         }
     }
 }

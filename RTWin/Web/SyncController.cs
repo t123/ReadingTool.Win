@@ -75,10 +75,12 @@ namespace RTWin.Web
             string title = null,
             long? languageId = null,
             bool? isParallel = null,
-            bool? hasMedia = null
+            bool? hasMedia = null,
+            string filter = null,
+            int? maxResults = null
             )
         {
-            return _itemService.Search(itemType, modified, collectionName, title, languageId, isParallel, hasMedia);
+            return _itemService.Search(itemType, modified, collectionName, title, languageId, isParallel, hasMedia, filter, maxResults);
         }
 
         [HttpGet]

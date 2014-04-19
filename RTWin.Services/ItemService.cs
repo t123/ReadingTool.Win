@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NPoco;
 using NPoco.FluentMappings;
@@ -58,11 +59,17 @@ namespace RTWin.Services
 
         public IEnumerable<string> FindCollectionsPerLanguage()
         {
+            List<string> list = _db.FetchBy<Language>(sql => sql.Where(x => !x.IsArchived && x.UserId == _user.UserId).OrderBy("ORDER BY Name COLLATE NOCASE"))
+                .Select(x => "\"" + x.Name + "\"")
+                .ToList();
+
             var builder = Sql.Builder.Append(@"SELECT DISTINCT('""' || b.Name || '"" - ""' || a.CollectionName || '""') as cName FROM item a, language b");
             builder.Append("WHERE a.L1Languageid=b.LanguageId AND a.Userid=@0 and b.IsArchived=0", _user.UserId);
             builder.OrderBy("cName COLLATE NOCASE");
 
-            return _db.Fetch<string>(builder);
+            list.AddRange(_db.Fetch<string>(builder));
+
+            return list;
         }
 
         public IEnumerable<string> FindAllCollectionNames(long? languageId)
@@ -140,30 +147,102 @@ namespace RTWin.Services
             return message;
         }
 
-        public IEnumerable<Item> Search(ItemType? itemType, DateTime? modified, string collectionName, string title, long? languageId, bool? isParallel, bool? hasMedia)
+        public IEnumerable<Item> Search(
+            ItemType? itemType = null,
+            DateTime? modified = null,
+            string collectionName = null,
+            string title = null,
+            long? languageId = null,
+            bool? isParallel = null,
+            bool? hasMedia = null,
+            string filter = null,
+            int? maxResults = null
+        )
         {
-            var sql = Sql.Builder.Append("SELECT * FROM item");
-            sql.Append("WHERE UserId=@0", _user.UserId);
+            var sql = Sql.Builder.Append("SELECT item.*, B.Name as L1Language, C.Name as L2Language FROM item item");
+            sql.LeftJoin("language B on item.L1LanguageId=B.LanguageId");
+            sql.LeftJoin("language C on item.L2LanguageId=C.LanguageId");
+            sql.Append("WHERE item.UserId=@0 ", _user.UserId);
+
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                var matches = Regex.Matches(filter, @"[\#\w]+|""[\w\s]*""");
+                string add = "";
+
+                foreach (Match match in matches)
+                {
+                    if (match.Value.StartsWith("#"))
+                    {
+                        if (match.Value.Length > 1)
+                        {
+                            var remainder = match.Value.Substring(1, match.Length - 1).ToLowerInvariant();
+
+                            switch (remainder)
+                            {
+                                case "parallel":
+                                    isParallel = true;
+                                    break;
+
+                                case "media":
+                                    hasMedia = true;
+                                    break;
+
+                                case "text":
+                                    itemType = ItemType.Text;
+                                    break;
+
+                                case "video":
+                                    itemType = ItemType.Video;
+                                    break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        string value = match.Value.Trim();
+
+                        if (value.StartsWith("\""))
+                        {
+                            value = value.Substring(1, value.Length - 1);
+                        }
+
+                        if (value.EndsWith("\""))
+                        {
+                            value = value.Substring(0, value.Length - 1);
+                        }
+
+                        if (value.Length > 0)
+                        {
+                            add += string.Format("(item.CollectionName LIKE '{0}%' OR item.L1Title LIKE '{0}%' OR L1Language LIKE '{0}%') AND ", value.Replace("'", "''"));
+                        }
+                    }
+                }
+
+                if (add.Length > 0)
+                {
+                    sql.Append(" AND " + add.Substring(0, add.Length - 4));
+                }
+            }
 
             if (!string.IsNullOrWhiteSpace(collectionName))
             {
-                sql.Append("WHERE CollectionName LIKE @0", collectionName + "%");
+                sql.Append("AND item.CollectionName LIKE @0", collectionName + "%");
             }
 
             if (!string.IsNullOrWhiteSpace(title))
             {
-                sql.Append("WHERE L1Title LIKE @0", title + "%");
+                sql.Append("AND item.L1Title LIKE @0", title + "%");
             }
 
             if (isParallel.HasValue)
             {
                 if (isParallel.Value)
                 {
-                    sql.Append("WHERE (L2Content IS NOT NULL AND L2Content<>'')");
+                    sql.Append("AND (item.L2Content IS NOT NULL AND item.L2Content<>'')");
                 }
                 else
                 {
-                    sql.Append("WHERE (L2Content IS NULL OR L2Content='')");
+                    sql.Append("AND (item.L2Content IS NULL OR item.L2Content='')");
                 }
             }
 
@@ -171,32 +250,38 @@ namespace RTWin.Services
             {
                 if (hasMedia.Value)
                 {
-                    sql.Append("WHERE (MediaUri IS NOT NULL AND MediaUri<>'')");
+                    sql.Append("AND (item.MediaUri IS NOT NULL AND item.MediaUri<>'')");
                 }
                 else
                 {
-                    sql.Append("WHERE (MediaUri IS NULL OR MediaUri='')");
+                    sql.Append("AND (item.MediaUri IS NULL OR item.MediaUri='')");
                 }
             }
 
             if (itemType.HasValue)
             {
-                sql.Append("WHERE ItemType=@0", itemType.Value);
+                sql.Append("AND item.ItemType=@0", itemType.Value);
             }
 
             if (languageId.HasValue)
             {
-                sql.Append("WHERE L1LanguageId=@0", languageId.Value);
+                sql.Append("AND item.L1LanguageId=@0", languageId.Value);
             }
 
             if (modified.HasValue)
             {
-                sql.Append("WHERE DateModified>=@0", modified);
+                sql.Append("AND item.DateModified>=@0", modified);
             }
 
-            sql.OrderBy("ItemId");
+            sql.OrderBy("L1Language, item.CollectionName, item.CollectionNo, item.L1Title, item.ItemId");
 
-            return _db.Query<Item>(sql).ToList();
+            if (maxResults.HasValue && maxResults > 0)
+            {
+                sql.Append("LIMIT @0", maxResults.Value);
+            }
+
+            var results = _db.Query<Item>(sql);
+            return results;
         }
     }
 }

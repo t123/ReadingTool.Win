@@ -6,7 +6,7 @@
              xmlns:controls="clr-namespace:RTWin.Controls"
              xmlns:common="clr-namespace:RTWin.Common"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="500" d:DesignWidth="600">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
         <common:DateTimeConverter x:Key="dateConverter"/>
@@ -16,22 +16,49 @@
             <Border DockPanel.Dock="Bottom" BorderThickness="0,1,0,0" BorderBrush="Black">
                 <StackPanel Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
                     <StackPanel Height="40" Orientation="Horizontal" HorizontalAlignment="Center"  VerticalAlignment="Top">
-                        <Button Content="Edit" Name="ButtonEdit" Margin="5" MinWidth="75" Tag="Edit" Click="Button_OnClick"></Button>
-                        <Button Content="Delete" Name="ButtonDelete" Margin="5" MinWidth="75" Tag="Delete" Click="Button_OnClick"></Button>
+                        <!--<Button Content="Export" Margin="5" MinWidth="75" Command="{Binding CommandExport}"/>
+                        <Button Content="Edit" Margin="5" MinWidth="75" />
+                        <Button Content="Delete" Margin="5" MinWidth="75" />-->
                     </StackPanel>
                 </StackPanel>
             </Border>
-            <DataGrid ItemsSource="{Binding}" Name="DataGridTerms" AutoGenerateColumns="False" SelectionChanged="DataGridTerms_OnSelectionChanged">
+            <Grid DockPanel.Dock="Top" Height="50">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto" MinWidth="200"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Label Content="Filter" Grid.Column="0" Margin="5" VerticalAlignment="Center"></Label>
+                <TextBox Width="Auto" Grid.Column="1" Margin="5" VerticalAlignment="Center" Text="{Binding FilterText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=200}"></TextBox>
+                <ComboBox Grid.Column="2" Margin="5" VerticalAlignment="Center" ItemsSource="{Binding CollectionNames}" SelectedItem="{Binding SelectedCollectionName}" IsEditable="True" Text="Choose to filter"/>
+            </Grid>
+            <DataGrid ItemsSource="{Binding Terms}" AutoGenerateColumns="False" CanUserReorderColumns="True" 
+                      AlternatingRowBackground="#f9f9f9" FontSize="14"
+                      CanUserAddRows="False" CanUserResizeRows="False" SelectionMode="Single"
+                      EnableRowVirtualization="True" IsReadOnly="True" CanUserDeleteRows="False"
+                      >
+                <DataGrid.RowDetailsTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Label Grid.Row="0" Content="{Binding ItemSource}"/>
+                            <Label Grid.Row="1" Content="{Binding Definition}"/>
+                            <Label Grid.Row="2" Content="{Binding DateCreated, Converter={StaticResource dateConverter}}"/>
+                            <Label Grid.Row="3" Content="{Binding DateModified, Converter={StaticResource dateConverter}}"/>
+                        </Grid>
+                    </DataTemplate>
+                </DataGrid.RowDetailsTemplate>
                 <DataGrid.Columns>
-                    <DataGridCheckBoxColumn IsReadOnly="False"></DataGridCheckBoxColumn>
-                    <DataGridTextColumn IsReadOnly="True" Header="State" Binding="{Binding State}"></DataGridTextColumn>
-                    <DataGridTextColumn IsReadOnly="True" Header="Language" Binding="{Binding Language}"></DataGridTextColumn>
-                    <DataGridTextColumn IsReadOnly="True" Header="Phrase" Binding="{Binding Phrase}"></DataGridTextColumn>
-                    <DataGridTextColumn IsReadOnly="True" Header="BasePhrase" Binding="{Binding BasePhrase}"></DataGridTextColumn>
-                    <DataGridTextColumn IsReadOnly="True" Header="Sentence" Binding="{Binding Sentence}"></DataGridTextColumn>
-                    <DataGridTextColumn IsReadOnly="True" Header="Definition" Binding="{Binding Definition}"></DataGridTextColumn>
-                    <DataGridTextColumn IsReadOnly="True" Header="Created" Binding="{Binding DateCreated, Converter={StaticResource dateConverter}}"></DataGridTextColumn>
-                    <DataGridTextColumn IsReadOnly="True" Header="Modified" Binding="{Binding DateModified, Converter={StaticResource dateConverter}}"></DataGridTextColumn>
+                    <DataGridTextColumn Width="60" Header="State" Binding="{Binding State}"></DataGridTextColumn>
+                    <DataGridTextColumn Width="100" Header="Language" Binding="{Binding Language}"></DataGridTextColumn>
+                    <DataGridTextColumn MinWidth="130" Header="Phrase" Binding="{Binding Phrase}"></DataGridTextColumn>
+                    <DataGridTextColumn MinWidth="130" Header="Base Phrase" Binding="{Binding BasePhrase}"></DataGridTextColumn>
+                    <DataGridTextColumn Width="*" Header="Sentence" Binding="{Binding Sentence}" FontSize="12"></DataGridTextColumn>
                 </DataGrid.Columns>
             </DataGrid>
         </DockPanel>

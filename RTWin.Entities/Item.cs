@@ -26,5 +26,23 @@ namespace RTWin.Entities
 
         public int ReadTimes { get; set; }
         public int ListenedTimes { get; set; }
+
+        [Ignore]
+        public bool IsParallel
+        {
+            get { return !string.IsNullOrWhiteSpace(L2Content); }
+        }
+        
+        [Ignore]
+        public bool HasMedia
+        {
+            get { return !string.IsNullOrWhiteSpace(MediaUri); }
+        }
+
+        [ResultColumn]
+        public string L1Language { get; set; }
+
+        [ResultColumn]
+        public string L2Language { get; set; }
     }
 }

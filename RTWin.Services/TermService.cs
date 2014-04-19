@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NPoco;
 using RTWin.Entities;
@@ -92,25 +93,95 @@ namespace RTWin.Services
             return _db.Fetch<Term>("WHERE UserId=@0 ORDER BY LowerPhrase", _user.UserId);
         }
 
-        public IEnumerable<Term> Search(long? languageId, DateTime? modified)
+        public IEnumerable<Term> Search(long? languageId = null, DateTime? modified = null, int? maxResults = null, string filter = null)
         {
-            var sql = Sql.Builder.Append("SELECT * FROM term");
+            var sql = Sql.Builder.Append("SELECT term.*, b.name as Language, c.collectionNo || ' - ' || c.CollectionName || ' ' || c.L1Title as ItemSource FROM term term");
+            sql.LeftJoin("language b on term.LanguageId=b.LanguageId");
+            sql.LeftJoin("item c on term.ItemSourceId=c.ItemId");
+            sql.Append("WHERE term.UserId=@0", _user.UserId);
 
-            sql.Append("WHERE UserId=@0", _user.UserId);
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                var matches = Regex.Matches(filter, @"[\#\w]+|""[\w\s]*""");
+                string add = "";
+                string add2 = "(";
+
+                foreach (Match match in matches)
+                {
+                    if (match.Value.StartsWith("#"))
+                    {
+                        if (match.Value.Length > 1)
+                        {
+                            var remainder = match.Value.Substring(1, match.Length - 1).ToLowerInvariant();
+
+                            switch (remainder)
+                            {
+                                case "known":
+                                    add2 += string.Format("term.State={0} OR ", (int)TermState.Known);
+                                    break;
+
+                                case "unknown":
+                                case "notknown":
+                                    add2 += string.Format("term.State={0} OR ", (int)TermState.Unknown);
+                                    break;
+
+                                case "ignore":
+                                case "ignored":
+                                    add2 += string.Format("term.State={0} OR ", (int)TermState.Ignored);
+                                    break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        string value = match.Value.Trim();
+
+                        if (value.StartsWith("\""))
+                        {
+                            value = value.Substring(1, value.Length - 1);
+                        }
+
+                        if (value.EndsWith("\""))
+                        {
+                            value = value.Substring(0, value.Length - 1);
+                        }
+
+                        if (value.Length > 0)
+                        {
+                            add += string.Format("(term.Phrase LIKE '{0}%' OR term.BasePhrase LIKE '{0}%' OR Language LIKE '{0}%') AND ", value.Replace("'", "''"));
+                        }
+                    }
+                }
+
+                if (add2.Length > 1)
+                {
+                    sql.Append(" AND " + add2.Substring(0, add2.Length - 3) + ")");
+                }
+                if (add.Length > 0)
+                {
+                    sql.Append(" AND " + add.Substring(0, add.Length - 4));
+                }
+            }
 
             if (languageId.HasValue)
             {
-                sql.Append("WHERE LanguageId=@0", languageId.Value);
+                sql.Append("AND term.LanguageId=@0", languageId.Value);
             }
 
             if (modified.HasValue)
             {
-                sql.Append("WHERE DateModified>=@0", modified);
+                sql.Append("AND term.DateModified>=@0", modified);
             }
 
-            sql.OrderBy("TermId");
+            sql.OrderBy("Language, term.State, term.LowerPhrase");
 
-            return _db.Query<Term>(sql);
+            if (maxResults.HasValue && maxResults > 0)
+            {
+                sql.Append("LIMIT @0", maxResults.Value);
+            }
+
+            var results = _db.Query<Term>(sql);
+            return results;
         }
 
         public TermStatistics GetStatistics()

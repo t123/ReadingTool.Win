@@ -42,5 +42,11 @@ namespace RTWin.Entities
                 return s;
             }
         }
+
+        [ResultColumn]
+        public string Language { get; set; }
+
+        [ResultColumn]
+        public string ItemSource { get; set; }
     }
 }
