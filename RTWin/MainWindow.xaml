@@ -29,16 +29,16 @@
                 <StackPanel HorizontalAlignment="Stretch" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
                     <StackPanel Height="30" Orientation="Horizontal" HorizontalAlignment="Center" >
                         <TextBlock VerticalAlignment="Center" Padding="20,0,20,0">
-                            <Hyperlink Foreground="Black" TextDecorations="None" Command="{Binding ChangeViewCommand}" CommandParameter="languages">Languages</Hyperlink>
+                            <Hyperlink Foreground="Black" FontWeight="Bold" TextDecorations="None" Command="{Binding ChangeViewCommand}" CommandParameter="languages">Languages</Hyperlink>
                         </TextBlock>
                         <TextBlock VerticalAlignment="Center" Padding="20,0,20,0">
-                            <Hyperlink Foreground="Black" TextDecorations="None" Command="{Binding ChangeViewCommand}" CommandParameter="items">Items</Hyperlink>
+                            <Hyperlink Foreground="Black" FontWeight="Bold" TextDecorations="None" Command="{Binding ChangeViewCommand}" CommandParameter="items">Items</Hyperlink>
                         </TextBlock>
                         <TextBlock VerticalAlignment="Center" Padding="20,0,20,0">
-                            <Hyperlink Foreground="Black" TextDecorations="None" Command="{Binding ChangeViewCommand}" CommandParameter="terms">Terms</Hyperlink>
+                            <Hyperlink Foreground="Black" FontWeight="Bold" TextDecorations="None" Command="{Binding ChangeViewCommand}" CommandParameter="terms">Terms</Hyperlink>
                         </TextBlock>
                         <TextBlock VerticalAlignment="Center" Padding="20,0,20,0">
-                            <Hyperlink Foreground="Black" TextDecorations="None" Command="{Binding ChangeViewCommand}" CommandParameter="plugins">Plugins</Hyperlink>
+                            <Hyperlink Foreground="Black" FontWeight="Bold" TextDecorations="None" Command="{Binding ChangeViewCommand}" CommandParameter="plugins">Plugins</Hyperlink>
                         </TextBlock>
                     </StackPanel>
                 </StackPanel>

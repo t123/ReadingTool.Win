@@ -8,11 +8,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using AutoMapper;
+using GalaSoft.MvvmLight.Messaging;
 using Ninject;
 using Ninject.Parameters;
 using RTWin.Annotations;
 using RTWin.Controls;
 using RTWin.Entities;
+using RTWin.Messages;
 using RTWin.Services;
 
 namespace RTWin.Models.Views
@@ -30,6 +32,12 @@ namespace RTWin.Models.Views
         private ICommand _copyCommand;
         private ICommand _deleteCommand;
         private ICommand _readCommand;
+
+        public ICommand ReadCommand
+        {
+            get { return _readCommand; }
+            set { _readCommand = value; }
+        }
 
         public ICommand EditCommand
         {
@@ -179,7 +187,7 @@ namespace RTWin.Models.Views
 
             _readCommand = new RelayCommand(param =>
             {
-
+                Messenger.Default.Send<ReadMessage>(new ReadMessage() { AsParallel = param.ToString() != "Single", ItemId = SelectedItem.ItemId });
             }, param => param != null && SelectedItem != null);
         }
 

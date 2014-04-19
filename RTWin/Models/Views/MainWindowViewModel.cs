@@ -9,10 +9,12 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using GalaSoft.MvvmLight.Messaging;
 using Ninject;
 using RTWin.Annotations;
 using RTWin.Controls;
 using RTWin.Entities;
+using RTWin.Messages;
 using RTWin.Services;
 
 namespace RTWin.Models.Views
@@ -69,6 +71,7 @@ namespace RTWin.Models.Views
         private TermsControl _termsControl;
         private TextsControl _textsControl;
         private PluginsControl _pluginsControl;
+        private ReadControl _readControl;
 
         public User CurrentUser
         {
@@ -87,6 +90,7 @@ namespace RTWin.Models.Views
             _termsControl = App.Container.Get<TermsControl>();
             _textsControl = App.Container.Get<TextsControl>();
             _pluginsControl = App.Container.Get<PluginsControl>();
+            _readControl = App.Container.Get<ReadControl>();
 
             Users = new ObservableCollection<User>(_userService.FindAll());
             CurrentUser = App.User;
@@ -120,9 +124,15 @@ namespace RTWin.Models.Views
             });
 
             _changeViewCommand = new RelayCommand(x => ChangeView(x.ToString()));
+
+            Messenger.Default.Register<ReadMessage>(this, (action) =>
+            {
+                _readControl.View(action.ItemId, action.AsParallel);
+                CurrentView = _readControl;
+            });
         }
 
-        public void ChangeView(string viewName)
+        private void ChangeView(string viewName)
         {
             viewName = viewName.ToLowerInvariant();
 

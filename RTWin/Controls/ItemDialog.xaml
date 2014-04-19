@@ -47,7 +47,7 @@
                     <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Item.CollectionNo}"/>
                     <Label Content="Media URI" Grid.Row="3" Grid.Column="0"/>
                     <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="1">
-                        <TextBox MinWidth="200" Text="{Binding Item.MediaUri}"/>
+                        <TextBox MinWidth="200" Text="{Binding Item.MediaUri, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
                         <Button Name="ButtonOpenFile" Content="Browse for file..." Margin="20,5,0,5" Command="{Binding OpenCommand}"></Button>
                     </StackPanel>
                 </Grid>
