@@ -14,7 +14,7 @@
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition MinWidth="150" Width="200" MaxWidth="300"></ColumnDefinition>
+            <ColumnDefinition MinWidth="180" Width="200" MaxWidth="500"></ColumnDefinition>
             <ColumnDefinition Width="5"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
@@ -60,7 +60,7 @@
                 <GroupBox.Header>
                     <TextBlock Margin="5" FontWeight="Heavy">Profiles</TextBlock>
                 </GroupBox.Header>
-                <ListBox ItemsSource="{Binding Users}" DisplayMemberPath="Username" MinWidth="100" SelectedItem="{Binding SelectedItem}">
+                <ListBox ItemsSource="{Binding Users}" DisplayMemberPath="Username" SelectedItem="{Binding SelectedItem}">
                 </ListBox>
             </GroupBox>
         </DockPanel>

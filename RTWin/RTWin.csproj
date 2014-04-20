@@ -157,6 +157,7 @@
     <Compile Include="Common\DateTimeConverter.cs" />
     <Compile Include="Common\DialogCloser.cs" />
     <Compile Include="Common\HtmlLoader.cs" />
+    <Compile Include="Common\TileColours.cs" />
     <Compile Include="Controls\CommonWindow.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -201,12 +202,8 @@
     <Compile Include="Common\OWINWebAPIConfig.cs" />
     <Compile Include="Common\EnumMatchToBooleanConverter.cs" />
     <Compile Include="Messages\ReadMessage.cs" />
-    <Compile Include="Models\Entities\ItemModel.cs" />
-    <Compile Include="Models\Entities\LanguageCodeModel.cs" />
+    <Compile Include="Models\Entities\ItemSearch.cs" />
     <Compile Include="Models\Entities\LanguageModel.cs" />
-    <Compile Include="Models\Entities\LanguageViewModel.cs" />
-    <Compile Include="Models\Entities\PluginLanguage.cs" />
-    <Compile Include="Models\Entities\TermModel.cs" />
     <Compile Include="Models\Views\ItemDialogViewModel.cs" />
     <Compile Include="Models\Views\LanguagesControlViewModel.cs" />
     <Compile Include="Models\Views\MainWindowViewModel.cs" />

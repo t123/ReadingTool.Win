@@ -26,8 +26,7 @@ namespace RTWin.Controls
     public partial class TermsControl : UserControl
     {
         private readonly TermsControlViewModel _termsControlViewModel;
-        public IList<TermModel> Terms { get; set; }
-
+        
         public TermsControl(TermsControlViewModel termsControlViewModel)
         {
             _termsControlViewModel = termsControlViewModel;

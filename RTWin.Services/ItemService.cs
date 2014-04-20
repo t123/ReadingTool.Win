@@ -79,7 +79,7 @@ namespace RTWin.Services
 
             if (languageId.HasValue)
             {
-                builder.Append(" AND LanguageId=@0", languageId.Value);
+                builder.Append(" AND L1LanguageId=@0", languageId.Value);
             }
 
             builder.OrderBy("x COLLATE NOCASE");

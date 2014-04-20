@@ -15,13 +15,17 @@ using RTWin.Annotations;
 using RTWin.Controls;
 using RTWin.Entities;
 using RTWin.Messages;
+using RTWin.Models.Entities;
 using RTWin.Services;
 
 namespace RTWin.Models.Views
 {
     public class TextsControlViewModel : INotifyPropertyChanged
     {
+
+        private IList<ItemSearch> _root;
         private readonly ItemService _itemService;
+        private readonly LanguageService _languageService;
         private ObservableCollection<Item> _items;
         private string _filterText;
         private ObservableCollection<string> _collectionNames;
@@ -32,6 +36,20 @@ namespace RTWin.Models.Views
         private ICommand _copyCommand;
         private ICommand _deleteCommand;
         private ICommand _readCommand;
+        private ICommand _backCommand;
+        private ICommand _searchCommand;
+
+        public ICommand SearchCommand
+        {
+            get { return _searchCommand; }
+            set { _searchCommand = value; }
+        }
+
+        public ICommand BackCommand
+        {
+            get { return _backCommand; }
+            set { _backCommand = value; }
+        }
 
         public ICommand ReadCommand
         {
@@ -68,23 +86,6 @@ namespace RTWin.Models.Views
             set { _filterText = value; OnPropertyChanged("FilterText"); MapCollection(); }
         }
 
-        public ObservableCollection<string> CollectionNames
-        {
-            get { return _collectionNames; }
-            set { _collectionNames = value; OnPropertyChanged("CollectionNames"); }
-        }
-
-        public string SelectedCollectionName
-        {
-            get { return _selectedCollectionName; }
-            set
-            {
-                _selectedCollectionName = value;
-                OnPropertyChanged("SelectedCollectionName");
-                FilterText = value.Replace(@""" - """, @""" """);
-            }
-        }
-
         private string _itemType;
         public string ItemType
         {
@@ -101,7 +102,7 @@ namespace RTWin.Models.Views
 
                 if (_selectedItem != null)
                 {
-                    if (_selectedItem.ItemType == Entities.ItemType.Text)
+                    if (_selectedItem.ItemType == RTWin.Entities.ItemType.Text)
                     {
                         ItemType = "Read";
                     }
@@ -121,12 +122,19 @@ namespace RTWin.Models.Views
             set { _items = value; OnPropertyChanged("Items"); }
         }
 
-        public TextsControlViewModel(ItemService itemService)
+        public IList<ItemSearch> Root
+        {
+            get { return _root; }
+            set { _root = value; OnPropertyChanged("Root"); }
+        }
+
+        public TextsControlViewModel(ItemService itemService, LanguageService languageService)
         {
             _itemService = itemService;
-            CollectionNames = new ObservableCollection<string>(_itemService.FindCollectionsPerLanguage());
+            _languageService = languageService;
             MapCollection();
             SelectedItem = Items.FirstOrDefault();
+            ConstructTree();
 
             _addCommand = new RelayCommand(param =>
             {
@@ -136,7 +144,6 @@ namespace RTWin.Models.Views
 
                 if (result == true)
                 {
-                    CollectionNames = new ObservableCollection<string>(_itemService.FindCollectionsPerLanguage());
                     MapCollection();
                 }
             });
@@ -151,7 +158,6 @@ namespace RTWin.Models.Views
                 if (result == true)
                 {
                     var id = SelectedItem.ItemId;
-                    CollectionNames = new ObservableCollection<string>(_itemService.FindCollectionsPerLanguage());
                     MapCollection();
                     SelectedItem = Items.FirstOrDefault(x => x.ItemId == id);
                 }
@@ -183,7 +189,6 @@ namespace RTWin.Models.Views
             _deleteCommand = new RelayCommand(param =>
             {
                 _itemService.DeleteOne(SelectedItem.ItemId);
-                CollectionNames = new ObservableCollection<string>(_itemService.FindCollectionsPerLanguage());
                 MapCollection();
                 SelectedItem = Items.FirstOrDefault();
             }, param => SelectedItem != null);
@@ -194,7 +199,60 @@ namespace RTWin.Models.Views
                 Messenger.Default.Send<ReadMessage>(new ReadMessage(SelectedItem.ItemId, parallel));
             }, param => param != null && SelectedItem != null);
 
+            _searchCommand = new RelayCommand(param =>
+            {
+                var node = param as ItemSearch;
+                if (node == null)
+                {
+                    return;
+                }
+
+                FilterText = node.Value;
+            });
+
+            _backCommand = new RelayCommand(param => Messenger.Default.Send<ChangeViewMessage>(new ChangeViewMessage(ChangeViewMessage.Main)));
+
             Messenger.Default.Register<RefreshItemsMessage>(this, (action) => MapCollection());
+        }
+
+        private void ConstructTree()
+        {
+            var languages = _languageService.FindAll().OrderBy(x => x.IsArchived);
+            var nodes = new List<ItemSearch>();
+            nodes.Add(new ItemSearch() { Name = "Parallel Items", Value = "#parallel" });
+            nodes.Add(new ItemSearch() { Name = "Items with media", Value = "#media" });
+            nodes.Add(new ItemSearch() { Name = "Text items", Value = "#text" });
+            nodes.Add(new ItemSearch() { Name = "Video items", Value = "#video" });
+
+            foreach (var l in languages)
+            {
+                var node = new ItemSearch()
+                {
+                    Name = l.Name,
+                    Value = string.Format(@"""{0}""", l.Name),
+                    IsExpanded = !l.IsArchived
+                };
+
+                var collections = _itemService.FindAllCollectionNames(l.LanguageId);
+
+                foreach (var c in collections)
+                {
+                    if (string.IsNullOrWhiteSpace(c))
+                    {
+                        continue;
+                    }
+
+                    node.Children.Add(new ItemSearch()
+                    {
+                        Name = c,
+                        Value = string.Format(@"""{0}"" ""{1}""", l.Name, c)
+                    });
+                }
+
+                nodes.Add(node);
+            }
+
+            Root = nodes;
         }
 
         private void MapCollection()

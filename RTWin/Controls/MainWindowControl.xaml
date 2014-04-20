@@ -4,25 +4,42 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d" Background="#001940"
+             d:DesignHeight="600" d:DesignWidth="800">
     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
         <Grid>
             <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
                 <RowDefinition></RowDefinition>
                 <RowDefinition></RowDefinition>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition Width="400"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <controls:Tile Grid.Row="0" Grid.Column="0" Title="Languages" Command="{Binding ChangeViewCommand}" CommandParameter="languages"/>
-            <controls:Tile Grid.Row="0" Grid.Column="1" Title="Items" Command="{Binding ChangeViewCommand}" CommandParameter="items"/>
-            <controls:Tile Grid.Row="0" Grid.Column="2" Title="Terms" Command="{Binding ChangeViewCommand}" CommandParameter="terms"/>
-            <controls:Tile Grid.Row="1" Grid.Column="0" Title="Profiles" Command="{Binding ChangeViewCommand}" CommandParameter="profiles"/>
-            <controls:Tile Grid.Row="1" Grid.Column="1" Title="Plugins" Command="{Binding ChangeViewCommand}" CommandParameter="plugins"/>
-            <controls:Tile Grid.Row="1" Grid.Column="2" Title="Settings" Command="{Binding ChangeViewCommand}" CommandParameter="settings"/>
+            <controls:Tile Grid.Row="0" Grid.Column="0" Title="Languages" Command="{Binding ChangeViewCommand}" CommandParameter="languages" Background="#0A5BC4"/>
+            <controls:Tile Grid.Row="0" Grid.Column="1" Title="Items" Command="{Binding ChangeViewCommand}" CommandParameter="items" Background="#0A5BC4"/>
+            <controls:Tile Grid.Row="1" Grid.Column="0" Title="Terms" Command="{Binding ChangeViewCommand}" CommandParameter="terms" Background="#0A5BC4"/>
+            <controls:Tile Grid.Row="1" Grid.Column="1" Title="Profiles" Command="{Binding ChangeViewCommand}" CommandParameter="profiles" Background="#0A5BC4"/>
+            <controls:Tile Grid.Row="2" Grid.Column="0" Title="Plugins" Command="{Binding ChangeViewCommand}" CommandParameter="plugins" Background="#0A5BC4"/>
+            <controls:Tile Grid.Row="2" Grid.Column="1" Title="Settings" Command="{Binding ChangeViewCommand}" CommandParameter="settings" Background="#0A5BC4"/>
+            <controls:Tile Grid.Row="0" Grid.Column="2" Grid.RowSpan="3" Width="400" Height="433" Background="#094AB2" 
+                           HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Title="Recently Items">
+                <ItemsControl>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock><Hyperlink Foreground="White"><Run Text="{Binding Mode=OneWay}" /></Hyperlink></TextBlock>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    <system:String>Lorem Ipsum - 1. Some long lorem title #1</system:String>
+                    <system:String>Lorem Ipsum - 1. Some long lorem title #2</system:String>
+                    <system:String>Lorem Ipsum - 1. Some long lorem title #3</system:String>
+                    <system:String>Lorem Ipsum - 1. Some long lorem title #4</system:String>
+                    <system:String>Lorem Ipsum - 1. Some long lorem title #5</system:String>
+                </ItemsControl>
+            </controls:Tile>
         </Grid>
     </StackPanel>
 </UserControl>

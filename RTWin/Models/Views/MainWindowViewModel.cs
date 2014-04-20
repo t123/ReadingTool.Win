@@ -94,7 +94,7 @@ namespace RTWin.Models.Views
             }
             else
             {
-                ChangeView(ChangeViewMessage.Main);
+                ChangeView(ChangeViewMessage.Items);
             }
 
             _changeViewCommand = new RelayCommand(x => ChangeView(x.ToString()));
