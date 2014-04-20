@@ -10,6 +10,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Messaging;
+using MahApps.Metro.Controls.Dialogs;
+using Microsoft.AspNet.SignalR.Messaging;
 using Ninject;
 using RTWin.Annotations;
 using RTWin.Controls;
@@ -21,24 +23,12 @@ namespace RTWin.Models.Views
 {
     public class MainWindowViewModel : INotifyPropertyChanged
     {
-        private UserService _userService;
-        private RelayCommand _changeProfileCommand;
-        private RelayCommand _manageProfileCommand;
+        public static MetroDialogSettings DialogSettings
+        {
+            get { return new MetroDialogSettings() {AnimateHide = false, AnimateShow = false}; }
+        }
+
         private RelayCommand _changeViewCommand;
-        private UserControl _currentView;
-        private ObservableCollection<User> _users;
-
-        public RelayCommand ChangeProfileCommand
-        {
-            get { return _changeProfileCommand; }
-            set { _changeProfileCommand = value; }
-        }
-
-        public RelayCommand ManageProfileCommand
-        {
-            get { return _manageProfileCommand; }
-            set { _manageProfileCommand = value; }
-        }
 
         public RelayCommand ChangeViewCommand
         {
@@ -56,22 +46,14 @@ namespace RTWin.Models.Views
             }
         }
 
-        public ObservableCollection<User> Users
-        {
-            get { return _users; }
-            set
-            {
-                _users = value;
-                OnPropertyChanged("Users");
-            }
-        }
-
         private User _currentUser;
         private LanguagesControl _languagesControl;
         private TermsControl _termsControl;
         private TextsControl _textsControl;
         private PluginsControl _pluginsControl;
         private ReadControl _readControl;
+        private MainWindowControl _mainWindowControl;
+        private UserControl _currentView;
 
         public User CurrentUser
         {
@@ -83,46 +65,24 @@ namespace RTWin.Models.Views
             get { return _currentUser; }
         }
 
-        public MainWindowViewModel(UserService userService)
+        public MainWindowViewModel(
+            LanguagesControl languagesControl,
+            TermsControl termsControl,
+            TextsControl textsControl,
+            PluginsControl pluginsControl,
+            ReadControl readControl,
+            MainWindowControl mainWindowControl
+            )
         {
-            _userService = userService;
-            _languagesControl = App.Container.Get<LanguagesControl>();
-            _termsControl = App.Container.Get<TermsControl>();
-            _textsControl = App.Container.Get<TextsControl>();
-            _pluginsControl = App.Container.Get<PluginsControl>();
-            _readControl = App.Container.Get<ReadControl>();
+            _languagesControl = languagesControl;
+            _termsControl = termsControl;
+            _textsControl = textsControl;
+            _pluginsControl = pluginsControl;
+            _readControl = readControl;
+            _mainWindowControl = mainWindowControl;
 
-            Users = new ObservableCollection<User>(_userService.FindAll());
             CurrentUser = App.User;
-
-            CurrentView = _textsControl;
-
-            _changeProfileCommand = new RelayCommand(x =>
-            {
-                var user = _userService.FindOne(long.Parse(x.ToString()));
-
-                if (user == null)
-                {
-                    return;
-                }
-
-                CurrentUser = user;
-                App.User = user;
-            }, x => x != null);
-
-            _manageProfileCommand = new RelayCommand(x =>
-            {
-                var userDialog = App.Container.Get<UserDialog>();
-                var result = userDialog.ShowDialog();
-
-                if (result == true)
-                {
-                    CurrentUser = App.User;
-                }
-
-                Users = new ObservableCollection<User>(_userService.FindAll());
-            });
-
+            CurrentView = _languagesControl;
             _changeViewCommand = new RelayCommand(x => ChangeView(x.ToString()));
 
             Messenger.Default.Register<ReadMessage>(this, (action) =>
@@ -130,9 +90,11 @@ namespace RTWin.Models.Views
                 _readControl.View(action.ItemId, action.AsParallel);
                 CurrentView = _readControl;
             });
+
+            Messenger.Default.Register<ChangeViewMessage>(this, (action) => ChangeView(action.ViewName));
         }
 
-        public Tuple<long,long> GetSub(double time)
+        public Tuple<long, long> GetSub(double time)
         {
             return _readControl.GetSub(time);
         }
@@ -143,6 +105,10 @@ namespace RTWin.Models.Views
 
             switch (viewName)
             {
+                case "main":
+                    CurrentView = _mainWindowControl;
+                    break;
+
                 case "languages":
                     CurrentView = _languagesControl;
                     break;
@@ -160,6 +126,7 @@ namespace RTWin.Models.Views
                     break;
 
                 default:
+                    CurrentView = _mainWindowControl;
                     break;
             }
         }

@@ -10,9 +10,13 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using AutoMapper;
+using GalaSoft.MvvmLight.Messaging;
+using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 using RTWin.Annotations;
 using RTWin.Controls;
 using RTWin.Entities;
+using RTWin.Messages;
 using RTWin.Services;
 
 namespace RTWin.Models.Views
@@ -23,10 +27,17 @@ namespace RTWin.Models.Views
         private readonly LanguageCodeService _languageCodeService;
         private ObservableCollection<LanguageModel> _languages;
         private LanguageModel _selectedItem;
+        private ICommand _backCommand;
         private ICommand _addCommand;
         private ICommand _deleteCommand;
         private ICommand _saveCommand;
         private ICommand _cancelCommand;
+
+        public ICommand BackCommand
+        {
+            get { return _backCommand; }
+            set { _backCommand = value; }
+        }
 
         public ICommand SaveCommand
         {
@@ -99,16 +110,16 @@ namespace RTWin.Models.Views
             MapCollection();
             SelectedItem = Languages.FirstOrDefault();
 
-            _addCommand = new RelayCommand(param =>
+            _addCommand = new RelayCommand(async param =>
             {
-                PromptDialog promptDialog = new PromptDialog("Language Name", "Name ");
-                var result = promptDialog.ShowDialog();
+                var metroWindow = (Application.Current.MainWindow as MetroWindow);
+                var result = await metroWindow.ShowInputAsync("Please enter a name for your language", "Language Name", MainWindowViewModel.DialogSettings);
 
-                if (result == true)
+                if (!string.IsNullOrWhiteSpace(result))
                 {
                     var language = new Language()
                     {
-                        Name = promptDialog.Input,
+                        Name = result,
                         IsArchived = false,
                         LanguageCode = "--",
                         Settings = new LanguageSettings()
@@ -125,11 +136,12 @@ namespace RTWin.Models.Views
                 }
             });
 
-            _deleteCommand = new RelayCommand(param =>
+            _deleteCommand = new RelayCommand(async param =>
             {
-                var result = MessageBox.Show("Are you sure you want to delete this language?", "Delete Language", MessageBoxButton.OKCancel);
+                var metroWindow = (Application.Current.MainWindow as MetroWindow);
+                var result = await metroWindow.ShowMessageAsync("Delete " + SelectedItem.Name, "Are you sure you want to delete " + SelectedItem.Name + "?", MessageDialogStyle.AffirmativeAndNegative, MainWindowViewModel.DialogSettings);
 
-                if (result != MessageBoxResult.OK)
+                if (result != MessageDialogResult.Affirmative)
                     return;
 
                 _languageService.DeleteOne(SelectedItem.LanguageId);
@@ -159,6 +171,8 @@ namespace RTWin.Models.Views
                 Language = Mapper.Map<Language, LanguageModel>(_languageService.FindOne(SelectedItem.LanguageId));
                 SelectedItem = Languages.FirstOrDefault(x => x.LanguageId == Language.LanguageId);
             }, param => SelectedItem != null);
+
+            _backCommand = new RelayCommand(param => Messenger.Default.Send<ChangeViewMessage>(new ChangeViewMessage(ChangeViewMessage.Main)));
         }
 
         private void MapCollection()

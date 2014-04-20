@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using MahApps.Metro.Controls;
 using Ninject;
 using RTWin.Controls;
 using RTWin.Entities;
@@ -14,19 +15,13 @@ namespace RTWin
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : MetroWindow
     {
-        private MainWindowViewModel _mainWindowViewModel;
-
-        public MainWindowViewModel MainWindowViewModel
-        {
-            get { return _mainWindowViewModel; }
-            set { _mainWindowViewModel = value; }
-        }
+        public MainWindowViewModel MainWindowViewModel { get; private set; }
 
         public MainWindow(MainWindowViewModel mainWindowViewModel)
         {
-            _mainWindowViewModel = mainWindowViewModel;
+            MainWindowViewModel = mainWindowViewModel;
             InitializeComponent();
             this.DataContext = MainWindowViewModel;
         }

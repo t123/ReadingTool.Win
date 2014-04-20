@@ -69,6 +69,7 @@ namespace RTWin
             _container.Bind<PluginService>().ToSelf();
 
             _container.Bind<MainWindow>().ToSelf();
+            _container.Bind<MainWindowControl>().ToSelf();
             _container.Bind<LanguagesControl>().ToSelf();
             _container.Bind<PluginsControl>().ToSelf();
             _container.Bind<TextsControl>().ToSelf();
