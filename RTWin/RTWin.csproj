@@ -323,12 +323,12 @@
     <Content Include="Database\ignore.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Resource Include="Data\Resources\iconmonstr-copy-7-icon-24.png">
+    <Content Include="Data\Resources\iconmonstr-copy-7-icon-24.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Data\Resources\iconmonstr-refresh-3-icon-24.png">
+    </Content>
+    <Content Include="Data\Resources\iconmonstr-refresh-3-icon-24.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
+    </Content>
     <Content Include="Data\Resources\bootstrap.min.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
