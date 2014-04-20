@@ -6,6 +6,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
 using Awesomium.Core;
+using log4net;
 using Microsoft.AspNet.SignalR.Client;
 using Microsoft.Owin.Hosting;
 using Ninject;
@@ -25,6 +26,7 @@ namespace RTWin
     {
         public static User User { get; set; }
         private static IKernel _container;
+        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public static IKernel Container
         {
@@ -33,7 +35,14 @@ namespace RTWin
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            log4net.Config.XmlConfigurator.Configure();
+
             base.OnStartup(e);
+            AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
+            {
+                Exception exception = (Exception)args.ExceptionObject;
+                Log.Error(exception);
+            };
 
             _container = Setup.Start(_container);
 

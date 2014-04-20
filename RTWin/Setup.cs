@@ -176,6 +176,21 @@ namespace RTWin
             {
                 file.Delete();
             }
+
+            var logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "Logs");
+
+            if (!Directory.Exists(logPath))
+            {
+                return;
+            }
+
+            directory = new DirectoryInfo(dataPath);
+            files = directory.GetFiles("*.log", SearchOption.TopDirectoryOnly).Where(x => x.LastWriteTime < DateTime.Now.AddDays(-7));
+
+            foreach (var file in files)
+            {
+                file.Delete();
+            }
         }
 
         private void InitDb()
