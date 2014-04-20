@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -61,6 +62,11 @@ namespace RTWin.Services
                 }
                 else
                 {
+                    if (srt == null)
+                    {
+                        continue;
+                    }
+
                     if (string.IsNullOrWhiteSpace(srt.Content))
                     {
                         srt.Content = StripHtml(line);
@@ -85,6 +91,8 @@ namespace RTWin.Services
 
         public override ParserOutput Parse(ParserInput pi)
         {
+            StartTimer();
+
             _pi = pi;
             _po.L1Srt = ParseSubtitles(_pi.Item.L1Content);
             _po.L2Srt = _pi.AsParallel ? ParseSubtitles(_pi.Item.L2Content) : new List<Srt>();
@@ -148,6 +156,8 @@ namespace RTWin.Services
 
             _po.Xml = document.ToString();
             _po.Html = _pi.Html.Replace("<!-- table -->", ApplyTransform(document, _xsltFile));
+            UniqueTerms(document);
+            EndTimer();
 
             return _po;
         }

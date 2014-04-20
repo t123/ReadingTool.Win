@@ -16,6 +16,25 @@ namespace RTWin.Services
         protected string _xsltFile;
         protected ParserInput _pi;
         protected ParserOutput _po;
+        protected DateTime _startTime;
+        protected DateTime _endTime;
+
+        protected void StartTimer()
+        {
+            _startTime = DateTime.Now;
+        }
+
+        protected void EndTimer()
+        {
+            _endTime = DateTime.Now;
+
+            if (_po == null)
+            {
+                return;
+            }
+
+            _po.Stats.Time = (_endTime - _startTime);
+        }
 
         public abstract ParserOutput Parse(ParserInput pi);
 
@@ -63,6 +82,18 @@ namespace RTWin.Services
                 return obj.Attribute("phrase").Value.GetHashCode();
             }
         }
+
+        protected void UniqueTerms(XDocument document)
+        {
+            var nodes = document.Descendants("term").Where(x => x.Attribute("isTerm").Value == "true").Distinct(new NodeComparer()).ToArray();
+
+            _po.Stats.UniqueTerms = nodes.Count();
+            _po.Stats.UniqueKnown = nodes.Count(x => x.Attribute("state").Value == TermState.Known.ToString().ToLowerInvariant());
+            _po.Stats.UniqueUnknown = nodes.Count(x => x.Attribute("state").Value == TermState.Unknown.ToString().ToLowerInvariant());
+            _po.Stats.UniqueIgnored = nodes.Count(x => x.Attribute("state").Value == TermState.Ignored.ToString().ToLowerInvariant());
+            _po.Stats.UniqueNotSeen = nodes.Count(x => x.Attribute("state").Value == TermState.NotSeen.ToString().ToLowerInvariant());
+        }
+
         protected void AddFrequencyDataToTermNodes(Dictionary<string, int> frequency, XDocument document)
         {
             var totalTerms = frequency.Select(x => x.Value).Sum();
@@ -112,6 +143,7 @@ namespace RTWin.Services
 
             if (l1TermRegex.IsMatch(termLower))
             {
+                _po.Stats.TotalTerms++;
                 termNode.SetAttributeValue("isTerm", true);
 
                 if (frequency.ContainsKey(termLower))
@@ -128,9 +160,26 @@ namespace RTWin.Services
                     var existing = _pi.Lookup[termLower];
                     termNode.SetAttributeValue("state", existing.State.ToString().ToLowerInvariant());
                     termNode.SetAttributeValue("definition", existing.FullDefinition);
+
+                    switch (existing.State)
+                    {
+                        case TermState.Known:
+                            _po.Stats.Known++;
+                            break;
+
+                        case TermState.Unknown:
+                            _po.Stats.Unknown++;
+                            break;
+
+                        case TermState.Ignored:
+                            _po.Stats.Ignored++;
+                            break;
+                    }
+
                 }
                 else
                 {
+                    _po.Stats.Unknown++;
                     termNode.SetAttributeValue("state", TermState.NotSeen.ToString().ToLowerInvariant());
                 }
             }

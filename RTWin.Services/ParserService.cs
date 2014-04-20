@@ -20,6 +20,7 @@ namespace RTWin.Services
 
         public override ParserOutput Parse(ParserInput pi)
         {
+            StartTimer();
             _pi = pi;
 
             string[] l1Paragraphs = SplitIntoParagraphs(_pi.Item.L1Content);
@@ -78,6 +79,8 @@ namespace RTWin.Services
             _po.Xml = document.ToString();
             _po.Html = _pi.Html.Replace("<!-- table -->", ApplyTransform(document, _xsltFile));
 
+            UniqueTerms(document);
+            EndTimer();
             return _po;
         }
     }

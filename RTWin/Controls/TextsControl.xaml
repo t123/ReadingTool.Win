@@ -41,6 +41,9 @@
                       CanUserAddRows="False" CanUserResizeRows="False" SelectionMode="Single" SelectedItem="{Binding SelectedItem}"
                       EnableRowVirtualization="True" IsReadOnly="True" CanUserDeleteRows="False"
                       >
+                <DataGrid.InputBindings>
+                    <MouseBinding Gesture="LeftDoubleClick" Command="{Binding ReadCommand}" CommandParameter="Determine"></MouseBinding>
+                </DataGrid.InputBindings>
                 <DataGrid.Columns>
                     <DataGridTextColumn Width="45" Header="Type" Binding="{Binding ItemType, Mode=OneWay}"></DataGridTextColumn>
                     <DataGridTextColumn Width="120" Header="Language" Binding="{Binding L1Language, Mode=OneWay}"></DataGridTextColumn>

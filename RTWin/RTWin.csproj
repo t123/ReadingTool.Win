@@ -209,8 +209,6 @@
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Setup.cs" />
     <Compile Include="Temp.cs" />
-    <Compile Include="ViewModel\MainViewModel.cs" />
-    <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="Web\PluginController.cs" />
     <Compile Include="Web\ResourceController.cs" />
     <Compile Include="Web\SyncController.cs" />

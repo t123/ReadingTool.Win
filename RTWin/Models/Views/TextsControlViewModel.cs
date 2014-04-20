@@ -186,8 +186,10 @@ namespace RTWin.Models.Views
             }, param => SelectedItem != null);
 
             _readCommand = new RelayCommand(param =>
-                Messenger.Default.Send<ReadMessage>(new ReadMessage(SelectedItem.ItemId, param.ToString() != "Single")),
-                param => param != null && SelectedItem != null);
+            {
+                bool parallel = param.ToString() == "Determine" ? SelectedItem.IsParallel : param.ToString() != "Single";
+                Messenger.Default.Send<ReadMessage>(new ReadMessage(SelectedItem.ItemId, parallel));
+            }, param => param != null && SelectedItem != null);
 
             Messenger.Default.Register<RefreshItemsMessage>(this, (action) => MapCollection());
         }

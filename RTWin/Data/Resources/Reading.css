@@ -59,9 +59,9 @@ textarea.changed, input.changed {
 	border-collapse: collapse;
 	width: 100%;
 	margin-top: 5px;
-	font-family: Arial;
+	font-family: 'Droid Sans', sans-serif;
 	font-size: 1.0em;
-	line-height: 20px;
+	line-height: 25px;
 }
 
 #reading span.__term {

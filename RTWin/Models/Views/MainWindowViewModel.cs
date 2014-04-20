@@ -132,6 +132,11 @@ namespace RTWin.Models.Views
             });
         }
 
+        public Tuple<long,long> GetSub(double time)
+        {
+            return _readControl.GetSub(time);
+        }
+
         private void ChangeView(string viewName)
         {
             viewName = viewName.ToLowerInvariant();

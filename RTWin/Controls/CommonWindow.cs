@@ -72,7 +72,8 @@ namespace RTWin.Controls
             _output.Html = _output.Html.Replace("<!-- webapi -->", webApi);
             _output.Html = _output.Html.Replace("<!-- signalr -->", signalR);
 
-            WriteHtml(_output.Html);
+            WriteHtml(_output.Html, ".html");
+            WriteHtml(_output.Xml, ".xml");
             MarkAsRead();
 
             var sourceUri = _databaseService.GetSetting<string>(DbSetting.Keys.BaseWebAPIAddress) + "/api/resource/item/" + _item.ItemId;
@@ -98,9 +99,9 @@ namespace RTWin.Controls
             return po;
         }
 
-        private void WriteHtml(string html)
+        private void WriteHtml(string html, string extension)
         {
-            using (StreamWriter sw = new StreamWriter(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", _item.ItemId + ".html"), false, Encoding.UTF8))
+            using (StreamWriter sw = new StreamWriter(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", _item.ItemId + extension), false, Encoding.UTF8))
             {
                 sw.Write(html);
             }

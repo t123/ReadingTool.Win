@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using RTWin.Entities;
@@ -96,5 +97,26 @@ namespace RTWin.Services
         public string Html { get; set; }
         public List<Srt> L1Srt { get; set; }
         public List<Srt> L2Srt { get; set; }
+        public ParseStats Stats { get; set; }
+
+        public class ParseStats
+        {
+            public int Known { get; set; }
+            public int Unknown { get; set; }
+            public int Ignored { get; set; }
+            public int NotSeen { get; set; }
+            public TimeSpan Time { get; set; }
+            public int TotalTerms { get; set; }
+            public int UniqueTerms { get; set; }
+            public int UniqueKnown { get; set; }
+            public int UniqueUnknown { get; set; }
+            public int UniqueIgnored { get; set; }
+            public int UniqueNotSeen { get; set; }
+        }
+
+        public ParserOutput()
+        {
+            Stats = new ParseStats();
+        }
     }
 }

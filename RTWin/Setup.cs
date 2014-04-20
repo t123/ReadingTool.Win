@@ -40,6 +40,7 @@ namespace RTWin
             s.InitContainer();
             s.CreateMappings();
             s.BackupDb("Start");
+            s.CleanupData();
             s.InitDb();
             s.InitWebApi();
             s.InitSignalR();
@@ -159,6 +160,24 @@ namespace RTWin
             }
         }
 
+        private void CleanupData()
+        {
+            var dataPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data");
+
+            if (!Directory.Exists(dataPath))
+            {
+                Directory.CreateDirectory(dataPath);
+            }
+
+            var directory = new DirectoryInfo(dataPath);
+            var files = directory.GetFiles("*.*", SearchOption.TopDirectoryOnly).Where(x => x.LastWriteTime < DateTime.Now.AddDays(-2));
+
+            foreach (var file in files.Where(x => x.Extension == ".html" || x.Extension == ".xml"))
+            {
+                file.Delete();
+            }
+        }
+
         private void InitDb()
         {
             _databaseService.CreateAndUpgradeDatabase();
@@ -194,17 +213,17 @@ namespace RTWin
                             return;
                         }
 
-                        //if (!double.TryParse(action, out time) || owner.ReadControl == null)
-                        //{
-                        //    _mainHubProxy.Invoke("Send", new object[] { "srtl1", -1 });
-                        //    _mainHubProxy.Invoke("Send", new object[] { "srtl2", -1 });
-                        //}
-                        //else
-                        //{
-                        //    var sub = owner.ReadControl.GetSub(time);
-                        //    _mainHubProxy.Invoke("Send", new object[] { "srtl1", sub.Item1 });
-                        //    _mainHubProxy.Invoke("Send", new object[] { "srtl2", sub.Item2 });
-                        //}
+                        if (!double.TryParse(action, out time) || owner.MainWindowViewModel == null)
+                        {
+                            _mainHubProxy.Invoke("Send", new object[] { "srtl1", -1 });
+                            _mainHubProxy.Invoke("Send", new object[] { "srtl2", -1 });
+                        }
+                        else
+                        {
+                            var sub = owner.MainWindowViewModel.GetSub(time);
+                            _mainHubProxy.Invoke("Send", new object[] { "srtl1", sub.Item1 });
+                            _mainHubProxy.Invoke("Send", new object[] { "srtl2", sub.Item2 });
+                        }
                     });
                 }
                 else if (element == "modal")
