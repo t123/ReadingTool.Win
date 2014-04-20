@@ -99,13 +99,16 @@ namespace RTWin.Models.Views
             {
                 _selectedItem = value;
 
-                if (_selectedItem.ItemType == Entities.ItemType.Text)
+                if (_selectedItem != null)
                 {
-                    ItemType = "Read";
-                }
-                else
-                {
-                    ItemType = "Watch";
+                    if (_selectedItem.ItemType == Entities.ItemType.Text)
+                    {
+                        ItemType = "Read";
+                    }
+                    else
+                    {
+                        ItemType = "Watch";
+                    }
                 }
 
                 OnPropertyChanged("SelectedItem");

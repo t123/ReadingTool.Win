@@ -47,27 +47,7 @@ namespace RTWin
             _container = Setup.Start(_container);
 
             var userService = _container.Get<UserService>();
-
-            Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
-            var users = userService.FindAll();
-            if (users.Count() == 1)
-            {
-                App.User = users.First();
-            }
-            else
-            {
-                var userDialog = Container.Get<UserDialog>();
-                var result = userDialog.ShowDialog();
-
-                if (result != true)
-                {
-                    App.User = new User(); //TODO fixme
-                    this.Shutdown();
-                    return;
-                }
-            }
-
-            Current.ShutdownMode = ShutdownMode.OnLastWindowClose;
+            App.User = userService.FindAll().First();
             var mainWindow = _container.Get<MainWindow>();
             mainWindow.Show();
         }

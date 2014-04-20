@@ -46,6 +46,7 @@ namespace RTWin.Messages
         public const string Items = @"items";
         public const string Terms = @"terms";
         public const string Plugins = @"plugins";
+        public const string Profiles = @"profiles";
 
         public ChangeViewMessage(string viewName)
         {

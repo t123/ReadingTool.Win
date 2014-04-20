@@ -119,7 +119,7 @@ namespace RTWin.Models.Views
                 {
                     var language = new Language()
                     {
-                        Name = result,
+                        Name = result.Trim(),
                         IsArchived = false,
                         LanguageCode = "--",
                         Settings = new LanguageSettings()

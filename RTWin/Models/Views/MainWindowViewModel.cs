@@ -25,7 +25,7 @@ namespace RTWin.Models.Views
     {
         public static MetroDialogSettings DialogSettings
         {
-            get { return new MetroDialogSettings() {AnimateHide = false, AnimateShow = false}; }
+            get { return new MetroDialogSettings() { AnimateHide = false, AnimateShow = false }; }
         }
 
         private RelayCommand _changeViewCommand;
@@ -53,6 +53,7 @@ namespace RTWin.Models.Views
         private PluginsControl _pluginsControl;
         private ReadControl _readControl;
         private MainWindowControl _mainWindowControl;
+        private readonly ProfilesControl _profilesControl;
         private UserControl _currentView;
 
         public User CurrentUser
@@ -71,7 +72,9 @@ namespace RTWin.Models.Views
             TextsControl textsControl,
             PluginsControl pluginsControl,
             ReadControl readControl,
-            MainWindowControl mainWindowControl
+            MainWindowControl mainWindowControl,
+            ProfilesControl profilesControl,
+            UserService userService
             )
         {
             _languagesControl = languagesControl;
@@ -80,9 +83,20 @@ namespace RTWin.Models.Views
             _pluginsControl = pluginsControl;
             _readControl = readControl;
             _mainWindowControl = mainWindowControl;
+            _profilesControl = profilesControl;
 
+            var users = userService.FindAll();
             CurrentUser = App.User;
-            CurrentView = _languagesControl;
+
+            if (users.Count() > 1)
+            {
+                ChangeView(ChangeViewMessage.Profiles);
+            }
+            else
+            {
+                ChangeView(ChangeViewMessage.Main);
+            }
+
             _changeViewCommand = new RelayCommand(x => ChangeView(x.ToString()));
 
             Messenger.Default.Register<ReadMessage>(this, (action) =>
@@ -105,24 +119,28 @@ namespace RTWin.Models.Views
 
             switch (viewName)
             {
-                case "main":
+                case ChangeViewMessage.Main:
                     CurrentView = _mainWindowControl;
                     break;
 
-                case "languages":
+                case ChangeViewMessage.Languages:
                     CurrentView = _languagesControl;
                     break;
 
-                case "items":
+                case ChangeViewMessage.Items:
                     CurrentView = _textsControl;
                     break;
 
-                case "terms":
+                case ChangeViewMessage.Terms:
                     CurrentView = _termsControl;
                     break;
 
-                case "plugins":
+                case ChangeViewMessage.Plugins:
                     CurrentView = _pluginsControl;
+                    break;
+
+                case ChangeViewMessage.Profiles:
+                    CurrentView = _profilesControl;
                     break;
 
                 default:

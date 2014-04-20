@@ -10,9 +10,13 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Xml;
+using GalaSoft.MvvmLight.Messaging;
+using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 using RTWin.Annotations;
 using RTWin.Controls;
 using RTWin.Entities;
+using RTWin.Messages;
 using RTWin.Services;
 
 namespace RTWin.Models.Views
@@ -28,6 +32,13 @@ namespace RTWin.Models.Views
         private ICommand _saveCommand;
         private ICommand _cancelCommand;
         private ICommand _exportCommand;
+        private ICommand _backCommand;
+
+        public ICommand BackCommand
+        {
+            get { return _backCommand; }
+            set { _backCommand = value; }
+        }
 
         public ICommand SaveCommand
         {
@@ -100,16 +111,16 @@ namespace RTWin.Models.Views
             _plugins = new ObservableCollection<Plugin>(_pluginService.FindAll());
             SelectedItem = Plugins.FirstOrDefault();
 
-            _addCommand = new RelayCommand(param =>
+            _addCommand = new RelayCommand(async param =>
             {
-                PromptDialog promptDialog = new PromptDialog("Plugin Name", "Name ");
-                var result = promptDialog.ShowDialog();
+                var metroWindow = (Application.Current.MainWindow as MetroWindow);
+                var result = await metroWindow.ShowInputAsync("Please enter a name for your plugin", "Plugin Name", MainWindowViewModel.DialogSettings);
 
-                if (result == true)
+                if (!string.IsNullOrWhiteSpace(result))
                 {
                     var plugin = new Plugin()
                     {
-                        Name = promptDialog.Input,
+                        Name = result.Trim(),
                         UUID = Guid.NewGuid().ToString(),
                         Content = "",
                         Description = "",
@@ -121,11 +132,12 @@ namespace RTWin.Models.Views
                 }
             });
 
-            _deleteCommand = new RelayCommand(param =>
+            _deleteCommand = new RelayCommand(async param =>
             {
-                var result = MessageBox.Show("Are you sure you want to delete this plugin?", "Delete plugin", MessageBoxButton.OKCancel);
+                var metroWindow = (Application.Current.MainWindow as MetroWindow);
+                var result = await metroWindow.ShowMessageAsync("Delete " + SelectedItem.Name, "Are you sure you want to delete " + SelectedItem.Name + "?", MessageDialogStyle.AffirmativeAndNegative, MainWindowViewModel.DialogSettings);
 
-                if (result != MessageBoxResult.OK)
+                if (result == MessageDialogResult.Negative)
                     return;
 
                 _pluginService.DeleteOne(SelectedItem.PluginId);
@@ -141,7 +153,7 @@ namespace RTWin.Models.Views
                 plugin.Content = Plugin.Content;
                 plugin.Description = Plugin.Description;
 
-                _pluginService.Save(Plugin);
+                _pluginService.Save(plugin);
                 Plugins = new ObservableCollection<Plugin>(_pluginService.FindAll());
                 SelectedItem = Plugins.FirstOrDefault(x => x.PluginId == plugin.PluginId);
             }, param => SelectedItem != null);
@@ -176,6 +188,8 @@ namespace RTWin.Models.Views
                     }
                 }
             });
+
+            _backCommand = new RelayCommand(param => Messenger.Default.Send<ChangeViewMessage>(new ChangeViewMessage(ChangeViewMessage.Main)));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

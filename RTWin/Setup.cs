@@ -74,6 +74,7 @@ namespace RTWin
             _container.Bind<PluginsControl>().ToSelf();
             _container.Bind<TextsControl>().ToSelf();
             _container.Bind<TermsControl>().ToSelf();
+            _container.Bind<ProfilesControl>().ToSelf();
 
             _container.Bind<UserDialog>().ToSelf();
             _container.Bind<PromptDialog>().ToSelf();
@@ -83,6 +84,7 @@ namespace RTWin
             _container.Bind<PluginsControlViewModel>().ToSelf();
             _container.Bind<LanguagesControlViewModel>().ToSelf();
             _container.Bind<TermsControlViewModel>().ToSelf();
+            _container.Bind<ProfilesControlViewModel>().ToSelf();
 
             _databaseService = Container.Get<DatabaseService>();
         }

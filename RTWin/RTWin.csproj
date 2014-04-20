@@ -175,6 +175,9 @@
       <DependentUpon>PluginsControl.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Controls\ProfilesControl.xaml.cs">
+      <DependentUpon>ProfilesControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\PromptDialog.xaml.cs">
       <DependentUpon>PromptDialog.xaml</DependentUpon>
     </Compile>
@@ -207,6 +210,7 @@
     <Compile Include="Models\Views\ItemDialogViewModel.cs" />
     <Compile Include="Models\Views\LanguagesControlViewModel.cs" />
     <Compile Include="Models\Views\MainWindowViewModel.cs" />
+    <Compile Include="Models\Views\ProfilesViewControlModel.cs" />
     <Compile Include="Models\Views\PluginsControlViewModel.cs" />
     <Compile Include="Models\Views\RelayCommand.cs" />
     <Compile Include="Models\Views\TermsControlViewModel.cs" />
@@ -232,6 +236,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\PluginsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ProfilesControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

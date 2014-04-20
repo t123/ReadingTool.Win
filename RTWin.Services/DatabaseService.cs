@@ -177,7 +177,7 @@ CREATE  TABLE ""settings"" (""Id"" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL 
 ");
 
             sql.Add("user", @"
-CREATE TABLE ""user"" (""UserId"" INTEGER PRIMARY KEY AUTOINCREMENT , ""Username"" TEXT NOT NULL  UNIQUE )
+CREATE TABLE ""user"" (""UserId"" INTEGER PRIMARY KEY AUTOINCREMENT , ""Username"" TEXT NOT NULL  UNIQUE, ""JsonSettings"" TEXT )
 ");
 
             sql.Add("language", @"
