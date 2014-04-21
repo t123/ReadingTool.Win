@@ -27,7 +27,7 @@
             <controls:Tile Grid.Row="2" Grid.Column="1" Title="Settings" Command="{Binding ChangeViewCommand}" CommandParameter="settings" Background="#0A5BC4"/>
             <controls:Tile Grid.Row="0" Grid.Column="2" Grid.RowSpan="3" Width="500" Height="433" Background="#094AB2" 
                            HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Title="Recent Items">
-                <ItemsControl ItemsSource="{Binding Items}" x:Name="Items">
+                <ItemsControl ItemsSource="{Binding Items}" x:Name="Items" Margin="15,15,0,0">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <TextBlock VerticalAlignment="Center" Padding="0,3,0,0"><Hyperlink Foreground="White" Command="{Binding DataContext.ReadCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}"><Run Text="{Binding Path=CommonName, Mode=OneWay}"/></Hyperlink></TextBlock>

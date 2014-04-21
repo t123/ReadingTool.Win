@@ -5,9 +5,11 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using GalaSoft.MvvmLight.Messaging;
 using RTWin.Annotations;
 using RTWin.Common;
 using RTWin.Entities;
+using RTWin.Messages;
 using RTWin.Services;
 
 namespace RTWin.Models.Views
@@ -17,6 +19,7 @@ namespace RTWin.Models.Views
         private readonly TermService _termService;
         private readonly LanguageService _languageService;
         private ObservableCollection<Term> _terms;
+        private ICommand _backCommand;
         private ICommand _exportCommand;
         private string _filterText;
         private ObservableCollection<string> _collectionNames;
@@ -26,6 +29,12 @@ namespace RTWin.Models.Views
         {
             get { return _exportCommand; }
             set { _exportCommand = value; }
+        }
+
+        public ICommand BackCommand
+        {
+            get { return _backCommand; }
+            set { _backCommand = value; }
         }
 
         public string FilterText
@@ -83,6 +92,8 @@ namespace RTWin.Models.Views
             {
 
             });
+
+            _backCommand = new RelayCommand(param => Messenger.Default.Send<ChangeViewMessage>(new ChangeViewMessage(ChangeViewMessage.Main)));
         }
 
         private void MapCollection()

@@ -13,7 +13,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Resources/Icons.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <BooleanToVisibilityConverter x:Key="BoolToVis" />
             <common:DateTimeConverter x:Key="dateConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -118,6 +117,7 @@
                     <DataGridTextColumn Width="*" Header="L1 Title" Binding="{Binding L1Title, Mode=OneWay}"></DataGridTextColumn>
                     <DataGridTextColumn Width="55" Header="Read" Binding="{Binding ReadTimes, Mode=OneWay}"></DataGridTextColumn>
                     <DataGridTextColumn Width="75" Header="Listened" Binding="{Binding ListenedTimes, Mode=OneWay}"></DataGridTextColumn>
+                    <DataGridTextColumn Width="90" Header="Read" Binding="{Binding LastRead, Mode=OneWay, Converter={StaticResource dateConverter}}"></DataGridTextColumn>
                     <DataGridCheckBoxColumn Width="65" Header="Media?" Binding="{Binding Path=HasMedia, Mode=OneWay}" ElementStyle="{DynamicResource MetroDataGridCheckBox}"></DataGridCheckBoxColumn>
                     <DataGridCheckBoxColumn Width="85" Header="Parallel?" Binding="{Binding Path=IsParallel, Mode=OneWay}" ElementStyle="{DynamicResource MetroDataGridCheckBox}"></DataGridCheckBoxColumn>
                 </DataGrid.Columns>
