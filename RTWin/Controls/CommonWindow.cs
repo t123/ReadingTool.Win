@@ -47,7 +47,7 @@ namespace RTWin.Controls
         public async void Read(Item item, bool parallel)
         {
             var metroWindow = (Application.Current.MainWindow as MetroWindow);
-            _progress = await metroWindow.ShowProgressAsync("Please wait...", "Your reading material will be available in a few seconds.", false, MainWindowViewModel.DialogSettings);
+            _progress = await metroWindow.ShowProgressAsync("Please wait...", "Your material will be available in a few seconds.", false, MainWindowViewModel.DialogSettings);
 
             _item = item;
             _parallel = parallel;
@@ -139,6 +139,11 @@ namespace RTWin.Controls
                     CanScriptsAccessClipboard = true,
                     Databases = true,
                     LoadImagesAutomatically = true,
+                    EnableGPUAcceleration = true,
+                    RemoteFonts = true,
+                    LocalStorage = true,
+                    Javascript = true,
+                    AppCache = true
                 }
                     );
             }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
 using AutoMapper;
+using Awesomium.Core;
 using Microsoft.AspNet.SignalR.Client;
 using Microsoft.Owin.Hosting;
 using Ninject;
@@ -37,6 +38,7 @@ namespace RTWin
         public static IKernel Start(IKernel container)
         {
             var s = new Setup(container);
+            s.InitWebCore();
             s.InitContainer();
             s.CreateMappings();
             s.BackupDb("Start");
@@ -45,6 +47,16 @@ namespace RTWin
             s.InitWebApi();
             s.InitSignalR();
             return s.Container;
+        }
+
+        private void InitWebCore()
+        {
+            WebCore.Initialize(new WebConfig()
+            {
+                LogPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "Logs"),
+                RemoteDebuggingHost = "127.0.0.1",
+                RemoteDebuggingPort = 1337,
+            }, true);
         }
 
         public static void Shutdown(IKernel container)
