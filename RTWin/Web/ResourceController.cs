@@ -53,7 +53,6 @@ namespace RTWin.Web
             return response;
         }
 
-
         [HttpGet]
         [Route("media/{id}")]
         public HttpResponseMessage GetMedia(long id)
@@ -68,24 +67,40 @@ namespace RTWin.Web
                     return new HttpResponseMessage(HttpStatusCode.NotFound);
                 }
 
-                HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
-                response.Content = new StreamContent(new FileStream(item.MediaUri, FileMode.Open, FileAccess.Read));
 
+                var fileStream = new FileStream(item.MediaUri, FileMode.Open, FileAccess.Read);
+                MediaTypeHeaderValue header = null;
                 switch (Path.GetExtension(item.MediaUri))
                 {
                     case ".mp3":
-                        response.Content.Headers.ContentType = new MediaTypeHeaderValue("audio/mpeg3");
+                        header = new MediaTypeHeaderValue("audio/mpeg3");
                         break;
 
                     case ".mp4":
-                        response.Content.Headers.ContentType = new MediaTypeHeaderValue("video/mp4");
-                        break;
-
-                    default:
+                        header = new MediaTypeHeaderValue("video/mp4");
                         break;
                 }
 
-                return response;
+                if (Request.Headers.Range != null)
+                {
+                    try
+                    {
+                        HttpResponseMessage partialResponse = Request.CreateResponse(HttpStatusCode.PartialContent);
+                        partialResponse.Content = new ByteRangeStreamContent(fileStream, Request.Headers.Range, header);
+                        return partialResponse;
+                    }
+                    catch (InvalidByteRangeException invalidByteRangeException)
+                    {
+                        return Request.CreateErrorResponse(invalidByteRangeException);
+                    }
+                }
+                else
+                {
+                    HttpResponseMessage fullResponse = Request.CreateResponse(HttpStatusCode.OK);
+                    fullResponse.Content = new StreamContent(fileStream);
+                    fullResponse.Content.Headers.ContentType = header;
+                    return fullResponse;
+                }
             }
             catch (Exception e)
             {

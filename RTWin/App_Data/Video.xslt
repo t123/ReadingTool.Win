@@ -79,6 +79,15 @@
             <xsl:value-of select="@state"/>
             <xsl:text> __</xsl:text>
             <xsl:value-of select="@phraseClass"/>
+            <xsl:if test="string-length(@definition)>0 and @state='known'">
+              <xsl:text> __kd</xsl:text>
+            </xsl:if>
+            <xsl:if test="string-length(@definition)>0 and @state='ignored'">
+              <xsl:text> __id</xsl:text>
+            </xsl:if>
+            <xsl:if test="string-length(@definition)>0 and @state='unknown'">
+              <xsl:text> __ud</xsl:text>
+            </xsl:if>
             <xsl:if test="@commonness">
               <xsl:text> __</xsl:text>
               <xsl:value-of select="@commonness"/>
@@ -90,11 +99,30 @@
           <xsl:attribute name="data-occurrences">
             <xsl:value-of select="@occurrences"/>
           </xsl:attribute>
-          <xsl:value-of select="."/>
+          <xsl:attribute name="data-lower">
+            <xsl:value-of select="@phrase"/>
+          </xsl:attribute>
+          <xsl:choose>
+            <xsl:when test="@definition">
+              <a rel="tooltip">
+                <xsl:attribute name="title">
+                  <xsl:value-of select="@definition"/>
+                </xsl:attribute>
+                <xsl:value-of select="."/>
+              </a>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="."/>
+            </xsl:otherwise>
+          </xsl:choose>
         </span>
       </xsl:when>
       <xsl:otherwise>
-        <span class="__punctuation">
+        <span>
+          <xsl:attribute name="class">
+            __punctuation
+            <xsl:if test="@isWhitespace='true'"> __whitespace</xsl:if>
+          </xsl:attribute>
           <xsl:value-of select="."/>
         </span>
       </xsl:otherwise>
