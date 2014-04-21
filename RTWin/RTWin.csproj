@@ -209,7 +209,8 @@
     <Compile Include="Models\Views\MainWindowViewModel.cs" />
     <Compile Include="Models\Views\ProfilesViewControlModel.cs" />
     <Compile Include="Models\Views\PluginsControlViewModel.cs" />
-    <Compile Include="Models\Views\RelayCommand.cs" />
+    <Compile Include="Common\RelayCommand.cs" />
+    <Compile Include="Models\Views\ReadControlViewModel.cs" />
     <Compile Include="Models\Views\TermsControlViewModel.cs" />
     <Compile Include="Models\Views\TextsControlViewModel.cs" />
     <Compile Include="Models\Views\UserDialogViewModel.cs" />

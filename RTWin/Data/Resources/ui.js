@@ -5,7 +5,7 @@
 
     var webApiEndPoint = $('#reading').data('webapi');
     var signalREndPoint = $('#reading').data('signalr') + "/signalr";
-    
+
     $.connection.hub.url = signalREndPoint;
     var chat = $.connection.mainHub;
 
@@ -24,6 +24,16 @@
             } else {
                 $('#l2Main').html($('#l2_' + message).html());
             }
+        } else if (name == "markremainingasknown") {
+            if (!confirm('Are you sure you want to mark remaining words as known?')) {
+                return false;
+            }
+
+            reading.markRemainingAsKnown();
+        } else if (name == "read") {
+            window.reading.changeRead(message, 'read');
+        } else if (name == "listen") {
+            window.reading.changeRead(message, 'listen');
         }
     };
 
@@ -39,7 +49,7 @@
 
             if ($('#reading').data('itemtype') == 'text') {
                 $("#jquery_jplayer_1").jPlayer({
-                    ready: function() {
+                    ready: function () {
                         $(this).jPlayer("setMedia", {
                             mp3: mediaUri
                         });
@@ -50,14 +60,18 @@
                 });
             } else {
                 $("#jquery_jplayer_1").jPlayer({
-                    ready: function() {
+                    ready: function () {
                         $(this).jPlayer("setMedia", {
                             m4v: mediaUri
                         });
                     },
                     swfPath: webApiEndPoint + "/api/resource/local/Jplayer.swf",
                     supplied: "m4v",
-                    errorAlerts: true
+                    errorAlerts: true,
+                    size: {
+                        width: "720px",
+                        height: "405px"
+                    }
                 });
             }
         } else {

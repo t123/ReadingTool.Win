@@ -14,10 +14,12 @@
     <script src="<!-- webapi -->/api/resource/local/ui.js"></script>
     <script src="<!-- webapi -->/api/resource/local/reading.js"></script>
     <style>
-        #bottombar .jp-audio {
-            float: right;
+        #jp_container_1 {
+            position: fixed;
+            z-index: 100;
+            bottom: 0;
+            right: 0;
         }
-         
     </style>
     <title></title>
 </head>
@@ -61,44 +63,34 @@
     </div>
     <!-- table -->
 
-    <div id="bottombar">
-        <div style="float:left">
-            <input type="button" value="Mark remaining words as known" id="btnMark" />
-            <input type="button" value="- Read" onclick="window.reading.changeRead(-1, 'read')" />
-            <input type="button" value="+ Read" onclick="window.reading.changeRead(1, 'read')" />
-            <input type="button" value="- Listen" onclick="window.reading.changeRead(-1, 'listen')" />
-            <input type="button" value="+ Listen" onclick="window.reading.changeRead(1, 'listen')" />
-            <span id="resultMessage"> </span>
-        </div>
-        <div id="jquery_jplayer_1" class="jp-jplayer"></div>
-        <div id="jp_container_1" class="jp-audio">
-            <div class="jp-type-single">
-                <div class="jp-gui jp-interface">
-                    <ul class="jp-controls">
-                        <li><a href="javascript:;" class="jp-play">play</a></li>
-                        <li><a href="javascript:;" class="jp-pause">pause</a></li>
-                        <li><a href="javascript:;" class="jp-stop">stop</a></li>
-                        <li><a href="javascript:;" class="jp-mute" title="mute">mute</a></li>
-                        <li><a href="javascript:;" class="jp-unmute" title="unmute">unmute</a></li>
-                        <li><a href="javascript:;" class="jp-volume-max" title="max volume">max volume</a></li>
-                    </ul>
-                    <div class="jp-progress">
-                        <div class="jp-seek-bar">
-                            <div class="jp-play-bar"></div>
-                        </div>
-                    </div>
-                    <div class="jp-volume-bar">
-                        <div class="jp-volume-bar-value"></div>
-                    </div>
-                    <div class="jp-time-holder">
-                        <div class="jp-current-time"></div>
-                        <div class="jp-duration"></div>
+    <div id="jquery_jplayer_1" class="jp-jplayer"></div>
+    <div id="jp_container_1" class="jp-audio">
+        <div class="jp-type-single">
+            <div class="jp-gui jp-interface">
+                <ul class="jp-controls">
+                    <li><a href="javascript:;" class="jp-play">play</a></li>
+                    <li><a href="javascript:;" class="jp-pause">pause</a></li>
+                    <li><a href="javascript:;" class="jp-stop">stop</a></li>
+                    <li><a href="javascript:;" class="jp-mute" title="mute">mute</a></li>
+                    <li><a href="javascript:;" class="jp-unmute" title="unmute">unmute</a></li>
+                    <li><a href="javascript:;" class="jp-volume-max" title="max volume">max volume</a></li>
+                </ul>
+                <div class="jp-progress">
+                    <div class="jp-seek-bar">
+                        <div class="jp-play-bar"></div>
                     </div>
                 </div>
-                <div class="jp-no-solution">
-                    <span>Update Required</span>
-                    To play the media you will need to either update your browser to a recent version or update your <a href="http://get.adobe.com/flashplayer/" target="_blank">Flash plugin</a>.
+                <div class="jp-volume-bar">
+                    <div class="jp-volume-bar-value"></div>
                 </div>
+                <div class="jp-time-holder">
+                    <div class="jp-current-time"></div>
+                    <div class="jp-duration"></div>
+                </div>
+            </div>
+            <div class="jp-no-solution">
+                <span>Update Required</span>
+                To play the media you will need to either update your browser to a recent version or update your <a href="http://get.adobe.com/flashplayer/" target="_blank">Flash plugin</a>.
             </div>
         </div>
     </div>

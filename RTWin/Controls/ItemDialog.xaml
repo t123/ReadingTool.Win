@@ -1,8 +1,9 @@
-﻿<Window
+﻿<controls:MetroWindow
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
 	xmlns:common="clr-namespace:RTWin.Common"
+	xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
 	x:Name="Window" Title="{Binding Path=L1Title, StringFormat=Item - {0}}"
 	WindowStyle="SingleBorderWindow"
 	x:Class="RTWin.Controls.ItemDialog"
@@ -90,4 +91,4 @@
             </TabItem>
         </TabControl>
     </DockPanel>
-</Window>
+</controls:MetroWindow>

@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Windows.Input;
 
-namespace RTWin.Models.Views
+namespace RTWin.Common
 {
     /// <summary>
     /// <see cref="http://snipplr.com/view/13642/"/>

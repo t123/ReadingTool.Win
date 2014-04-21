@@ -99,7 +99,7 @@
                     <Style TargetType="DataGridRow">
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding ItemType}" Value="Video">
-                                <Setter Property="Background" Value="#A59F93"></Setter>
+                                <Setter Property="Background" Value="#F7F7F7"></Setter>
                             </DataTrigger>
                             <Trigger Property="IsSelected" Value="True">
                                 <Setter Property="Background" Value="#70C5E9"/>

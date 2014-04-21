@@ -4,10 +4,82 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:awe="http://schemas.awesomium.com/winfx"
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Icons.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
-        <awe:WebControl Name="WebControl">
-        </awe:WebControl>
+        <DockPanel>
+            <Border DockPanel.Dock="Top" BorderBrush="Black" BorderThickness="0,0,0,1">
+                <Grid Height="40" Background="White">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="45"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="30"></ColumnDefinition>
+                        <ColumnDefinition Width="150"></ColumnDefinition>
+                        <ColumnDefinition Width="30"></ColumnDefinition>
+                        <ColumnDefinition Width="150"></ColumnDefinition>
+                        <ColumnDefinition Width="30"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Button Grid.Column="0" Width="40" Height="40" Style="{DynamicResource MetroCircleButtonStyle}" Command="{Binding BackCommand}">
+                        <Rectangle Width="20" Height="20">
+                            <Rectangle.Fill>
+                                <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_chevron_left}" />
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </Button>
+                    <TextBlock Text="{Binding Message}" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
+                    <StackPanel Grid.Column="3" Orientation="Horizontal">
+                        <Button Width="40" Height="40" Style="{DynamicResource MetroCircleButtonStyle}" Command="{Binding ChangeCommand}" CommandParameter="DecreaseRead">
+                            <Rectangle Width="20" Height="20">
+                                <Rectangle.Fill>
+                                    <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_minus}" />
+                                </Rectangle.Fill>
+                            </Rectangle>
+                        </Button>
+                        <TextBlock VerticalAlignment="Center" Margin="10,0,10,0">Reading</TextBlock>
+                        <Button Width="40" Height="40" Style="{DynamicResource MetroCircleButtonStyle}" Command="{Binding ChangeCommand}" CommandParameter="IncreaseRead">
+                            <Rectangle Width="20" Height="20">
+                                <Rectangle.Fill>
+                                    <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_add}" />
+                                </Rectangle.Fill>
+                            </Rectangle>
+                        </Button>
+                    </StackPanel>
+                    <StackPanel Grid.Column="5" Orientation="Horizontal">
+                        <Button Width="40" Height="40" Style="{DynamicResource MetroCircleButtonStyle}" Command="{Binding ChangeCommand}" CommandParameter="DecreaseListen">
+                            <Rectangle Width="20" Height="20">
+                                <Rectangle.Fill>
+                                    <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_minus}" />
+                                </Rectangle.Fill>
+                            </Rectangle>
+                        </Button>
+                        <TextBlock VerticalAlignment="Center" Margin="10,0,10,0">Listened</TextBlock>
+                        <Button Width="40" Height="40" Style="{DynamicResource MetroCircleButtonStyle}" Command="{Binding ChangeCommand}" CommandParameter="IncreaseListen">
+                            <Rectangle Width="20" Height="20">
+                                <Rectangle.Fill>
+                                    <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_add}" />
+                                </Rectangle.Fill>
+                            </Rectangle>
+                        </Button>
+                    </StackPanel>
+                    <Button Grid.Column="7" Content="Mark remaining as read" Margin="10,0,10,0" Height="25" Command="{Binding MarkKnownCommand}"/>
+                    <Button Grid.Column="8" Content="{Binding PrevItemTitle}" Margin="10,0,10,0" Height="25" Command="{Binding PrevItemCommand}" Visibility="{Binding PrevItemVisible, Converter={StaticResource BoolToVis}}"/>
+                    <Button Grid.Column="9" Content="{Binding NextItemTitle}" Margin="10,0,10,0" Height="25" Command="{Binding NextItemCommand}" Visibility="{Binding NextItemVisible, Converter={StaticResource BoolToVis}}"/>
+                </Grid>
+            </Border>
+            <awe:WebControl Name="WebControl">
+            </awe:WebControl>
+        </DockPanel>
     </Grid>
 </UserControl>

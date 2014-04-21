@@ -14,6 +14,7 @@ using GalaSoft.MvvmLight.Messaging;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using RTWin.Annotations;
+using RTWin.Common;
 using RTWin.Controls;
 using RTWin.Entities;
 using RTWin.Messages;

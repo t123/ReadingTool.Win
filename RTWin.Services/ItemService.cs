@@ -147,6 +147,19 @@ namespace RTWin.Services
             return message;
         }
 
+        public Tuple<Item, Item> FindNextPrev(Item item)
+        {
+            if (item == null)
+            {
+                return new Tuple<Item, Item>(null, null);
+            }
+
+            var next = _db.FetchWhere<Item>(x => x.L1LanguageId == item.L1LanguageId && x.CollectionName == item.CollectionName && x.CollectionNo > item.CollectionNo).OrderBy(x => x.CollectionNo).FirstOrDefault();
+            var prev = _db.FetchWhere<Item>(x => x.L1LanguageId == item.L1LanguageId && x.CollectionName == item.CollectionName && x.CollectionNo < item.CollectionNo).OrderBy(x => x.CollectionNo).LastOrDefault();
+
+            return new Tuple<Item, Item>(next, prev);
+        }
+
         public IEnumerable<Item> Search(
             ItemType? itemType = null,
             DateTime? modified = null,

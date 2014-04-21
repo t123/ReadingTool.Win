@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using ICSharpCode.AvalonEdit.Rendering;
+using MahApps.Metro.Controls;
 using Microsoft.Win32;
 using Ninject;
 using Ninject.Parameters;
@@ -24,7 +25,7 @@ namespace RTWin.Controls
     /// <summary>
     /// Interaction logic for ItemDialog.xaml
     /// </summary>
-    public partial class ItemDialog : Window
+    public partial class ItemDialog : MetroWindow
     {
         private readonly ItemDialogViewModel _itemDialogViewModel;
         private Item _item;

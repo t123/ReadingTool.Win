@@ -105,7 +105,7 @@ namespace RTWin.Services
             }
 
             var common = document.Descendants("term")
-                .Where(x => x.Attribute("isTerm").Value == "true")
+                .Where(x => x.Attribute("isTerm").Value == "true" && x.Attribute("state").Value == TermState.NotSeen.ToString().ToLowerInvariant())
                 .Distinct(new NodeComparer())
                 .OrderByDescending(x => double.Parse(x.Attribute("frequency").Value))
                 .Take(60);

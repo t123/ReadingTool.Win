@@ -109,6 +109,7 @@ textarea.changed, input.changed {
     background-color: #F7F7F7;
     min-width: 500px;
     position: absolute;
+    z-index: 500;
 }
 
 #popup table {
@@ -192,21 +193,11 @@ textarea.changed, input.changed {
 	padding-top: 2px;
 }
 
-#bottombar {
-    background-color: white;
-    border-top: 1px solid black;
-    position: fixed;
-    z-index: 100; 
-    bottom: 0; 
-    left: 0;
-    width: 100%;
-}
-
 #video {
-    margin-top: 20px;
-    margin-bottom: 30px;
-    margin-left: 30%;
-    margin-right: 0;
+    width: 730px;
+    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #l1Main {

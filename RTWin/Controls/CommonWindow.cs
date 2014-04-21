@@ -7,9 +7,12 @@ using System.Windows;
 using System.Windows.Controls;
 using Awesomium.Core;
 using Awesomium.Windows.Controls;
+using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 using Ninject;
 using RTWin.Common;
 using RTWin.Entities;
+using RTWin.Models.Views;
 using RTWin.Services;
 
 namespace RTWin.Controls
@@ -27,6 +30,7 @@ namespace RTWin.Controls
         protected DatabaseService _databaseService;
         protected IParserService _parserService;
         protected WebControl _control;
+        private ProgressDialogController _progress;
 
         public ParserOutput Output
         {
@@ -40,8 +44,11 @@ namespace RTWin.Controls
             InitializeWebControl(_control);
         }
 
-        public void Read(Item item, bool parallel)
+        public async void Read(Item item, bool parallel)
         {
+            var metroWindow = (Application.Current.MainWindow as MetroWindow);
+            _progress = await metroWindow.ShowProgressAsync("Please wait...", "Your reading material will be available in a few seconds.", false, MainWindowViewModel.DialogSettings);
+
             _item = item;
             _parallel = parallel;
             _itemService = App.Container.Get<ItemService>();
@@ -77,6 +84,8 @@ namespace RTWin.Controls
             MarkAsRead();
 
             var sourceUri = _databaseService.GetSetting<string>(DbSetting.Keys.BaseWebAPIAddress) + "/api/resource/item/" + _item.ItemId;
+            //TODO fixme, navigate away sourceurl doesn't change if view again, dialog doesn't close.
+            _control.Source = "about:blank".ToUri();
             _control.Source = sourceUri.ToUri();
         }
 
@@ -141,6 +150,14 @@ namespace RTWin.Controls
             control.DocumentReady += WebControl_OnDocumentReady;
             control.ShowCreatedWebView += WebControl_ShowCreatedWebView;
             control.Source = sourceUri.ToUri();
+
+            control.LoadingFrameComplete += (s, e) =>
+            {
+                if (e.IsMainFrame && _progress != null)
+                {
+                    _progress.CloseAsync();
+                }
+            };
         }
 
         void WebControl_ShowCreatedWebView(object sender, ShowCreatedWebViewEventArgs e)

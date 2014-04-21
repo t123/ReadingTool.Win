@@ -5,6 +5,7 @@ using System.Data.SQLite;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading.Tasks;
@@ -87,6 +88,29 @@ namespace RTWin.Web
                 Definition = term.Definition,
                 Sentence = term.Sentence
             };
+        }
+
+        [HttpGet]
+        [Route("api/v1/terms/encode")]
+        public HttpResponseMessage Encode(string term, string encoding="utf-8")
+        {
+            try
+            {
+                var response = new HttpResponseMessage(HttpStatusCode.OK);
+
+                var dest = Encoding.GetEncoding(encoding);
+                var bytes = dest.GetBytes(term);
+                var ascii = Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(bytes, 0, bytes.Length));
+
+                response.Content = new StringContent(ascii);
+                response.Content.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
+
+                return response;
+            }
+            catch
+            {
+                return new HttpResponseMessage(HttpStatusCode.InternalServerError);
+            }
         }
 
         public HttpResponseMessage Delete(TermPost term)

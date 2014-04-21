@@ -2,8 +2,11 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using GalaSoft.MvvmLight.Messaging;
 using Ninject;
 using RTWin.Entities;
+using RTWin.Messages;
+using RTWin.Models.Views;
 using RTWin.Services;
 
 namespace RTWin.Controls
@@ -13,13 +16,18 @@ namespace RTWin.Controls
     /// </summary>
     public partial class ReadControl : UserControl
     {
+        private readonly ReadControlViewModel _readControlViewModel;
         private CommonWindow _cw;
         private ItemService _itemService;
-        public ReadControl()
+
+        public ReadControl(ReadControlViewModel readControlViewModel)
         {
+            _readControlViewModel = readControlViewModel;
             _itemService = App.Container.Get<ItemService>();
             InitializeComponent();
             _cw = new CommonWindow(WebControl);
+
+            this.DataContext = readControlViewModel;
         }
 
         public void View(long itemId, bool parallel)
@@ -30,6 +38,7 @@ namespace RTWin.Controls
 
         public void View(Item item, bool parallel)
         {
+            _readControlViewModel.Item = item;
             _cw.Read(item, parallel);
         }
 
