@@ -38,6 +38,13 @@ namespace RTWin.Messages
         }
     }
 
+    public class RefreshViewsMessage
+    {
+        public RefreshViewsMessage()
+        {
+        }
+    }
+
     public class ChangeViewMessage
     {
         private readonly string _viewName;

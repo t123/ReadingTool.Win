@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Windows.Controls;
 using GalaSoft.MvvmLight.Messaging;
 using MahApps.Metro.Controls.Dialogs;
+using Ninject;
 using RTWin.Annotations;
 using RTWin.Common;
 using RTWin.Controls;
@@ -38,7 +39,7 @@ namespace RTWin.Models.Views
         private PluginsControl _pluginsControl;
         private ReadControl _readControl;
         private MainWindowControl _mainWindowControl;
-        private readonly ProfilesControl _profilesControl;
+        private ProfilesControl _profilesControl;
         private UserControl _currentView;
 
         public User CurrentUser
@@ -58,8 +59,7 @@ namespace RTWin.Models.Views
             PluginsControl pluginsControl,
             ReadControl readControl,
             MainWindowControl mainWindowControl,
-            ProfilesControl profilesControl,
-            UserService userService
+            ProfilesControl profilesControl
             )
         {
             _languagesControl = languagesControl;
@@ -70,17 +70,9 @@ namespace RTWin.Models.Views
             _mainWindowControl = mainWindowControl;
             _profilesControl = profilesControl;
 
-            var users = userService.FindAll();
             CurrentUser = App.User;
 
-            if (users.Count() > 1)
-            {
-                ChangeView(ChangeViewMessage.Profiles);
-            }
-            else
-            {
-                ChangeView(ChangeViewMessage.Items);
-            }
+            ChangeView(ChangeViewMessage.Main);
 
             Messenger.Default.Register<ReadMessage>(this, (action) =>
             {
@@ -89,11 +81,26 @@ namespace RTWin.Models.Views
             });
 
             Messenger.Default.Register<ChangeViewMessage>(this, (action) => ChangeView(action.ViewName));
+            Messenger.Default.Register<RefreshViewsMessage>(this, (action) => RefreshViews());
         }
 
         public Tuple<long, long> GetSub(double time)
         {
             return _readControl.GetSub(time);
+        }
+
+        private void RefreshViews()
+        {
+            _languagesControl = App.Container.Get<LanguagesControl>();
+            _termsControl = App.Container.Get<TermsControl>();
+            _textsControl = App.Container.Get<TextsControl>();
+            _pluginsControl = App.Container.Get<PluginsControl>();
+            _readControl = App.Container.Get<ReadControl>();
+            _mainWindowControl = App.Container.Get<MainWindowControl>();
+            _profilesControl = App.Container.Get<ProfilesControl>();
+
+            ChangeView(ChangeViewMessage.Profiles);
+            CurrentUser = App.User;
         }
 
         private void ChangeView(string viewName)

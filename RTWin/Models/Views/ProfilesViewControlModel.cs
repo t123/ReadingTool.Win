@@ -157,6 +157,8 @@ namespace RTWin.Models.Views
                 User = Mapper.Map<User, UserModel>(_userService.FindOne(SelectedItem.UserId));
                 SelectedItem = Users.FirstOrDefault(x => x.UserId == User.UserId);
                 App.User = SelectedItem;
+
+                Messenger.Default.Send<RefreshViewsMessage>(new RefreshViewsMessage());
             }, param => SelectedItem != null);
 
             _backCommand = new RelayCommand(param => Messenger.Default.Send<ChangeViewMessage>(new ChangeViewMessage(ChangeViewMessage.Main)));
