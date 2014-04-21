@@ -17,7 +17,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition Width="400"></ColumnDefinition>
+                <ColumnDefinition Width="500"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <controls:Tile Grid.Row="0" Grid.Column="0" Title="Languages" Command="{Binding ChangeViewCommand}" CommandParameter="languages" Background="#0A5BC4"/>
             <controls:Tile Grid.Row="0" Grid.Column="1" Title="Items" Command="{Binding ChangeViewCommand}" CommandParameter="items" Background="#0A5BC4"/>
@@ -25,19 +25,14 @@
             <controls:Tile Grid.Row="1" Grid.Column="1" Title="Profiles" Command="{Binding ChangeViewCommand}" CommandParameter="profiles" Background="#0A5BC4"/>
             <controls:Tile Grid.Row="2" Grid.Column="0" Title="Plugins" Command="{Binding ChangeViewCommand}" CommandParameter="plugins" Background="#0A5BC4"/>
             <controls:Tile Grid.Row="2" Grid.Column="1" Title="Settings" Command="{Binding ChangeViewCommand}" CommandParameter="settings" Background="#0A5BC4"/>
-            <controls:Tile Grid.Row="0" Grid.Column="2" Grid.RowSpan="3" Width="400" Height="433" Background="#094AB2" 
-                           HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Title="Recently Items">
-                <ItemsControl>
+            <controls:Tile Grid.Row="0" Grid.Column="2" Grid.RowSpan="3" Width="500" Height="433" Background="#094AB2" 
+                           HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Title="Recent Items">
+                <ItemsControl ItemsSource="{Binding Items}" x:Name="Items">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock><Hyperlink Foreground="White"><Run Text="{Binding Mode=OneWay}" /></Hyperlink></TextBlock>
+                            <TextBlock VerticalAlignment="Center" Padding="0,3,0,0"><Hyperlink Foreground="White" Command="{Binding DataContext.ReadCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}"><Run Text="{Binding Path=CommonName, Mode=OneWay}"/></Hyperlink></TextBlock>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
-                    <system:String>Lorem Ipsum - 1. Some long lorem title #1</system:String>
-                    <system:String>Lorem Ipsum - 1. Some long lorem title #2</system:String>
-                    <system:String>Lorem Ipsum - 1. Some long lorem title #3</system:String>
-                    <system:String>Lorem Ipsum - 1. Some long lorem title #4</system:String>
-                    <system:String>Lorem Ipsum - 1. Some long lorem title #5</system:String>
                 </ItemsControl>
             </controls:Tile>
         </Grid>

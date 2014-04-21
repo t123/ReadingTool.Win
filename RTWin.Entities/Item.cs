@@ -50,5 +50,23 @@ namespace RTWin.Entities
         /// </summary>
         [ResultColumn]
         public string L2Language { get; set; }
+
+        [Ignore]
+        public string CommonName
+        {
+            get
+            {
+                string name = string.IsNullOrEmpty(CollectionName) ? "" : CollectionName + " - ";
+                name += CollectionNo == null ? "" : CollectionNo.ToString() + ". ";
+                name += L1Title;
+
+                if (!string.IsNullOrWhiteSpace(L1Language))
+                {
+                    name += " (" + L1Language + ")";
+                }
+
+                return name;
+            }
+        }
     }
 }

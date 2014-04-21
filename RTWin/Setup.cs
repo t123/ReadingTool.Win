@@ -87,6 +87,7 @@ namespace RTWin
             _container.Bind<TermsControlViewModel>().ToSelf();
             _container.Bind<ProfilesControlViewModel>().ToSelf();
             _container.Bind<ReadControlViewModel>().ToSelf();
+            _container.Bind<MainWindowControlViewModel>().ToSelf();
 
             _databaseService = Container.Get<DatabaseService>();
         }

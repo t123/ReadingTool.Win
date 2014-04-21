@@ -21,14 +21,6 @@ namespace RTWin.Models.Views
             get { return new MetroDialogSettings() { AnimateHide = false, AnimateShow = false }; }
         }
 
-        private RelayCommand _changeViewCommand;
-
-        public RelayCommand ChangeViewCommand
-        {
-            get { return _changeViewCommand; }
-            set { _changeViewCommand = value; }
-        }
-
         public UserControl CurrentView
         {
             get { return _currentView; }
@@ -89,8 +81,6 @@ namespace RTWin.Models.Views
             {
                 ChangeView(ChangeViewMessage.Items);
             }
-
-            _changeViewCommand = new RelayCommand(x => ChangeView(x.ToString()));
 
             Messenger.Default.Register<ReadMessage>(this, (action) =>
             {

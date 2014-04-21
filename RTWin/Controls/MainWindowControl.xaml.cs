@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using RTWin.Models.Views;
 
 namespace RTWin.Controls
 {
@@ -20,9 +21,13 @@ namespace RTWin.Controls
     /// </summary>
     public partial class MainWindowControl : UserControl
     {
-        public MainWindowControl()
+        private readonly MainWindowControlViewModel _mainWindowControlViewModel;
+
+        public MainWindowControl(MainWindowControlViewModel mainWindowControlViewModel)
         {
+            _mainWindowControlViewModel = mainWindowControlViewModel;
             InitializeComponent();
+            this.DataContext = mainWindowControlViewModel;
         }
     }
 }

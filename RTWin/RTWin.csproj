@@ -206,6 +206,7 @@
     <Compile Include="Models\Entities\LanguageModel.cs" />
     <Compile Include="Models\Views\ItemDialogViewModel.cs" />
     <Compile Include="Models\Views\LanguagesControlViewModel.cs" />
+    <Compile Include="Models\Views\MainWindowControlViewModel.cs" />
     <Compile Include="Models\Views\MainWindowViewModel.cs" />
     <Compile Include="Models\Views\ProfilesViewControlModel.cs" />
     <Compile Include="Models\Views\PluginsControlViewModel.cs" />

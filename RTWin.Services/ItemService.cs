@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Linq;
 using System.Text;
@@ -287,6 +288,23 @@ namespace RTWin.Services
             }
 
             sql.OrderBy("L1Language, item.CollectionName, item.CollectionNo, item.L1Title, item.ItemId");
+
+            if (maxResults.HasValue && maxResults > 0)
+            {
+                sql.Append("LIMIT @0", maxResults.Value);
+            }
+
+            var results = _db.Query<Item>(sql);
+            return results;
+        }
+
+        public IEnumerable<Item> FindRecent(int? maxResults)
+        {
+            var sql = Sql.Builder.Append("SELECT item.*, B.Name as L1Language, C.Name as L2Language FROM item item");
+            sql.LeftJoin("language B on item.L1LanguageId=B.LanguageId");
+            sql.LeftJoin("language C on item.L2LanguageId=C.LanguageId");
+            sql.Append("WHERE item.UserId=@0 ", _user.UserId);
+            sql.OrderBy("item.LastRead DESC");
 
             if (maxResults.HasValue && maxResults > 0)
             {
