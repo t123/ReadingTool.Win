@@ -179,9 +179,6 @@
     <Compile Include="Controls\ProfilesControl.xaml.cs">
       <DependentUpon>ProfilesControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\PromptDialog.xaml.cs">
-      <DependentUpon>PromptDialog.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\ReadControl.xaml.cs">
       <DependentUpon>ReadControl.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -193,9 +190,6 @@
     <Compile Include="Controls\TextsControl.xaml.cs">
       <DependentUpon>TextsControl.xaml</DependentUpon>
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Controls\UserDialog.xaml.cs">
-      <DependentUpon>UserDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Common\MainHub.cs" />
     <Compile Include="Common\OWINSignalRConfig.cs" />
@@ -214,7 +208,6 @@
     <Compile Include="Models\Views\ReadControlViewModel.cs" />
     <Compile Include="Models\Views\TermsControlViewModel.cs" />
     <Compile Include="Models\Views\TextsControlViewModel.cs" />
-    <Compile Include="Models\Views\UserDialogViewModel.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Setup.cs" />
     <Compile Include="Temp.cs" />
@@ -242,10 +235,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\PromptDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Controls\ReadControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -255,10 +244,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\TextsControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\UserDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

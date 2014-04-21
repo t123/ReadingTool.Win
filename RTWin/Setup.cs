@@ -77,8 +77,6 @@ namespace RTWin
             _container.Bind<ProfilesControl>().ToSelf();
             _container.Bind<ReadControl>().ToSelf();
 
-            _container.Bind<UserDialog>().ToSelf();
-            _container.Bind<PromptDialog>().ToSelf();
             _container.Bind<ItemDialog>().ToSelf();
 
             _container.Bind<MainWindowViewModel>().ToSelf();
