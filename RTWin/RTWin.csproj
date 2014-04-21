@@ -198,6 +198,7 @@
     <Compile Include="Messages\ReadMessage.cs" />
     <Compile Include="Models\Entities\ItemSearch.cs" />
     <Compile Include="Models\Entities\LanguageModel.cs" />
+    <Compile Include="Models\Entities\UserModel.cs" />
     <Compile Include="Models\Views\ItemDialogViewModel.cs" />
     <Compile Include="Models\Views\LanguagesControlViewModel.cs" />
     <Compile Include="Models\Views\MainWindowControlViewModel.cs" />

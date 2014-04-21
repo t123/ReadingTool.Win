@@ -26,7 +26,7 @@ namespace RTWin.Entities
         [Ignore]
         public LanguageSettings Settings
         {
-            get { return JsonConvert.DeserializeObject<LanguageSettings>(JsonSettings); }
+            get { return JsonConvert.DeserializeObject<LanguageSettings>(JsonSettings ?? ""); }
             set { JsonSettings = JsonConvert.SerializeObject(value); }
         }
 

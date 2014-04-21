@@ -83,10 +83,17 @@
                         <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition Height="*"></RowDefinition>
                     </Grid.RowDefinitions>
                     <Label Content="Name" Grid.Row="0" Grid.Column="0"/>
                     <TextBox Grid.Row="0" Grid.Column="1" Margin="5" Text="{Binding User.Username}"/>
+                    <Label Content="Access Key" Grid.Row="1" Grid.Column="0"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" Margin="5" Text="{Binding User.AccessKey}"/>
+                    <Label Content="Access Secret" Grid.Row="2" Grid.Column="0"/>
+                    <TextBox Grid.Row="2" Grid.Column="1" Margin="5" Text="{Binding User.AccessSecret}"/>
+                    <Label Content="Sync Data" Grid.Row="3" Grid.Column="0"/>
+                    <CheckBox Grid.Row="3" Grid.Column="1" Margin="5" IsChecked="{Binding User.SyncData}" VerticalAlignment="Top"/>
                 </Grid>
             </GroupBox>
         </DockPanel>

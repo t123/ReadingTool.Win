@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
+using AutoMapper;
 using GalaSoft.MvvmLight.Messaging;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
@@ -20,7 +21,7 @@ namespace RTWin.Models.Views
         private readonly UserService _userService;
         private ObservableCollection<User> _users;
         private User _selectedItem;
-        private User _user;
+        private UserModel _user;
         private ICommand _addCommand;
         private ICommand _deleteCommand;
         private ICommand _saveCommand;
@@ -64,7 +65,7 @@ namespace RTWin.Models.Views
             set { _switchCommand = value; }
         }
 
-        public User User
+        public UserModel User
         {
             get { return _user; }
             set { _user = value; OnPropertyChanged("User"); }
@@ -78,7 +79,7 @@ namespace RTWin.Models.Views
                 _selectedItem = value;
                 if (_selectedItem != null)
                 {
-                    User = _userService.FindOne(_selectedItem.UserId);
+                    User = Mapper.Map<User, UserModel>(_userService.FindOne(_selectedItem.UserId));
                 }
 
                 OnPropertyChanged("SelectedItem");
@@ -132,20 +133,28 @@ namespace RTWin.Models.Views
             {
                 var user = _userService.FindOne(SelectedItem.UserId);
                 user.Username = User.Username;
+                user.Settings = new UserSettings()
+                {
+                    AccessKey = User.AccessKey,
+                    AccessSecret = User.AccessSecret,
+                    SyncData = User.SyncData
+                };
+
                 _userService.Save(user);
+
                 Users = new ObservableCollection<User>(_userService.FindAll());
                 SelectedItem = Users.FirstOrDefault(x => x.UserId == user.UserId);
             }, param => SelectedItem != null);
 
             _cancelCommand = new RelayCommand(param =>
             {
-                User = _userService.FindOne(SelectedItem.UserId);
+                User = Mapper.Map<User, UserModel>(_userService.FindOne(SelectedItem.UserId));
                 SelectedItem = Users.FirstOrDefault(x => x.UserId == User.UserId);
             }, param => SelectedItem != null);
 
             _switchCommand = new RelayCommand(param =>
             {
-                User = _userService.FindOne(SelectedItem.UserId);
+                User = Mapper.Map<User, UserModel>(_userService.FindOne(SelectedItem.UserId));
                 SelectedItem = Users.FirstOrDefault(x => x.UserId == User.UserId);
                 App.User = SelectedItem;
             }, param => SelectedItem != null);

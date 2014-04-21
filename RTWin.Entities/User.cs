@@ -16,12 +16,19 @@ namespace RTWin.Entities
         public string Username { get; set; }
 
         [Ignore]
-        public LanguageSettings Settings
+        public UserSettings Settings
         {
-            get { return JsonConvert.DeserializeObject<LanguageSettings>(JsonSettings); }
+            get { return JsonConvert.DeserializeObject<UserSettings>(JsonSettings ?? ""); }
             set { JsonSettings = JsonConvert.SerializeObject(value); }
         }
 
         public string JsonSettings { get; set; }
+    }
+
+    public class UserSettings
+    {
+        public string AccessKey { get; set; }
+        public string AccessSecret { get; set; }
+        public bool SyncData { get; set; }
     }
 }

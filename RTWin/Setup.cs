@@ -103,6 +103,12 @@ namespace RTWin
                 .ForMember(x => x.Direction, y => y.MapFrom(z => z.Settings.Direction))
                 .ForMember(x => x.Plugins, y => y.MapFrom(z => App.Container.Get<PluginService>().FindAllWithActive(z.LanguageId)))
                 ;
+
+            Mapper.CreateMap<User, UserModel>()
+                .ForMember(x => x.AccessKey, y => y.MapFrom(z => z.Settings.AccessKey))
+                .ForMember(x => x.AccessSecret, y => y.MapFrom(z => z.Settings.AccessSecret))
+                .ForMember(x => x.SyncData, y => y.MapFrom(z => z.Settings.SyncData))
+                ;
         }
 
         public void BackupDb(string identifier)
