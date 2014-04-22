@@ -25,13 +25,13 @@ namespace RTWin.Services
             if (language.LanguageId == 0)
             {
                 language.UserId = _user.UserId;
-                language.DateCreated = DateTime.Now;
-                language.DateModified = DateTime.Now;
+                language.DateCreated = DateTime.UtcNow;
+                language.DateModified = DateTime.UtcNow;
                 _db.Insert(language);
             }
             else
             {
-                language.DateModified = DateTime.Now;
+                language.DateModified = DateTime.UtcNow;
                 _db.Update(language);
             }
 

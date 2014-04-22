@@ -35,13 +35,13 @@ namespace RTWin.Services
             if (item.ItemId == 0)
             {
                 item.UserId = _user.UserId;
-                item.DateCreated = DateTime.Now;
-                item.DateModified = DateTime.Now;
+                item.DateCreated = DateTime.UtcNow;
+                item.DateModified = DateTime.UtcNow;
                 _db.Insert(item);
             }
             else
             {
-                item.DateModified = DateTime.Now;
+                item.DateModified = DateTime.UtcNow;
                 _db.Update(item);
             }
         }
@@ -97,7 +97,7 @@ namespace RTWin.Services
                 return;
             }
 
-            item.LastRead = DateTime.Now;
+            item.LastRead = DateTime.UtcNow;
             _db.Update(item);
         }
 
@@ -284,7 +284,7 @@ namespace RTWin.Services
 
             if (modified.HasValue)
             {
-                sql.Append("AND item.DateModified>=@0", modified);
+                sql.Append("AND item.DateModified>=@0", modified.Value.ToUniversalTime());
             }
 
             sql.OrderBy("L1Language, item.CollectionName, item.CollectionNo, item.L1Title, item.ItemId");

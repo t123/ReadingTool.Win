@@ -74,9 +74,9 @@ namespace RTWin.Models.Views
             var apiServer = _databaseService.GetSetting<string>(DbSetting.Keys.ApiServer);
             var lastChecked = _databaseService.GetSetting<DateTime?>(DbSetting.Keys.LastVersionCheck);
 
-            if (lastChecked.HasValue && (DateTime.Now - lastChecked.Value.ToLocalTime()).TotalHours < 24)
+            if (lastChecked.HasValue && (DateTime.UtcNow - lastChecked.Value).TotalHours < 24)
             {
-                //return;
+                return;
             }
 
             Uri uri = new Uri(apiServer, UriKind.Absolute);
@@ -93,7 +93,7 @@ namespace RTWin.Models.Views
                 }
 
                 //TODO check version
-                _databaseService.SaveSetting(DbSetting.Keys.LastVersionCheck, DateTime.UtcNow.ToString("o"));
+                _databaseService.SaveSetting(DbSetting.Keys.LastVersionCheck, DateTime.UtcNow);
 
                 var metroWindow = (Application.Current.MainWindow as MetroWindow);
                 var settings = MainWindowViewModel.DialogSettings;

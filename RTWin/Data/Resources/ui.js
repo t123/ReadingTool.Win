@@ -245,8 +245,12 @@
             return (this.length > 0);
         };
 
-        $('#reading').on('click', 'span.__term', function () {
-            reading.showModal($(this));
+        $('#reading').on('click', 'span.__term', function (e) {
+            if (e.ctrlKey) {
+                reading.markTemp($(this));
+            } else {
+                reading.showModal($(this));
+            }
         });
 
         $('#dSave').click(function () {

@@ -246,7 +246,7 @@
             self._removeChanged();
             self.setHasChanged(false);
             var lower = self.phraseToClass(phrase);
-            $('.__' + lower).removeClass('__notseen __known __ignored __unknown').addClass('__' + state.toLowerCase());
+            $('.__' + lower).removeClass('__notseen __known __ignored __unknown __temp').addClass('__' + state.toLowerCase());
 
             var tempDef = self.getDBase().length > 0 ? self.getDBase() + "<br/>" : '';
             if (self.getDDefinition().length > 0) tempDef += self.getDDefinition().replace(/\n/g, '<br />');
@@ -275,7 +275,7 @@
         });
     };
 
-    self.phraseToClass = function(phrase) {
+    self.phraseToClass = function (phrase) {
         return phrase.toLowerCase().replace("'", "_").replace('"', "_");
     };
 
@@ -304,7 +304,7 @@
             }
 
             var lower = self.phraseToClass(phrase);
-            $('.__' + lower).removeClass('__notseen __known __ignored __unknown __kd __id __ud').addClass('__notseen');
+            $('.__' + lower).removeClass('__notseen __known __ignored __unknown __kd __id __ud __temp').addClass('__notseen');
             $('.__' + lower).each(function (index) {
                 $(this).html(phrase);
             });
@@ -422,6 +422,14 @@
         self.setHasChanged(false);
     };
 
+    self.markTemp = function (element) {
+        if (element.hasClass('__temp')) {
+            $(element).removeClass('__temp');
+        } else {
+            $(element).addClass('__temp');
+        }
+    };
+
     self.showModal = function (element) {
         if (self.modal.is(':visible') && self.hasChanged) {
             return;
@@ -465,7 +473,7 @@
     };
 
     self.setResultMessage = function (message) {
-        $('#resultMessage').html(message);
+        //$('#resultMessage').html(message);
     };
 
     self.changeRead = function (amount, type) {
@@ -483,8 +491,22 @@
         });
     };
 
+    self._showOverlayModal = function (content) {
+        self._setOverlayModalContent(content);
+        $('#modalOverlay').show();
+        $('#modalContent').show();
+    };
+
+    self._setOverlayModalContent = function (content) {
+        $('#modalContent').html(content);
+    };
+
+    self._hideOverlayModal = function () {
+        $('#modalOverlay').hide();
+        $('#modalContent').hide();
+    };
+
     self.markRemainingAsKnown = function () {
-        self.setResultMessage('Marking remaining words as known....');
         $(document).trigger('preMarkRemainingAsKnown');
 
         var termArray = Array();
@@ -505,6 +527,8 @@
             });
         });
 
+        self._showOverlayModal('Please wait, sending <strong>' + termArray.length + '</strong> terms');
+
         $.ajax({
             url: self.options.url + "/api/terms/markasread",
             type: 'POST',
@@ -512,12 +536,13 @@
             headers: { "content-type": "application/json" },
             data: JSON.stringify(termArray)
         }).done(function (data, status, xhr) {
-            self.setResultMessage('Marked <strong>' + data + '</strong> words as known.');
+            self._setOverlayModalContent('Marked <strong>' + data + '</strong> words as known.<br/><button href="#" onclick="window.reading._hideOverlayModal()">OK</button>');
+
             $('.__notseen').each(function (index, x) {
                 $(x).removeClass('__notseen').addClass('__known');
             });
         }).fail(function (data) {
-            self.setResultMessage('Marking failed');
+            self._setOverlayModalContent('Operation failed.<br/><button href="#" onclick="window.reading._hideOverlayModal()">OK</button>');
         }).always(function (data) {
             $(document).trigger('postMarkRemainingAsKnown');
         });

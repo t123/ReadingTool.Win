@@ -45,19 +45,19 @@ namespace RTWin.Services
             {
                 isNew = true;
                 term.UserId = _user.UserId;
-                term.DateCreated = DateTime.Now;
-                term.DateModified = DateTime.Now;
+                term.DateCreated = DateTime.UtcNow;
+                term.DateModified = DateTime.UtcNow;
                 _db.Insert(term);
             }
             else
             {
-                term.DateModified = DateTime.Now;
+                term.DateModified = DateTime.UtcNow;
                 _db.Update(term);
             }
 
             _db.Insert(new TermLog()
             {
-                EntryDate = DateTime.Now,
+                EntryDate = DateTime.UtcNow,
                 State = term.State,
                 TermId = term.TermId,
                 Type = isNew ? TermType.Create : TermType.Modify,
@@ -77,7 +77,7 @@ namespace RTWin.Services
 
             _db.Insert(new TermLog()
             {
-                EntryDate = DateTime.Now,
+                EntryDate = DateTime.UtcNow,
                 State = term.State,
                 TermId = id,
                 Type = TermType.Delete,
@@ -170,7 +170,7 @@ namespace RTWin.Services
 
             if (modified.HasValue)
             {
-                sql.Append("AND term.DateModified>=@0", modified);
+                sql.Append("AND term.DateModified>=@0", modified.Value.ToUniversalTime());
             }
 
             sql.OrderBy("Language, term.State, term.LowerPhrase");

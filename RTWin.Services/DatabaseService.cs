@@ -199,7 +199,7 @@ CREATE TABLE language (
     ""IsArchived"" INTEGER,
     ""LanguageCode"" TEXT,
     ""JsonSettings"" TEXT,
-    ""UserId"" INTEGER
+    ""UserId"" TEXT
 );
 ");
 
@@ -216,7 +216,7 @@ CREATE TABLE ""term"" (
     ""State"" INTEGER,
     ""LanguageId"" INTEGER,
     ""ItemSourceId"" INTEGER,
-    ""UserId"" INTEGER
+    ""UserId"" TEXT
 );
 ");
 
@@ -224,9 +224,9 @@ CREATE TABLE ""term"" (
 CREATE TABLE ""languagecode"" (""LanguageCodeId"" INTEGER PRIMARY KEY  NOT NULL , ""Name"" TEXT, ""Code"" TEXT)
 ");
 
-            sql.Add("item", @"CREATE TABLE ""item"" (""ItemId"" INTEGER PRIMARY KEY  NOT NULL , ""ItemType"" INTEGER, ""CollectionName"" TEXT, ""CollectionNo"" INTEGER, ""L1Title"" TEXT, ""L1Content"" TEXT, ""L1LanguageId"" INTEGER, ""L2Title"" TEXT, ""L2Content"" TEXT, ""L2LanguageId"" INTEGER, ""DateCreated"" TEXT, ""DateModified"" TEXT, ""LastRead"" TEXT, ""MediaUri"" TEXT, ""UserId"" INTEGER, ""ReadTimes"" INTEGER, ""ListenedTimes"" INTEGER)");
+            sql.Add("item", @"CREATE TABLE ""item"" (""ItemId"" INTEGER PRIMARY KEY  NOT NULL , ""ItemType"" INTEGER, ""CollectionName"" TEXT, ""CollectionNo"" INTEGER, ""L1Title"" TEXT, ""L1Content"" TEXT, ""L1LanguageId"" INTEGER, ""L2Title"" TEXT, ""L2Content"" TEXT, ""L2LanguageId"" INTEGER, ""DateCreated"" TEXT, ""DateModified"" TEXT, ""LastRead"" TEXT, ""MediaUri"" TEXT, ""UserId"" TEXT, ""ReadTimes"" INTEGER, ""ListenedTimes"" INTEGER)");
 
-            sql.Add("termlog", @"CREATE TABLE ""termlog"" (""Id"" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , ""EntryDate"" TEXT, ""TermId"" INTEGER, ""State"" INTEGER, ""Type"" INTEGER DEFAULT 0, ""LanguageId"" INTEGER, ""UserId"" INTEGER)");
+            sql.Add("termlog", @"CREATE TABLE ""termlog"" (""Id"" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , ""EntryDate"" TEXT, ""TermId"" INTEGER, ""State"" INTEGER, ""Type"" INTEGER DEFAULT 0, ""LanguageId"" INTEGER, ""UserId"" TEXT)");
 
             sql.Add("plugin", @"CREATE TABLE ""plugin"" (""PluginId"" INTEGER PRIMARY KEY  NOT NULL , ""Name"" TEXT, ""Description"" TEXT, ""Content"" TEXT, ""UUID"" TEXT)");
 
@@ -361,7 +361,7 @@ CREATE TABLE ""languagecode"" (""LanguageCodeId"" INTEGER PRIMARY KEY  NOT NULL 
                 _db.Insert(new User()
                 {
                     Username = "Default User",
-                    LastLogin = DateTime.Now,
+                    LastLogin = DateTime.UtcNow,
                     Settings = new UserSettings()
                     {
                         AccessKey = "",
