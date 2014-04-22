@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using Ninject;
 using RTWin.Entities;
+using RTWin.Entities.Enums;
 using RTWin.Services;
 
 namespace RTWin.Web

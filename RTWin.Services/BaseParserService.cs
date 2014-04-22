@@ -8,6 +8,7 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Xsl;
 using RTWin.Entities;
+using RTWin.Entities.Enums;
 
 namespace RTWin.Services
 {

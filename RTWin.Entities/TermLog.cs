@@ -1,17 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using NPoco;
+using RTWin.Entities.Enums;
 
 namespace RTWin.Entities
 {
-    public enum TermType
-    {
-        Unknown = 0,
-        Create = 1,
-        Modify = 2,
-        Delete = 3
-    }
-
     [TableName("termlog")]
     public class TermLog
     {

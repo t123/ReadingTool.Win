@@ -48,6 +48,7 @@ namespace RTWin
             s.InitDb();
             s.InitWebApi();
             s.InitSignalR();
+
             return s.Container;
         }
 
@@ -81,6 +82,7 @@ namespace RTWin
             _container.Bind<LanguageService>().ToSelf();
             _container.Bind<LanguageCodeService>().ToSelf();
             _container.Bind<PluginService>().ToSelf();
+            _container.Bind<SyncService>().ToSelf();
 
             _container.Bind<MainWindow>().ToSelf();
             _container.Bind<MainWindowControl>().ToSelf();

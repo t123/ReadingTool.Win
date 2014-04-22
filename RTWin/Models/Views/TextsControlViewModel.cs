@@ -99,7 +99,7 @@ namespace RTWin.Models.Views
 
                 if (_selectedItem != null)
                 {
-                    if (_selectedItem.ItemType == RTWin.Entities.ItemType.Text)
+                    if (_selectedItem.ItemType == RTWin.Entities.Enums.ItemType.Text)
                     {
                         ItemType = "Read";
                     }

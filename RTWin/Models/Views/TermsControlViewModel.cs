@@ -9,6 +9,7 @@ using GalaSoft.MvvmLight.Messaging;
 using RTWin.Annotations;
 using RTWin.Common;
 using RTWin.Entities;
+using RTWin.Entities.Enums;
 using RTWin.Messages;
 using RTWin.Services;
 

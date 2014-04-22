@@ -16,6 +16,7 @@ using System.Windows;
 using Newtonsoft.Json;
 using Ninject;
 using RTWin.Entities;
+using RTWin.Entities.Enums;
 using RTWin.Services;
 
 namespace RTWin.Web

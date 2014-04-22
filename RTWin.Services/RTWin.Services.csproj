@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="NPoco, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NPoco.2.2.49\lib\net40\NPoco.dll</HintPath>
@@ -52,6 +55,7 @@
     <Compile Include="IParserService.cs" />
     <Compile Include="ParserInput.cs" />
     <Compile Include="PluginService.cs" />
+    <Compile Include="SyncService.cs" />
     <Compile Include="UserService.cs" />
     <Compile Include="LanguageCodeService.cs" />
     <Compile Include="VideoParserService.cs" />

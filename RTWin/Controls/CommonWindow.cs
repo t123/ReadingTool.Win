@@ -12,6 +12,7 @@ using MahApps.Metro.Controls.Dialogs;
 using Ninject;
 using RTWin.Common;
 using RTWin.Entities;
+using RTWin.Entities.Enums;
 using RTWin.Models.Views;
 using RTWin.Services;
 

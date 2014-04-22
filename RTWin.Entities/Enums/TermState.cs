@@ -1,4 +1,4 @@
-﻿namespace RTWin.Entities
+﻿namespace RTWin.Entities.Enums
 {
     public enum TermState
     {

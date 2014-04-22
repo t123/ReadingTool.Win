@@ -1,6 +1,6 @@
 ﻿using System;
 using NPoco;
-using NPoco.FluentMappings;
+using RTWin.Entities.Enums;
 
 namespace RTWin.Entities
 {

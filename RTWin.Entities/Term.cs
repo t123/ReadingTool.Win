@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using NPoco;
+using RTWin.Entities.Enums;
 
 namespace RTWin.Entities
 {

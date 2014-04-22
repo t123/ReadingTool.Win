@@ -48,6 +48,10 @@ namespace RTWin
 
             var userService = _container.Get<UserService>();
             App.User = userService.FindAll().OrderByDescending(x=>x.LastLogin).First();
+
+            var ss = Container.Get<SyncService>();
+            ss.GetLastSync();
+
             var mainWindow = _container.Get<MainWindow>();
             mainWindow.Show();
         }
