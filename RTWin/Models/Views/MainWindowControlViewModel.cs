@@ -71,6 +71,13 @@ namespace RTWin.Models.Views
 
         private void CheckLatestVersion()
         {
+            var check = _databaseService.GetSetting<bool?>(DbSetting.Keys.CheckNewVersions) ?? true;
+
+            if (!check)
+            {
+                return;
+            }
+
             var apiServer = _databaseService.GetSetting<string>(DbSetting.Keys.ApiServer);
             var lastChecked = _databaseService.GetSetting<DateTime?>(DbSetting.Keys.LastVersionCheck);
 

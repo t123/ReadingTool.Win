@@ -21,6 +21,7 @@ namespace RTWin.Entities
             public const string ApiServer = "api_server";
             public const string LastVersionCheck = "last_version_check";
             public const string IgnoreUpdateVersion = "ignore_update_version";
+            public const string CheckNewVersions = "check_for_new_versions";
         }
 
         //public int Id { get; set; }
