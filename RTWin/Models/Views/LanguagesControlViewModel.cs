@@ -158,9 +158,12 @@ namespace RTWin.Models.Views
                 language.IsArchived = Language.IsArchived;
                 language.LanguageCode = Language.LanguageCode;
                 language.Name = Language.Name;
-                language.Settings.Direction = Language.Direction;
-                language.Settings.SentenceRegex = Language.SentenceRegex;
-                language.Settings.TermRegex = Language.TermRegex;
+                language.Settings = new LanguageSettings()
+                {
+                    Direction = Language.Direction,
+                    SentenceRegex = Language.SentenceRegex,
+                    TermRegex = Language.TermRegex
+                };
 
                 _languageService.Save(language, plugins);
                 MapCollection();

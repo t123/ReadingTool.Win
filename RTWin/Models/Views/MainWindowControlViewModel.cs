@@ -26,9 +26,9 @@ namespace RTWin.Models.Views
         private readonly DatabaseService _databaseService;
         private ObservableCollection<Item> _items;
         private ICommand _readCommand;
-        private RelayCommand _changeViewCommand;
+        private ICommand _changeViewCommand;
 
-        public RelayCommand ChangeViewCommand
+        public ICommand ChangeViewCommand
         {
             get { return _changeViewCommand; }
             set { _changeViewCommand = value; }
