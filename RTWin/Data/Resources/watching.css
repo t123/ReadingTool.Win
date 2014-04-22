@@ -38,6 +38,10 @@
     background-color: black;
 }
 
+#reading span.__term.__temp {
+        background-color: #68B781;
+    }
+
 #video {
     width: 730px;
     margin-top: 10px;
@@ -58,4 +62,8 @@
 
 div.jp-video-270p {
     width: 720px;
+}
+
+#modalContent {
+    color: black;
 }
