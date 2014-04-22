@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Windows;
 using System.Windows.Threading;
 using AutoMapper;
@@ -41,6 +42,7 @@ namespace RTWin
             s.InitWebCore();
             s.InitContainer();
             s.CreateMappings();
+            s.CheckAndUpgradeDatabase();
             s.BackupDb("Start");
             s.CleanupData();
             s.InitDb();
@@ -121,6 +123,16 @@ namespace RTWin
                 .ForMember(x => x.AccessSecret, y => y.MapFrom(z => z.Settings.AccessSecret))
                 .ForMember(x => x.SyncData, y => y.MapFrom(z => z.Settings.SyncData))
                 ;
+        }
+
+        private void CheckAndUpgradeDatabase()
+        {
+            if (_databaseService == null)
+            {
+                _databaseService = _container.Get<DatabaseService>();
+            }
+
+            _databaseService.CreateAndUpgradeDatabase();
         }
 
         public void BackupDb(string identifier)

@@ -47,7 +47,7 @@ namespace RTWin
             _container = Setup.Start(_container);
 
             var userService = _container.Get<UserService>();
-            App.User = userService.FindAll().First();
+            App.User = userService.FindAll().OrderByDescending(x=>x.LastLogin).First();
             var mainWindow = _container.Get<MainWindow>();
             mainWindow.Show();
         }

@@ -14,6 +14,7 @@ namespace RTWin.Entities
     {
         public long UserId { get; set; }
         public string Username { get; set; }
+        public DateTime? LastLogin { get; set; }
 
         [Ignore]
         public UserSettings Settings

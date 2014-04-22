@@ -40,15 +40,28 @@ namespace RTWin.Services
                 return;
             }
 
-            dbSetting.Key = dbSetting.Key.ToLowerInvariant().Trim();
+            SaveSetting(dbSetting.Key, dbSetting.Value);
+        }
 
-            if (dbSetting.Id == 0)
+        public void SaveSetting(string key, object value)
+        {
+            key = NormalizeKey(key);
+            var setting = _db.FetchWhere<DbSetting>(x => x.Key == key).FirstOrDefault();
+
+            if (setting == null)
             {
-                _db.Insert(dbSetting);
+                setting = new DbSetting()
+                {
+                    Key = key,
+                    Value = (value ?? "").ToString()
+                };
+
+                _db.Insert(setting);
             }
             else
             {
-                _db.Update(dbSetting);
+                setting.Value = (value ?? "").ToString();
+                _db.Update(setting);
             }
 
             ObjectCache cache = MemoryCache.Default;
@@ -60,31 +73,28 @@ namespace RTWin.Services
             return GetAndCacheSettings();
         }
 
-        public string GetSetting(int id)
-        {
-            var setting = _db.SingleById<DbSetting>(id);
-            return setting == null ? null : setting.Value;
-        }
-
         public string GetSetting(string key)
         {
-            key = key.ToLowerInvariant();
+            key = NormalizeKey(key);
             var setting = GetAndCacheSettings().FirstOrDefault(x => x.Key == key);
             return setting.Value;
         }
 
         public T GetSetting<T>(string key)
         {
-            key = key.ToLowerInvariant();
+            key = NormalizeKey(key);
             var settings = GetAndCacheSettings();
             var setting = settings.ContainsKey(key) ? settings[key] : null;
 
-            if (setting == null)
-            {
-                return default(T);
-            }
+            Type t = typeof(T);
+            t = Nullable.GetUnderlyingType(t) ?? t;
 
-            return (T)Convert.ChangeType(setting, typeof(T));
+            return (setting == null) ? default(T) : (T)Convert.ChangeType(setting, t);
+        }
+
+        private string NormalizeKey(string key)
+        {
+            return (key ?? "").ToLowerInvariant().Trim();
         }
 
         public void CreateAndUpgradeDatabase()
@@ -173,16 +183,16 @@ CREATE TABLE ""dbversion"" (""DbVersionId"" INTEGER PRIMARY KEY  NOT NULL , ""Ve
 ");
 
             sql.Add("settings", @"
-CREATE  TABLE ""settings"" (""Id"" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , ""SKey"" TEXT UNIQUE , ""SValue"" TEXT)
+CREATE  TABLE ""settings"" (""Key"" TEXT UNIQUE , ""Value"" TEXT)
 ");
 
             sql.Add("user", @"
-CREATE TABLE ""user"" (""UserId"" INTEGER PRIMARY KEY AUTOINCREMENT , ""Username"" TEXT NOT NULL  UNIQUE, ""JsonSettings"" TEXT )
+CREATE TABLE ""user"" (""UserId""  INTEGER PRIMARY KEY, ""Username"" TEXT NOT NULL  UNIQUE, ""LastLogin"" TEXT, ""JsonSettings"" TEXT )
 ");
 
             sql.Add("language", @"
 CREATE TABLE language (
-    ""LanguageId"" INTEGER PRIMARY KEY AUTOINCREMENT,
+    ""LanguageId"" INTEGER PRIMARY KEY,
     ""Name"" TEXT,
     ""DateCreated"" TEXT,
     ""DateModified"" TEXT,
@@ -195,7 +205,7 @@ CREATE TABLE language (
 
             sql.Add("term", @"
 CREATE TABLE ""term"" (
-    ""TermId"" INTEGER PRIMARY KEY AUTOINCREMENT,
+    ""TermId"" INTEGER PRIMARY KEY,
     ""DateCreated"" TEXT,
     ""DateModified"" TEXT,
     ""Phrase"" TEXT,
@@ -211,16 +221,16 @@ CREATE TABLE ""term"" (
 ");
 
             sql.Add("languagecode", @"
-CREATE TABLE ""languagecode"" (""LanguageCodeId"" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , ""Name"" TEXT, ""Code"" TEXT)
+CREATE TABLE ""languagecode"" (""LanguageCodeId"" INTEGER PRIMARY KEY  NOT NULL , ""Name"" TEXT, ""Code"" TEXT)
 ");
 
-            sql.Add("item", @"CREATE TABLE ""item"" (""ItemId"" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , ""ItemType"" INTEGER, ""CollectionName"" TEXT, ""CollectionNo"" INTEGER, ""L1Title"" TEXT, ""L1Content"" TEXT, ""L1LanguageId"" INTEGER, ""L2Title"" TEXT, ""L2Content"" TEXT, ""L2LanguageId"" INTEGER, ""DateCreated"" TEXT, ""DateModified"" TEXT, ""LastRead"" TEXT, ""MediaUri"" TEXT, ""UserId"" INTEGER, ""ReadTimes"" INTEGER, ""ListenedTimes"" INTEGER)");
+            sql.Add("item", @"CREATE TABLE ""item"" (""ItemId"" INTEGER PRIMARY KEY  NOT NULL , ""ItemType"" INTEGER, ""CollectionName"" TEXT, ""CollectionNo"" INTEGER, ""L1Title"" TEXT, ""L1Content"" TEXT, ""L1LanguageId"" INTEGER, ""L2Title"" TEXT, ""L2Content"" TEXT, ""L2LanguageId"" INTEGER, ""DateCreated"" TEXT, ""DateModified"" TEXT, ""LastRead"" TEXT, ""MediaUri"" TEXT, ""UserId"" INTEGER, ""ReadTimes"" INTEGER, ""ListenedTimes"" INTEGER)");
 
             sql.Add("termlog", @"CREATE TABLE ""termlog"" (""Id"" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , ""EntryDate"" TEXT, ""TermId"" INTEGER, ""State"" INTEGER, ""Type"" INTEGER DEFAULT 0, ""LanguageId"" INTEGER, ""UserId"" INTEGER)");
 
-            sql.Add("plugin", @"CREATE TABLE ""plugin"" (""PluginId"" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , ""Name"" TEXT, ""Description"" TEXT, ""Content"" TEXT, ""UUID"" TEXT)");
+            sql.Add("plugin", @"CREATE TABLE ""plugin"" (""PluginId"" INTEGER PRIMARY KEY  NOT NULL , ""Name"" TEXT, ""Description"" TEXT, ""Content"" TEXT, ""UUID"" TEXT)");
 
-            sql.Add("pluginstorage", @"CREATE TABLE ""plugin_storage"" (""Id"" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , ""Uuid"" TEXT, ""Key"" TEXT, ""Value"" TEXT)");
+            sql.Add("pluginstorage", @"CREATE TABLE ""plugin_storage"" (""Id"" INTEGER PRIMARY KEY AUTOINCREMENT  NOT NULL , ""Uuid"" TEXT, ""Key"" TEXT, ""Value"" TEXT)");
 
             foreach (var kvp in sql)
             {
@@ -314,8 +324,9 @@ CREATE TABLE ""languagecode"" (""LanguageCodeId"" INTEGER PRIMARY KEY  AUTOINCRE
 
         private void CheckSettings()
         {
-            var key1 = _db.Fetch<object>("SELECT * FROM Settings WHERE SKey=@0", DbSetting.Keys.BaseWebAPIAddress);
-            var key2 = _db.Fetch<object>("SELECT * FROM Settings WHERE SKey=@0", DbSetting.Keys.BaseWebSignalRAddress);
+            var key1 = _db.Fetch<object>("SELECT * FROM Settings WHERE Key=@0", DbSetting.Keys.BaseWebAPIAddress);
+            var key2 = _db.Fetch<object>("SELECT * FROM Settings WHERE Key=@0", DbSetting.Keys.BaseWebSignalRAddress);
+            var key3 = _db.Fetch<object>("SELECT * FROM Settings WHERE Key=@0", DbSetting.Keys.ApiServer);
 
             if (key1.Count == 0)
             {
@@ -332,6 +343,31 @@ CREATE TABLE ""languagecode"" (""LanguageCodeId"" INTEGER PRIMARY KEY  AUTOINCRE
                 {
                     Key = DbSetting.Keys.BaseWebSignalRAddress,
                     Value = "http://localhost:8888"
+                });
+            }
+
+            if (key3.Count == 0)
+            {
+                SaveSetting(new DbSetting
+                {
+                    Key = DbSetting.Keys.ApiServer,
+                    Value = "http://rt3/"
+                });
+            }
+
+            var userCount = _db.ExecuteScalar<int>("SELECT COUNT(*) FROM User");
+            if (userCount == 0)
+            {
+                _db.Insert(new User()
+                {
+                    Username = "Default User",
+                    LastLogin = DateTime.Now,
+                    Settings = new UserSettings()
+                    {
+                        AccessKey = "",
+                        AccessSecret = "",
+                        SyncData = false
+                    }
                 });
             }
         }

@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -154,7 +155,11 @@ namespace RTWin.Models.Views
 
             _switchCommand = new RelayCommand(param =>
             {
-                User = Mapper.Map<User, UserModel>(_userService.FindOne(SelectedItem.UserId));
+                var user = _userService.FindOne(SelectedItem.UserId);
+                user.LastLogin = DateTime.Now.ToUniversalTime();
+                _userService.Save(user);
+
+                User = Mapper.Map<User, UserModel>(user);
                 SelectedItem = Users.FirstOrDefault(x => x.UserId == User.UserId);
                 App.User = SelectedItem;
 

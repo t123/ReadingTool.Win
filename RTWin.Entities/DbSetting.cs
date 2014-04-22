@@ -8,7 +8,7 @@ using NPoco;
 namespace RTWin.Entities
 {
     [TableName("settings")]
-    [PrimaryKey("Id")]
+    //[PrimaryKey("Key")]
     public class DbSetting
     {
         public class Keys
@@ -18,12 +18,16 @@ namespace RTWin.Entities
             public const string BackupDatabase = "backup_database";
             public const string BackupDatabasePath = "backup_database_path";
             public const string BackupMax = "backup_max";
+            public const string ApiServer = "api_server";
+            public const string LastVersionCheck = "last_version_check";
+            public const string IgnoreUpdateVersion = "ignore_update_version";
         }
 
-        public int Id { get; set; }
-        [Column(Name = "SKey")]
+        //public int Id { get; set; }
+
+        [Column(Name = "Key")]
         public string Key { get; set; }
-        [Column(Name = "SValue")]
+        [Column(Name = "Value")]
         public string Value { get; set; }
     }
 }
