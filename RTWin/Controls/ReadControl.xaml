@@ -21,15 +21,17 @@
                 <Grid Height="40" Background="White">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="45"></ColumnDefinition>
+                        <ColumnDefinition Width="0"></ColumnDefinition>
+                        <ColumnDefinition Width="30"></ColumnDefinition>
+                        <ColumnDefinition Width="150"></ColumnDefinition>
+                        <ColumnDefinition Width="30"></ColumnDefinition>
+                        <ColumnDefinition Width="150"></ColumnDefinition>
+                        <ColumnDefinition Width="30"></ColumnDefinition>
+                        <ColumnDefinition Width="150"></ColumnDefinition>
                         <ColumnDefinition Width="*"></ColumnDefinition>
-                        <ColumnDefinition Width="30"></ColumnDefinition>
-                        <ColumnDefinition Width="150"></ColumnDefinition>
-                        <ColumnDefinition Width="30"></ColumnDefinition>
-                        <ColumnDefinition Width="150"></ColumnDefinition>
-                        <ColumnDefinition Width="30"></ColumnDefinition>
+                        <!--<ColumnDefinition Width="Auto"></ColumnDefinition>
                         <ColumnDefinition Width="Auto"></ColumnDefinition>
-                        <ColumnDefinition Width="Auto"></ColumnDefinition>
-                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>-->
                     </Grid.ColumnDefinitions>
                     <Button Grid.Column="0" Width="40" Height="40" Style="{DynamicResource MetroCircleButtonStyle}" Command="{Binding BackCommand}">
                         <Rectangle Width="20" Height="20">
@@ -73,9 +75,22 @@
                             </Rectangle>
                         </Button>
                     </StackPanel>
-                    <Button Grid.Column="7" Content="Mark remaining as read" Margin="10,0,10,0" Height="25" Command="{Binding MarkKnownCommand}"/>
+                    <ComboBox Grid.Column="7">
+                        <ComboBox.Items>
+                            <ComboBoxItem>
+                                <Button Content="Mark remaining as read" Margin="10,0,10,0" Height="25" Command="{Binding MarkKnownCommand}"/>
+                            </ComboBoxItem>
+                            <ComboBoxItem>
+                                <Button Content="{Binding PrevItemTitle}" Margin="10,0,10,0" Height="25" Command="{Binding PrevItemCommand}" Visibility="{Binding PrevItemVisible, Converter={StaticResource BoolToVis}}"/>
+                            </ComboBoxItem>
+                            <ComboBoxItem>
+                                <Button Content="{Binding NextItemTitle}" Margin="10,0,10,0" Height="25" Command="{Binding NextItemCommand}" Visibility="{Binding NextItemVisible, Converter={StaticResource BoolToVis}}"/>
+                            </ComboBoxItem>
+                        </ComboBox.Items>
+                    </ComboBox>
+                    <!--<Button Grid.Column="7" Content="Mark remaining as read" Margin="10,0,10,0" Height="25" Command="{Binding MarkKnownCommand}"/>
                     <Button Grid.Column="8" Content="{Binding PrevItemTitle}" Margin="10,0,10,0" Height="25" Command="{Binding PrevItemCommand}" Visibility="{Binding PrevItemVisible, Converter={StaticResource BoolToVis}}"/>
-                    <Button Grid.Column="9" Content="{Binding NextItemTitle}" Margin="10,0,10,0" Height="25" Command="{Binding NextItemCommand}" Visibility="{Binding NextItemVisible, Converter={StaticResource BoolToVis}}"/>
+                    <Button Grid.Column="9" Content="{Binding NextItemTitle}" Margin="10,0,10,0" Height="25" Command="{Binding NextItemCommand}" Visibility="{Binding NextItemVisible, Converter={StaticResource BoolToVis}}"/>-->
                 </Grid>
             </Border>
             <awe:WebControl Name="WebControl">
