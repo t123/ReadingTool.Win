@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.Http;
 using Ninject;
+using RTWin.Core.Enums;
 using RTWin.Entities;
-using RTWin.Entities.Enums;
 using RTWin.Services;
 
-namespace RTWin.Web
+namespace RTWin.Web.Controllers
 {
     [RoutePrefix("api/v1")]
     public class SyncController : ApiController

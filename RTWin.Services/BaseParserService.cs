@@ -7,8 +7,9 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Xsl;
+using RTWin.Core;
+using RTWin.Core.Enums;
 using RTWin.Entities;
-using RTWin.Entities.Enums;
 
 namespace RTWin.Services
 {
@@ -197,33 +198,9 @@ namespace RTWin.Services
             return termNode;
         }
 
-        protected void WriteFile(string filename, string content)
+        protected string ApplyTransform(XDocument document)
         {
-            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data");
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-            }
-
-            using (StreamWriter sw = new StreamWriter(Path.Combine(path, filename), false, Encoding.UTF8))
-            {
-                sw.Write(content);
-            }
-        }
-
-        protected string ReadFile(string filename)
-        {
-            string file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "App_Data", filename);
-
-            using (StreamReader sr = new StreamReader(file, Encoding.UTF8))
-            {
-                return sr.ReadToEnd();
-            }
-        }
-
-        protected string ApplyTransform(XDocument document, string filename)
-        {
-            string xslText = ReadFile(filename);
+            string xslText = ContentLoader.Instance.Get(_xsltFile);
 
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.OmitXmlDeclaration = true;

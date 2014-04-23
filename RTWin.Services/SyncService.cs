@@ -14,6 +14,7 @@ namespace RTWin.Services
     public class SyncService
     {
         private readonly DatabaseService _databaseService;
+        private readonly DbSettingService _settings;
         private readonly User _user;
         private readonly Database _database;
         private readonly Uri _serverUri;
@@ -27,13 +28,13 @@ namespace RTWin.Services
             public const string ACCESSKEY = @"X-AccessKey";
         }
 
-        public SyncService(DatabaseService databaseService, User user, Database database)
+        public SyncService(DbSettingService settings, User user, Database database)
         {
-            _databaseService = databaseService;
+            _settings = settings;
             _user = user;
             _database = database;
 
-            _serverUri = new Uri(_databaseService.GetSetting<string>(DbSetting.Keys.ApiServer));
+            _serverUri = new Uri(_settings.Get<string>(DbSetting.Keys.ApiServer));
         }
 
         private static string SHA(string content)

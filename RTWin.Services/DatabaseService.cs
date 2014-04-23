@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Caching;
-using System.Text;
-using System.Threading.Tasks;
 using NPoco;
 using RTWin.Entities;
 
@@ -12,89 +9,12 @@ namespace RTWin.Services
     public class DatabaseService
     {
         private readonly Database _db;
+        private readonly DbSettingService _settings;
 
-        public DatabaseService(Database db)
+        public DatabaseService(Database db, DbSettingService settings)
         {
             _db = db;
-        }
-
-        private Dictionary<string, string> GetAndCacheSettings()
-        {
-            ObjectCache cache = MemoryCache.Default;
-
-            Dictionary<string, string> settings = (Dictionary<string, string>)cache.Get("DbSetttings");
-
-            if (settings == null)
-            {
-                settings = _db.Fetch<DbSetting>().ToDictionary(x => x.Key.ToLowerInvariant(), x => x.Value);
-                cache.Add("DbSettings", settings, ObjectCache.InfiniteAbsoluteExpiration);
-            }
-
-            return settings;
-        }
-
-        public void SaveSetting(DbSetting dbSetting)
-        {
-            if (dbSetting == null)
-            {
-                return;
-            }
-
-            SaveSetting(dbSetting.Key, dbSetting.Value);
-        }
-
-        public void SaveSetting(string key, object value)
-        {
-            key = NormalizeKey(key);
-            var setting = _db.FetchWhere<DbSetting>(x => x.Key == key).FirstOrDefault();
-
-            if (setting == null)
-            {
-                setting = new DbSetting()
-                {
-                    Key = key,
-                    Value = (value ?? "").ToString()
-                };
-
-                _db.Insert(setting);
-            }
-            else
-            {
-                setting.Value = (value ?? "").ToString();
-                _db.Update(setting);
-            }
-
-            ObjectCache cache = MemoryCache.Default;
-            cache.Remove("DbSettings");
-        }
-
-        public Dictionary<string, string> GetSettings()
-        {
-            return GetAndCacheSettings();
-        }
-
-        public string GetSetting(string key)
-        {
-            key = NormalizeKey(key);
-            var setting = GetAndCacheSettings().FirstOrDefault(x => x.Key == key);
-            return setting.Value;
-        }
-
-        public T GetSetting<T>(string key)
-        {
-            key = NormalizeKey(key);
-            var settings = GetAndCacheSettings();
-            var setting = settings.ContainsKey(key) ? settings[key] : null;
-
-            Type t = typeof(T);
-            t = Nullable.GetUnderlyingType(t) ?? t;
-
-            return (setting == null) ? default(T) : (T)Convert.ChangeType(setting, t);
-        }
-
-        private string NormalizeKey(string key)
-        {
-            return (key ?? "").ToLowerInvariant().Trim();
+            _settings = settings;
         }
 
         public void CreateAndUpgradeDatabase()
@@ -132,19 +52,6 @@ namespace RTWin.Services
                     break;
             }
         }
-
-        //private void DropAllTables()
-        //{
-        //    string[] names = new[] { "language", "term", "languagecode", "item", "user", "dbversion" };
-
-        //    foreach (var name in names)
-        //    {
-        //        if (TableExists(name))
-        //        {
-        //            _db.Execute(string.Format(@"DROP TABLE ""main"".""{0}""", name));
-        //        }
-        //    }
-        //}
 
         private bool TableExists(string tableName)
         {
@@ -328,7 +235,7 @@ CREATE TABLE ""term"" (
 
             if (key1.Count == 0)
             {
-                SaveSetting(new DbSetting
+                _settings.Save(new DbSetting
                 {
                     Key = DbSetting.Keys.BaseWebAPIAddress,
                     Value = "http://localhost:9000"
@@ -337,7 +244,7 @@ CREATE TABLE ""term"" (
 
             if (key2.Count == 0)
             {
-                SaveSetting(new DbSetting
+                _settings.Save(new DbSetting
                 {
                     Key = DbSetting.Keys.BaseWebSignalRAddress,
                     Value = "http://localhost:8888"
@@ -346,7 +253,7 @@ CREATE TABLE ""term"" (
 
             if (key3.Count == 0)
             {
-                SaveSetting(new DbSetting
+                _settings.Save(new DbSetting
                 {
                     Key = DbSetting.Keys.ApiServer,
                     Value = "http://rt3/"

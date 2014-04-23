@@ -58,9 +58,6 @@
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="MahApps.Metro">
-      <HintPath>..\packages\MahApps.Metro.0.13.1.0\lib\net45\MahApps.Metro.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.AspNet.SignalR.Client">
       <HintPath>..\packages\Microsoft.AspNet.SignalR.Client.2.0.3\lib\net45\Microsoft.AspNet.SignalR.Client.dll</HintPath>
     </Reference>
@@ -154,97 +151,30 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Common\MvvmTextEditor.cs" />
-    <Compile Include="Common\DateTimeConverter.cs" />
-    <Compile Include="Common\DialogCloser.cs" />
-    <Compile Include="Common\HtmlLoader.cs" />
-    <Compile Include="Common\TileColours.cs" />
-    <Compile Include="Controls\CommonWindow.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Controls\ItemDialog.xaml.cs">
-      <DependentUpon>ItemDialog.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Controls\LanguagesControl.xaml.cs">
-      <DependentUpon>LanguagesControl.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Controls\MainWindowControl.xaml.cs">
       <DependentUpon>MainWindowControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\PluginsControl.xaml.cs">
-      <DependentUpon>PluginsControl.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Controls\ProfilesControl.xaml.cs">
-      <DependentUpon>ProfilesControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ReadControl.xaml.cs">
-      <DependentUpon>ReadControl.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Controls\TermsControl.xaml.cs">
-      <DependentUpon>TermsControl.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Controls\TextsControl.xaml.cs">
-      <DependentUpon>TextsControl.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Common\MainHub.cs" />
-    <Compile Include="Common\OWINSignalRConfig.cs" />
-    <Compile Include="Common\OWINWebAPIConfig.cs" />
-    <Compile Include="Common\EnumMatchToBooleanConverter.cs" />
+    <Compile Include="Converters\DateTimeConverter.cs" />
+    <Compile Include="Common\DialogCloser.cs" />
+    <Compile Include="Web\MainHub.cs" />
+    <Compile Include="Web\OWINSignalRConfig.cs" />
+    <Compile Include="Web\OWINWebAPIConfig.cs" />
+    <Compile Include="Converters\EnumMatchToBooleanConverter.cs" />
     <Compile Include="Messages\ReadMessage.cs" />
     <Compile Include="Models\Entities\ItemSearch.cs" />
     <Compile Include="Models\Entities\LanguageModel.cs" />
     <Compile Include="Models\Entities\UserModel.cs" />
-    <Compile Include="Models\Views\ItemDialogViewModel.cs" />
-    <Compile Include="Models\Views\LanguagesControlViewModel.cs" />
+    <Compile Include="Models\Views\BaseViewModel.cs" />
     <Compile Include="Models\Views\MainWindowControlViewModel.cs" />
     <Compile Include="Models\Views\MainWindowViewModel.cs" />
-    <Compile Include="Models\Views\ProfilesViewControlModel.cs" />
-    <Compile Include="Models\Views\PluginsControlViewModel.cs" />
-    <Compile Include="Common\RelayCommand.cs" />
-    <Compile Include="Models\Views\ReadControlViewModel.cs" />
-    <Compile Include="Models\Views\TermsControlViewModel.cs" />
-    <Compile Include="Models\Views\TextsControlViewModel.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Setup.cs" />
-    <Compile Include="Temp.cs" />
-    <Compile Include="Web\PluginController.cs" />
-    <Compile Include="Web\ResourceController.cs" />
-    <Compile Include="Web\SyncController.cs" />
-    <Compile Include="Web\TermsController.cs" />
-    <Page Include="Controls\ItemDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\LanguagesControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
+    <Compile Include="Web\Controllers\PluginController.cs" />
+    <Compile Include="Web\Controllers\ResourceController.cs" />
+    <Compile Include="Web\Controllers\SyncController.cs" />
+    <Compile Include="Web\Controllers\TermsController.cs" />
     <Page Include="Controls\MainWindowControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\PluginsControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\ProfilesControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\ReadControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\TermsControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\TextsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -260,10 +190,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Resources\Icons.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -297,12 +223,15 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-    <Resource Include="Resources\Entypo.ttf" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\RTWin.Core\RTWin.Core.csproj">
+      <Project>{8f6c7550-ccb0-4889-9fd6-c592425e09f8}</Project>
+      <Name>RTWin.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RTWin.Entities\RTWin.Entities.csproj">
       <Project>{1BF804C4-644D-4123-A5C9-89CF6105CF6A}</Project>
       <Name>RTWin.Entities</Name>
@@ -385,8 +314,6 @@
     <Resource Include="Plugins\ignore.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Resources\WindowsIcons-license.txt" />
-    <Resource Include="Resources\Entypo-license.txt" />
     <Content Include="x64\SQLite.Interop.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

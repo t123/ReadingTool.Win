@@ -3,38 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
-             mc:Ignorable="d" Background="#001940"
+             mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="800">
-    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition></RowDefinition>
-                <RowDefinition></RowDefinition>
-                <RowDefinition></RowDefinition>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition Width="500"></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <controls:Tile Grid.Row="0" Grid.Column="0" Title="Languages" Command="{Binding ChangeViewCommand}" CommandParameter="languages" Background="#0A5BC4"/>
-            <controls:Tile Grid.Row="0" Grid.Column="1" Title="Items" Command="{Binding ChangeViewCommand}" CommandParameter="items" Background="#0A5BC4"/>
-            <controls:Tile Grid.Row="1" Grid.Column="0" Title="Terms" Command="{Binding ChangeViewCommand}" CommandParameter="terms" Background="#0A5BC4"/>
-            <controls:Tile Grid.Row="1" Grid.Column="1" Title="Profiles" Command="{Binding ChangeViewCommand}" CommandParameter="profiles" Background="#0A5BC4"/>
-            <controls:Tile Grid.Row="2" Grid.Column="0" Title="Plugins" Command="{Binding ChangeViewCommand}" CommandParameter="plugins" Background="#0A5BC4"/>
-            <controls:Tile Grid.Row="2" Grid.Column="1" Title="Settings" Command="{Binding ChangeViewCommand}" CommandParameter="settings" Background="#0A5BC4"/>
-            <controls:Tile Grid.Row="0" Grid.Column="2" Grid.RowSpan="3" Width="500" Height="433" Background="#094AB2" 
-                           HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Title="Recent Items" TitleFontSize="26">
-                <ItemsControl ItemsSource="{Binding Items}" x:Name="Items" Margin="15,15,0,0">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock VerticalAlignment="Center" Padding="0,3,0,0"><Hyperlink Foreground="White" Command="{Binding DataContext.ReadCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}"><Run Text="{Binding Path=CommonName, Mode=OneWay}"/></Hyperlink></TextBlock>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </controls:Tile>
-        </Grid>
-    </StackPanel>
+    <Grid>
+        <TextBlock>some text</TextBlock>
+    </Grid>
 </UserControl>

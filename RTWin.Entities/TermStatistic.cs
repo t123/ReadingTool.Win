@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using RTWin.Entities.Enums;
+using RTWin.Core.Enums;
 
 namespace RTWin.Entities
 {

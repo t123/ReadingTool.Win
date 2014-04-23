@@ -7,8 +7,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NPoco;
+using RTWin.Core.Enums;
 using RTWin.Entities;
-using RTWin.Entities.Enums;
 
 namespace RTWin.Services
 {

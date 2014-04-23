@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Xsl;
+using RTWin.Core;
 using RTWin.Entities;
 
 namespace RTWin.Services
@@ -22,7 +23,7 @@ namespace RTWin.Services
         public VideoParserService()
         {
             _po = new ParserOutput();
-            _xsltFile = "video.xslt";
+            _xsltFile = ContentLoader.VIDEO;
         }
 
         private List<Srt> ParseSubtitles(string content)
@@ -155,7 +156,7 @@ namespace RTWin.Services
             AddFrequencyDataToTermNodes(frequency, document);
 
             _po.Xml = document.ToString();
-            _po.Html = _pi.Html.Replace("<!-- table -->", ApplyTransform(document, _xsltFile));
+            _po.Html = _pi.Html.Replace("<!-- table -->", ApplyTransform(document));
             UniqueTerms(document);
             EndTimer();
 

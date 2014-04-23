@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 
-namespace RTWin.Common
+namespace RTWin.Converters
 {
     [ValueConversion(typeof(DateTime), typeof(String))]
     public class DateTimeConverter : IValueConverter

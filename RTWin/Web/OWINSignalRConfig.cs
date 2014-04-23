@@ -2,7 +2,7 @@ using Microsoft.AspNet.SignalR;
 using Microsoft.Owin.Cors;
 using Owin;
 
-namespace RTWin.Common
+namespace RTWin.Web
 {
     public class OWINSignalRConfig
     {

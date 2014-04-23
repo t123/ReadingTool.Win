@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.30324.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RTWin", "RTWin\RTWin.csproj", "{E25092BE-2DEA-4C65-ABC5-23589A5E1259}"
 EndProject
@@ -9,16 +9,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RTWin.Entities", "RTWin.Ent
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RTWin.Services", "RTWin.Services\RTWin.Services.csproj", "{269A77D4-75FA-4C14-98BA-660C8D872E04}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RTWin.Console", "RTWin.Console\RTWin.Console.csproj", "{949A1847-1BDE-4767-BC8B-EBBC7B669BCB}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RTWin.Tests", "RTWin.Tests\RTWin.Tests.csproj", "{48071FA9-B5A4-4565-B225-FCD5A96A6139}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{8C44E515-87C7-4A02-8871-E950CCDAB5EA}"
 	ProjectSection(SolutionItems) = preProject
 		.nuget\NuGet.Config = .nuget\NuGet.Config
 		.nuget\NuGet.exe = .nuget\NuGet.exe
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RTWin.Core", "RTWin.Core\RTWin.Core.csproj", "{8F6C7550-CCB0-4889-9FD6-C592425E09F8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,14 +36,10 @@ Global
 		{269A77D4-75FA-4C14-98BA-660C8D872E04}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{269A77D4-75FA-4C14-98BA-660C8D872E04}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{269A77D4-75FA-4C14-98BA-660C8D872E04}.Release|Any CPU.Build.0 = Release|Any CPU
-		{949A1847-1BDE-4767-BC8B-EBBC7B669BCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{949A1847-1BDE-4767-BC8B-EBBC7B669BCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{949A1847-1BDE-4767-BC8B-EBBC7B669BCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{949A1847-1BDE-4767-BC8B-EBBC7B669BCB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{48071FA9-B5A4-4565-B225-FCD5A96A6139}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{48071FA9-B5A4-4565-B225-FCD5A96A6139}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{48071FA9-B5A4-4565-B225-FCD5A96A6139}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{48071FA9-B5A4-4565-B225-FCD5A96A6139}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F6C7550-CCB0-4889-9FD6-C592425E09F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F6C7550-CCB0-4889-9FD6-C592425E09F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F6C7550-CCB0-4889-9FD6-C592425E09F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F6C7550-CCB0-4889-9FD6-C592425E09F8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

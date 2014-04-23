@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseParserService.cs" />
+    <Compile Include="DbSettingService.cs" />
     <Compile Include="DatabaseService.cs" />
     <Compile Include="IParserService.cs" />
     <Compile Include="ParserInput.cs" />
@@ -66,6 +67,10 @@
     <Compile Include="TermService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\RTWin.Core\RTWin.Core.csproj">
+      <Project>{8f6c7550-ccb0-4889-9fd6-c592425e09f8}</Project>
+      <Name>RTWin.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RTWin.Entities\RTWin.Entities.csproj">
       <Project>{1BF804C4-644D-4123-A5C9-89CF6105CF6A}</Project>
       <Name>RTWin.Entities</Name>

@@ -1,26 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Data.SQLite;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
-using System.Web.Http.Cors;
-using System.Web.Http.Dependencies;
-using System.Windows;
 using Newtonsoft.Json;
 using Ninject;
+using RTWin.Core.Enums;
 using RTWin.Entities;
-using RTWin.Entities.Enums;
 using RTWin.Services;
 
-namespace RTWin.Web
+namespace RTWin.Web.Controllers
 {
+    [RoutePrefix("internal/v1")]
     public class TermsController : ApiController
     {
         private TermService _termService;
@@ -42,6 +36,8 @@ namespace RTWin.Web
             _itemService = App.Container.Get<ItemService>();
         }
 
+        [HttpGet]
+        [Route("{id}")]
         public TermReponse Get(long id)
         {
             var term = _termService.FindOne(id);
@@ -62,6 +58,8 @@ namespace RTWin.Web
             };
         }
 
+        [HttpGet]
+        [Route("{phrase}/{languageId}")]
         public async Task<TermReponse> GetTerm(string phrase = "", int languageId = 0)
         {
             if (string.IsNullOrWhiteSpace(phrase) || languageId <= 0)
@@ -114,6 +112,8 @@ namespace RTWin.Web
             }
         }
 
+        [HttpDelete]
+        [Route("")]
         public HttpResponseMessage Delete(TermPost term)
         {
             var exists = _termService.FindOneByPhraseAndLanguage(term.Phrase, term.LanguageId);
@@ -128,6 +128,8 @@ namespace RTWin.Web
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
 
+        [HttpPost]
+        [Route("")]
         public HttpResponseMessage Post(TermPost term)
         {
             var exists = _termService.FindOneByPhraseAndLanguage(term.Phrase, term.LanguageId);

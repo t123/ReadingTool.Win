@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.Design;
 using System.Configuration;
 using System.IO;
 using System.Linq;
@@ -44,7 +45,8 @@ namespace RTWin
                 Log.Error(exception);
             };
 
-            _container = Setup.Start(_container);
+            _container = Setup.InitContainer(_container);
+            Setup.Start();
 
             var userService = _container.Get<UserService>();
             App.User = userService.FindAll().OrderByDescending(x=>x.LastLogin).First();
@@ -55,7 +57,7 @@ namespace RTWin
 
         protected override void OnExit(ExitEventArgs e)
         {
-            Setup.Shutdown(App.Container);
+            Setup.Shutdown();
             WebCore.Shutdown();
             base.OnExit(e);
         }

@@ -1,18 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Windows;
-using System.Windows.Threading;
 using AutoMapper;
 using Awesomium.Core;
-using Microsoft.AspNet.SignalR.Client;
 using Microsoft.Owin.Hosting;
 using Ninject;
 using Ninject.Activation;
 using NPoco;
-using NPoco.FluentMappings;
-using RTWin.Common;
 using RTWin.Controls;
 using RTWin.Entities;
 using RTWin.Models;
@@ -24,23 +18,20 @@ namespace RTWin
 {
     public class Setup
     {
-        private IKernel _container;
         private DatabaseService _databaseService;
-        private HubConnection _hubConnection;
-        private IHubProxy _mainHubProxy;
+        private DbSettingService _settings;
 
-        public IKernel Container { get { return _container; } }
+        public IKernel Container { get { return App.Container; } }
 
-        public Setup(IKernel container)
+        public Setup()
         {
-            _container = container;
         }
 
-        public static IKernel Start(IKernel container)
+        public static IKernel Start()
         {
-            var s = new Setup(container);
+            var s = new Setup();
+
             s.InitWebCore();
-            s.InitContainer();
             s.CreateMappings();
             s.CheckAndUpgradeDatabase();
             s.BackupDb("Start");
@@ -62,48 +53,48 @@ namespace RTWin
             }, true);
         }
 
-        public static void Shutdown(IKernel container)
+        public static void Shutdown()
         {
-            var s = new Setup(container);
+            var s = new Setup();
             var db = App.Container.Get<Database>();
             db.CloseSharedConnection();
             s.BackupDb("Exit");
         }
 
-        private void InitContainer()
+        public static IKernel InitContainer(IKernel container)
         {
-            _container = new StandardKernel();
+            container = new StandardKernel();
 
-            _container.Bind<Database>().ToMethod(CreateDb);
-            _container.Bind<User>().ToMethod(x => App.User);
+            container.Bind<Database>().ToMethod(CreateDb);
+            container.Bind<User>().ToMethod(x => App.User);
 
-            _container.Bind<DatabaseService>().ToSelf();
-            _container.Bind<UserService>().ToSelf();
-            _container.Bind<LanguageService>().ToSelf();
-            _container.Bind<LanguageCodeService>().ToSelf();
-            _container.Bind<PluginService>().ToSelf();
-            _container.Bind<SyncService>().ToSelf();
+            container.Bind<DatabaseService>().ToSelf();
+            container.Bind<DbSettingService>().ToSelf();
+            container.Bind<UserService>().ToSelf();
+            container.Bind<LanguageService>().ToSelf();
+            container.Bind<LanguageCodeService>().ToSelf();
+            container.Bind<PluginService>().ToSelf();
+            container.Bind<SyncService>().ToSelf();
 
-            _container.Bind<MainWindow>().ToSelf();
-            _container.Bind<MainWindowControl>().ToSelf();
-            _container.Bind<LanguagesControl>().ToSelf();
-            _container.Bind<PluginsControl>().ToSelf();
-            _container.Bind<TextsControl>().ToSelf();
-            _container.Bind<TermsControl>().ToSelf();
-            _container.Bind<ProfilesControl>().ToSelf();
-            _container.Bind<ReadControl>().ToSelf();
+            container.Bind<MainWindow>().ToSelf();
+            container.Bind<MainWindowControl>().ToSelf();
+            //container.Bind<LanguagesControl>().ToSelf();
+            //container.Bind<PluginsControl>().ToSelf();
+            //container.Bind<TextsControl>().ToSelf();
+            //container.Bind<TermsControl>().ToSelf();
+            //container.Bind<ProfilesControl>().ToSelf();
+            //container.Bind<ReadControl>().ToSelf();
+            //container.Bind<ItemDialog>().ToSelf();
 
-            _container.Bind<ItemDialog>().ToSelf();
+            container.Bind<MainWindowViewModel>().ToSelf();
+            container.Bind<MainWindowControlViewModel>().ToSelf();
+            //container.Bind<PluginsControlViewModel>().ToSelf();
+            //container.Bind<LanguagesControlViewModel>().ToSelf();
+            //container.Bind<TermsControlViewModel>().ToSelf();
+            //container.Bind<ProfilesControlViewModel>().ToSelf();
+            //container.Bind<ReadControlViewModel>().ToSelf();
 
-            _container.Bind<MainWindowViewModel>().ToSelf();
-            _container.Bind<PluginsControlViewModel>().ToSelf();
-            _container.Bind<LanguagesControlViewModel>().ToSelf();
-            _container.Bind<TermsControlViewModel>().ToSelf();
-            _container.Bind<ProfilesControlViewModel>().ToSelf();
-            _container.Bind<ReadControlViewModel>().ToSelf();
-            _container.Bind<MainWindowControlViewModel>().ToSelf();
-
-            _databaseService = Container.Get<DatabaseService>();
+            return container;
         }
 
         private static Database CreateDb(IContext context)
@@ -131,7 +122,7 @@ namespace RTWin
         {
             if (_databaseService == null)
             {
-                _databaseService = _container.Get<DatabaseService>();
+                _databaseService = Container.Get<DatabaseService>();
             }
 
             _databaseService.CreateAndUpgradeDatabase();
@@ -139,12 +130,12 @@ namespace RTWin
 
         public void BackupDb(string identifier)
         {
-            if (_databaseService == null)
+            if (_settings == null)
             {
-                _databaseService = _container.Get<DatabaseService>();
+                _settings = Container.Get<DbSettingService>();
             }
 
-            var backupDatabase = _databaseService.GetSetting<bool?>(DbSetting.Keys.BackupDatabase) ?? true;
+            var backupDatabase = _settings.Get<bool?>(DbSetting.Keys.BackupDatabase) ?? true;
 
             if (!backupDatabase)
             {
@@ -158,8 +149,8 @@ namespace RTWin
                 return;
             }
 
-            var backupPath = _databaseService.GetSetting<string>(DbSetting.Keys.BackupDatabasePath);
-            var maxBackups = _databaseService.GetSetting<int?>(DbSetting.Keys.BackupMax) ?? 16;
+            var backupPath = _settings.Get<string>(DbSetting.Keys.BackupDatabasePath);
+            var maxBackups = _settings.Get<int?>(DbSetting.Keys.BackupMax) ?? 16;
 
             if (string.IsNullOrWhiteSpace(backupPath))
             {
@@ -236,54 +227,13 @@ namespace RTWin
 
         private void InitWebApi()
         {
-            WebApp.Start<OWINWebAPIConfig>(_databaseService.GetSetting<string>(DbSetting.Keys.BaseWebAPIAddress));
+            WebApp.Start<OWINWebAPIConfig>(_settings.Get<string>(DbSetting.Keys.BaseWebAPIAddress));
         }
 
         private void InitSignalR()
         {
-            WebApp.Start<OWINSignalRConfig>(_databaseService.GetSetting<string>(DbSetting.Keys.BaseWebSignalRAddress));
-            _hubConnection = new HubConnection(_databaseService.GetSetting<string>(DbSetting.Keys.BaseWebSignalRAddress));
-            _mainHubProxy = _hubConnection.CreateHubProxy("MainHub");
-
-            InitHub();
-        }
-
-        private void InitHub()
-        {
-            _mainHubProxy.On<string, string>("addMessage", (element, action) =>
-            {
-                if (element == "video")
-                {
-                    System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        double time;
-                        MainWindow owner = System.Windows.Application.Current.MainWindow as MainWindow;
-
-                        if (owner == null)
-                        {
-                            return;
-                        }
-
-                        if (!double.TryParse(action, out time) || owner.MainWindowViewModel == null)
-                        {
-                            _mainHubProxy.Invoke("Send", new object[] { "srtl1", -1 });
-                            _mainHubProxy.Invoke("Send", new object[] { "srtl2", -1 });
-                        }
-                        else
-                        {
-                            var sub = owner.MainWindowViewModel.GetSub(time);
-                            _mainHubProxy.Invoke("Send", new object[] { "srtl1", sub.Item1 });
-                            _mainHubProxy.Invoke("Send", new object[] { "srtl2", sub.Item2 });
-                        }
-                    });
-                }
-                else if (element == "modal")
-                {
-                    System.Windows.Application.Current.Dispatcher.InvokeAsync(() => Clipboard.SetText(action, TextDataFormat.UnicodeText), DispatcherPriority.Background);
-                }
-            });
-
-            _hubConnection.Start();
+            WebApp.Start<OWINSignalRConfig>(_settings.Get<string>(DbSetting.Keys.BaseWebSignalRAddress));
+            MainHub.Init();
         }
     }
 }

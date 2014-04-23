@@ -9,8 +9,8 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NPoco;
 using NPoco.FluentMappings;
+using RTWin.Core.Enums;
 using RTWin.Entities;
-using RTWin.Entities.Enums;
 
 namespace RTWin.Services
 {

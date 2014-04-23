@@ -1,4 +1,4 @@
-namespace RTWin.Entities.Enums
+namespace RTWin.Core.Enums
 {
     public enum TermType
     {

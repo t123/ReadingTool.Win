@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using RTWin.Core;
 using RTWin.Entities;
 
 namespace RTWin.Services
@@ -15,7 +16,7 @@ namespace RTWin.Services
         public ParserService()
         {
             _po = new ParserOutput();
-            _xsltFile = "text.xslt";
+            _xsltFile = ContentLoader.TEXT;
         }
 
         public override ParserOutput Parse(ParserInput pi)
@@ -77,7 +78,7 @@ namespace RTWin.Services
             AddFrequencyDataToTermNodes(frequency, document);
 
             _po.Xml = document.ToString();
-            _po.Html = _pi.Html.Replace("<!-- table -->", ApplyTransform(document, _xsltFile));
+            _po.Html = _pi.Html.Replace("<!-- table -->", ApplyTransform(document));
 
             UniqueTerms(document);
             EndTimer();
