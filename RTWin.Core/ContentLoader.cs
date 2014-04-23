@@ -33,6 +33,7 @@ namespace RTWin.Core
 
         private ContentLoader()
         {
+            _content = new Dictionary<string, string>(10);
             _path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "App_Data");
 
             _watcher = new FileSystemWatcher(Path.GetDirectoryName(_path));

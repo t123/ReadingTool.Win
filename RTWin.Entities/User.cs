@@ -27,7 +27,7 @@ namespace RTWin.Entities
                 AccessSecret = "",
                 LastLogin = null,
                 SyncData = false,
-                Username = "New User"
+                Username = "User 1"
             };
         }
     }
