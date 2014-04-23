@@ -144,6 +144,24 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="Xceed.Wpf.AvalonDock">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.1.0\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.1.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.1.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.1.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.DataGrid">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.1.0\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.1.0\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -155,16 +173,25 @@
       <DependentUpon>MainWindowControl.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Controls\ProfilesControl.xaml.cs">
+      <DependentUpon>ProfilesControl.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Converters\DateTimeConverter.cs" />
     <Compile Include="Common\DialogCloser.cs" />
+    <Compile Include="Messages\ChangeViewMessage.cs" />
+    <Compile Include="Models\Dto\BaseDtoModel.cs" />
+    <Compile Include="Models\Dto\UserModel.cs" />
+    <Compile Include="Models\Views\ProfilesViewControlModel.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Web\MainHub.cs" />
     <Compile Include="Web\OWINSignalRConfig.cs" />
     <Compile Include="Web\OWINWebAPIConfig.cs" />
     <Compile Include="Converters\EnumMatchToBooleanConverter.cs" />
     <Compile Include="Messages\ReadMessage.cs" />
-    <Compile Include="Models\Entities\ItemSearch.cs" />
-    <Compile Include="Models\Entities\LanguageModel.cs" />
-    <Compile Include="Models\Entities\UserModel.cs" />
+    <Compile Include="Models\Dto\ItemSearch.cs" />
+    <Compile Include="Models\Dto\LanguageModel.cs" />
     <Compile Include="Models\Views\BaseViewModel.cs" />
     <Compile Include="Models\Views\MainWindowControlViewModel.cs" />
     <Compile Include="Models\Views\MainWindowViewModel.cs" />
@@ -175,6 +202,10 @@
     <Compile Include="Web\Controllers\SyncController.cs" />
     <Compile Include="Web\Controllers\TermsController.cs" />
     <Page Include="Controls\MainWindowControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ProfilesControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

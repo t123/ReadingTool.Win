@@ -9,7 +9,7 @@ using Ninject.Activation;
 using NPoco;
 using RTWin.Controls;
 using RTWin.Entities;
-using RTWin.Models;
+using RTWin.Models.Dto;
 using RTWin.Models.Views;
 using RTWin.Services;
 using RTWin.Web;
@@ -82,7 +82,7 @@ namespace RTWin
             //container.Bind<PluginsControl>().ToSelf();
             //container.Bind<TextsControl>().ToSelf();
             //container.Bind<TermsControl>().ToSelf();
-            //container.Bind<ProfilesControl>().ToSelf();
+            container.Bind<ProfilesControl>().ToSelf();
             //container.Bind<ReadControl>().ToSelf();
             //container.Bind<ItemDialog>().ToSelf();
 
@@ -91,7 +91,7 @@ namespace RTWin
             //container.Bind<PluginsControlViewModel>().ToSelf();
             //container.Bind<LanguagesControlViewModel>().ToSelf();
             //container.Bind<TermsControlViewModel>().ToSelf();
-            //container.Bind<ProfilesControlViewModel>().ToSelf();
+            container.Bind<ProfilesControlViewModel>().ToSelf();
             //container.Bind<ReadControlViewModel>().ToSelf();
 
             return container;
@@ -105,17 +105,14 @@ namespace RTWin
         private void CreateMappings()
         {
             Mapper.CreateMap<Language, LanguageModel>()
-                .ForMember(x => x.SentenceRegex, y => y.MapFrom(z => z.Settings.SentenceRegex.Replace("\n", "\\n")))
-                .ForMember(x => x.TermRegex, y => y.MapFrom(z => z.Settings.TermRegex.Replace("\n", "\\n")))
-                .ForMember(x => x.Direction, y => y.MapFrom(z => z.Settings.Direction))
+                .ForMember(x => x.SentenceRegex, y => y.MapFrom(z => z.SentenceRegex.Replace("\n", "\\n")))
+                .ForMember(x => x.TermRegex, y => y.MapFrom(z => z.TermRegex.Replace("\n", "\\n")))
+                .ForMember(x => x.Direction, y => y.MapFrom(z => z.Direction))
                 .ForMember(x => x.Plugins, y => y.MapFrom(z => App.Container.Get<PluginService>().FindAllWithActive(z.LanguageId)))
                 ;
 
-            Mapper.CreateMap<User, UserModel>()
-                .ForMember(x => x.AccessKey, y => y.MapFrom(z => z.Settings.AccessKey))
-                .ForMember(x => x.AccessSecret, y => y.MapFrom(z => z.Settings.AccessSecret))
-                .ForMember(x => x.SyncData, y => y.MapFrom(z => z.Settings.SyncData))
-                ;
+            Mapper.CreateMap<User, UserModel>();
+            Mapper.CreateMap<UserModel, User>();
         }
 
         private void CheckAndUpgradeDatabase()

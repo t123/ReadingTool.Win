@@ -2,10 +2,11 @@
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RTWin.Core.Enums;
 using RTWin.Entities;
 using RTWin.Services;
 
-namespace RTWin.Models
+namespace RTWin.Models.Dto
 {
     public class LanguageModel
     {
@@ -15,7 +16,7 @@ namespace RTWin.Models
         public bool IsArchived { get; set; }
         public string TermRegex { get; set; }
         public string SentenceRegex { get; set; }
-        public Direction Direction { get; set; }
+        public LanguageDirection Direction { get; set; }
 
         public IList<PluginLanguage> Plugins { get; set; }
         public LanguageModel()

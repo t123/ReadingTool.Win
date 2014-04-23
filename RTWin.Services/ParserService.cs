@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using RTWin.Core;
+using RTWin.Core.Enums;
 using RTWin.Entities;
 
 namespace RTWin.Services
@@ -27,8 +28,8 @@ namespace RTWin.Services
             string[] l1Paragraphs = SplitIntoParagraphs(_pi.Item.L1Content);
             string[] l2Paragraphs = _pi.AsParallel ? SplitIntoParagraphs(_pi.Item.L2Content) : null;
 
-            var l1SentenceRegex = new Regex(_pi.Language1.Settings.SentenceRegex);
-            var l1TermRegex = new Regex(_pi.Language1.Settings.TermRegex);
+            var l1SentenceRegex = new Regex(_pi.Language1.SentenceRegex);
+            var l1TermRegex = new Regex(_pi.Language1.TermRegex);
 
             XDocument document = new XDocument();
             var rootNode = new XElement("root");
@@ -47,8 +48,8 @@ namespace RTWin.Services
                 var l1ParagraphNode = new XElement("paragraph");
                 var l2ParagraphNode = new XElement("translation");
                 l2ParagraphNode.Value = l2Paragraph;
-                l1ParagraphNode.SetAttributeValue("direction", _pi.Language1.Settings.Direction == Direction.LeftToRight ? "ltr" : "rtl");
-                l2ParagraphNode.SetAttributeValue("direction", _pi.AsParallel ? _pi.Language2.Settings.Direction == Direction.LeftToRight ? "ltr" : "rtl" : "ltr");
+                l1ParagraphNode.SetAttributeValue("direction", _pi.Language1.Direction == LanguageDirection.LeftToRight ? "ltr" : "rtl");
+                l2ParagraphNode.SetAttributeValue("direction", _pi.AsParallel ? _pi.Language2.Direction == LanguageDirection.LeftToRight ? "ltr" : "rtl" : "ltr");
 
                 var sentences = SplitIntoSentences(l1Paragraph, l1SentenceRegex);
 

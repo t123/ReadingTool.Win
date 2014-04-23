@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RTWin.Models.Entities
+namespace RTWin.Models.Dto
 {
     public class ItemSearch
     {

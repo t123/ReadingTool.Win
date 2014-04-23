@@ -94,20 +94,11 @@ CREATE  TABLE ""settings"" (""Key"" TEXT UNIQUE , ""Value"" TEXT)
 ");
 
             sql.Add("user", @"
-CREATE TABLE ""user"" (""UserId""  INTEGER PRIMARY KEY, ""Username"" TEXT NOT NULL  UNIQUE, ""LastLogin"" TEXT, ""JsonSettings"" TEXT )
+CREATE TABLE ""user"" (""UserId"" INTEGER PRIMARY KEY ,""Username"" TEXT NOT NULL ,""LastLogin"" TEXT, ""AccessKey"" TEXT, ""AccessSecret"" TEXT, ""SyncData"" BOOL)
 ");
 
             sql.Add("language", @"
-CREATE TABLE language (
-    ""LanguageId"" INTEGER PRIMARY KEY,
-    ""Name"" TEXT,
-    ""DateCreated"" TEXT,
-    ""DateModified"" TEXT,
-    ""IsArchived"" INTEGER,
-    ""LanguageCode"" TEXT,
-    ""JsonSettings"" TEXT,
-    ""UserId"" TEXT
-);
+CREATE TABLE ""language"" (""LanguageId"" INTEGER PRIMARY KEY ,""Name"" TEXT,""DateCreated"" TEXT,""DateModified"" TEXT,""IsArchived"" INTEGER,""LanguageCode"" TEXT,""UserId"" TEXT, ""Direction"" INTEGER, ""SentenceRegex"" TEXT, ""TermRegex"" TEXT)
 ");
 
             sql.Add("term", @"
@@ -263,17 +254,7 @@ CREATE TABLE ""term"" (
             var userCount = _db.ExecuteScalar<int>("SELECT COUNT(*) FROM User");
             if (userCount == 0)
             {
-                _db.Insert(new User()
-                {
-                    Username = "Default User",
-                    LastLogin = DateTime.UtcNow,
-                    Settings = new UserSettings()
-                    {
-                        AccessKey = "",
-                        AccessSecret = "",
-                        SyncData = false
-                    }
-                });
+                _db.Insert(User.NewUser());
             }
         }
     }

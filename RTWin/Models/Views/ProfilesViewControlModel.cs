@@ -1,40 +1,30 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices.ComTypes;
 using System.Windows;
 using System.Windows.Input;
 using AutoMapper;
-using GalaSoft.MvvmLight.Messaging;
-using MahApps.Metro.Controls;
-using MahApps.Metro.Controls.Dialogs;
-using RTWin.Annotations;
-using RTWin.Common;
+using GalaSoft.MvvmLight.Command;
 using RTWin.Entities;
-using RTWin.Messages;
+using RTWin.Models.Dto;
 using RTWin.Services;
+using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
 
 namespace RTWin.Models.Views
 {
-    public class ProfilesControlViewModel : INotifyPropertyChanged
+    public class ProfilesControlViewModel : BaseViewModel
     {
         private readonly UserService _userService;
-        private ObservableCollection<User> _users;
-        private User _selectedItem;
-        private UserModel _user;
+        private ObservableCollection<UserModel> _users;
+        private UserModel _selectedItem;
         private ICommand _addCommand;
         private ICommand _deleteCommand;
         private ICommand _saveCommand;
         private ICommand _cancelCommand;
         private ICommand _switchCommand;
-        private ICommand _backCommand;
-
-        public ICommand BackCommand
-        {
-            get { return _backCommand; }
-            set { _backCommand = value; }
-        }
 
         public ICommand SaveCommand
         {
@@ -66,116 +56,82 @@ namespace RTWin.Models.Views
             set { _switchCommand = value; }
         }
 
-        public UserModel User
-        {
-            get { return _user; }
-            set { _user = value; OnPropertyChanged("User"); }
-        }
-
-        public User SelectedItem
+        public UserModel SelectedItem
         {
             get { return _selectedItem; }
             set
             {
                 _selectedItem = value;
-                if (_selectedItem != null)
-                {
-                    User = Mapper.Map<User, UserModel>(_userService.FindOne(_selectedItem.UserId));
-                }
-
                 OnPropertyChanged("SelectedItem");
             }
         }
 
-        public ObservableCollection<User> Users
+        public ObservableCollection<UserModel> Users
         {
-            get { return _users; }
-            set { _users = value; OnPropertyChanged("Users"); }
+            get
+            {
+                if (_users == null)
+                {
+                    _users = new ObservableCollection<UserModel>(Mapper.Map<IEnumerable<User>, IEnumerable<UserModel>>(_userService.FindAll()));
+                }
+
+                return _users;
+            }
+            set
+            {
+                _users = value;
+                OnPropertyChanged("Users");
+            }
         }
 
         public ProfilesControlViewModel(UserService userService)
         {
             _userService = userService;
-            _users = new ObservableCollection<User>(_userService.FindAll());
             SelectedItem = Users.FirstOrDefault(x => x.UserId == App.User.UserId);
 
-            _addCommand = new RelayCommand(async param =>
+            _addCommand = new RelayCommand(() =>
             {
-                var metroWindow = (Application.Current.MainWindow as MetroWindow);
-                var result = await metroWindow.ShowInputAsync("Please enter a name for your profile", "Profile Name", MainWindowViewModel.DialogSettings);
-
-                if (!string.IsNullOrWhiteSpace(result))
-                {
-                    var user = new User()
-                    {
-                        Username = result.Trim(),
-                    };
-
-                    _userService.Save(user);
-                    Users = new ObservableCollection<User>(_userService.FindAll());
-                    SelectedItem = Users.FirstOrDefault(x => x.UserId == user.UserId);
-                }
-            });
-
-            _deleteCommand = new RelayCommand(async param =>
-            {
-                var metroWindow = (Application.Current.MainWindow as MetroWindow);
-                var result = await metroWindow.ShowMessageAsync("Delete " + SelectedItem.Username, "Are you sure you want to delete " + SelectedItem.Username + "?", MessageDialogStyle.AffirmativeAndNegative, MainWindowViewModel.DialogSettings);
-
-                if (result == MessageDialogResult.Negative)
-                    return;
-
-                _userService.DeleteOne(SelectedItem.UserId);
-                Users = new ObservableCollection<User>(_userService.FindAll());
-                SelectedItem = Users.FirstOrDefault(x => x.UserId == App.User.UserId);
-            }, param => SelectedItem != null && SelectedItem.UserId != App.User.UserId && Users.Count > 1);
-
-            _saveCommand = new RelayCommand(param =>
-            {
-                var user = _userService.FindOne(SelectedItem.UserId);
-                user.Username = User.Username;
-                user.Settings = new UserSettings()
-                {
-                    AccessKey = User.AccessKey,
-                    AccessSecret = User.AccessSecret,
-                    SyncData = User.SyncData
-                };
-
+                var user = User.NewUser();
                 _userService.Save(user);
+                var mapped = Mapper.Map<User, UserModel>(user);
+                Users.Add(mapped);
+                SelectedItem = mapped;
+            }
+                );
 
-                Users = new ObservableCollection<User>(_userService.FindAll());
-                SelectedItem = Users.FirstOrDefault(x => x.UserId == user.UserId);
-            }, param => SelectedItem != null);
-
-            _cancelCommand = new RelayCommand(param =>
+            _deleteCommand = new RelayCommand(() =>
             {
-                User = Mapper.Map<User, UserModel>(_userService.FindOne(SelectedItem.UserId));
-                SelectedItem = Users.FirstOrDefault(x => x.UserId == User.UserId);
-            }, param => SelectedItem != null);
+                var result = MessageBox.Show(
+                    string.Format("Are you sure you want to delete {0}?", SelectedItem.Username),
+                    string.Format("Delete {0}", SelectedItem.Username),
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Exclamation
+                    );
 
-            _switchCommand = new RelayCommand(param =>
+                if (result == MessageBoxResult.Yes)
+                {
+                    _userService.DeleteOne(SelectedItem.UserId);
+                    Users.Remove(SelectedItem);
+                    SelectedItem = Users.FirstOrDefault();
+                }
+            }, () => SelectedItem != null && Users.Count() > 1 && SelectedItem.UserId != App.User.UserId);
+
+            _saveCommand = new RelayCommand(() =>
+            {
+                var mapped = Mapper.Map<UserModel, User>(SelectedItem);
+                _userService.Save(mapped);
+            }, () => SelectedItem.IsValid);
+
+            _switchCommand = new RelayCommand<User>(param =>
             {
                 var user = _userService.FindOne(SelectedItem.UserId);
                 user.LastLogin = DateTime.Now.ToUniversalTime();
                 _userService.Save(user);
 
-                User = Mapper.Map<User, UserModel>(user);
-                SelectedItem = Users.FirstOrDefault(x => x.UserId == User.UserId);
-                App.User = SelectedItem;
-
-                Messenger.Default.Send<RefreshViewsMessage>(new RefreshViewsMessage());
+                SelectedItem = Users.FirstOrDefault(x => x.UserId == user.UserId);
+                var mapped = Mapper.Map<UserModel, User>(SelectedItem);
+                App.User = mapped;
             }, param => SelectedItem != null);
-
-            _backCommand = new RelayCommand(param => Messenger.Default.Send<ChangeViewMessage>(new ChangeViewMessage(ChangeViewMessage.Main)));
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

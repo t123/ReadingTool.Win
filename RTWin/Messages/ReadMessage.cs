@@ -44,25 +44,4 @@ namespace RTWin.Messages
         {
         }
     }
-
-    public class ChangeViewMessage
-    {
-        private readonly string _viewName;
-        public const string Main = @"main";
-        public const string Languages = @"languages";
-        public const string Items = @"items";
-        public const string Terms = @"terms";
-        public const string Plugins = @"plugins";
-        public const string Profiles = @"profiles";
-
-        public ChangeViewMessage(string viewName)
-        {
-            _viewName = viewName;
-        }
-
-        public string ViewName
-        {
-            get { return _viewName; }
-        }
-    }
 }

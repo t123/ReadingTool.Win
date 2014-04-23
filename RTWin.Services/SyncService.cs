@@ -53,7 +53,7 @@ namespace RTWin.Services
 
         private string CreateSignature(string content)
         {
-            return SHA(string.Format("{0}{1}", content, _user.Settings.AccessSecret));
+            return SHA(string.Format("{0}{1}", content, _user.AccessSecret));
         }
 
         private string GetWebClient(BaseRest rest)
@@ -65,7 +65,7 @@ namespace RTWin.Services
             {
                 wc.Headers.Add(HttpRequestHeader.ContentType, "application/json");
                 wc.Headers.Add(Header.SIGNATURE, signature);
-                wc.Headers.Add(Header.ACCESSKEY, _user.Settings.AccessKey);
+                wc.Headers.Add(Header.ACCESSKEY, _user.AccessKey);
                 wc.Encoding = Encoding.UTF8;
 
                 if (rest.Verb == POST)
@@ -83,7 +83,7 @@ namespace RTWin.Services
         {
             var requestUri = new Uri(_serverUri, "v1/api/lastsync");
 
-            var sync = new BaseRest(_user.Settings.AccessKey)
+            var sync = new BaseRest(_user.AccessKey)
             {
                 Verb = POST,
                 Uri = requestUri.ToString(),

@@ -1,9 +1,51 @@
 ﻿<Window x:Class="RTWin.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         Title="{Binding Path=CurrentUser.Username, StringFormat=RTWin - {0}}" WindowState="Maximized"
         >
     <Grid>
-        <ContentControl Name="ContentControl" Content="{Binding CurrentView}"/>
+        <DockPanel>
+            <ToolBarTray DockPanel.Dock="Top" IsLocked="True" Height="25">
+                <ToolBar OverflowMode="AsNeeded">
+                    <xctk:SplitButton Content="Profiles" Margin="5,0,5,0" Padding="10,0,10,0" Command="{Binding ToolbarCommand}" CommandParameter="profiles">
+                        <xctk:SplitButton.DropDownContent>
+                            <StackPanel>
+                                <TextBlock><Hyperlink Command="{Binding ToolbarCommand}" CommandParameter="addprofile">Add Profile</Hyperlink></TextBlock>
+                                <ItemsControl ItemsSource="{Binding Users}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock><Hyperlink Command="{Binding DataContext.ChangeProfileCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"><Run Text="{Binding Username}"></Run></Hyperlink></TextBlock>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </xctk:SplitButton.DropDownContent>
+                    </xctk:SplitButton>
+                    <xctk:SplitButton Content="Languages" Margin="5,0,5,0" Padding="10,0,10,0">
+                        <xctk:SplitButton.DropDownContent>
+                            <Button Content="Add Language"></Button>
+                        </xctk:SplitButton.DropDownContent>
+                    </xctk:SplitButton>
+                    <xctk:SplitButton Content="Items" Margin="5,0,5,0" Padding="10,0,10,0">
+                        <xctk:SplitButton.DropDownContent>
+                            <Button Content="Add Item"></Button>
+                        </xctk:SplitButton.DropDownContent>
+                    </xctk:SplitButton>
+                    <xctk:SplitButton Content="Terms" Margin="5,0,5,0" Padding="10,0,10,0">
+                        <xctk:SplitButton.DropDownContent>
+                            <Button Content="Add Term"></Button>
+                        </xctk:SplitButton.DropDownContent>
+                    </xctk:SplitButton>
+                    <xctk:SplitButton Content="Plugins" Margin="5,0,5,0" Padding="10,0,10,0">
+                        <xctk:SplitButton.DropDownContent>
+                            <Button Content="Add Plugin"></Button>
+                        </xctk:SplitButton.DropDownContent>
+                    </xctk:SplitButton>
+                    <Button Content="Settings" Margin="5,0,5,0" Padding="10,0,10,0"/>
+                </ToolBar>
+            </ToolBarTray>
+            <ContentControl Name="ContentControl" Content="{Binding CurrentView}"/>
+        </DockPanel>
     </Grid>
 </Window>

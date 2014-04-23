@@ -56,8 +56,8 @@ namespace RTWin.Services
             contentNode.SetAttributeValue("l1Id", _pi.Language1.LanguageId);
             contentNode.SetAttributeValue("itemType", _pi.Item.ItemType.ToString().ToLowerInvariant());
             contentNode.SetAttributeValue("itemId", _pi.Item.ItemId);
-            contentNode.SetAttributeValue("l1Direction", _pi.Language1.Settings.Direction);
-            contentNode.SetAttributeValue("l2Direction", _pi.AsParallel ? _pi.Language2.Settings.Direction.ToString() : "");
+            contentNode.SetAttributeValue("l1Direction", _pi.Language1.Direction);
+            contentNode.SetAttributeValue("l2Direction", _pi.AsParallel ? _pi.Language2.Direction.ToString() : "");
             contentNode.SetAttributeValue("l1Code", _pi.Language1.LanguageCode);
             contentNode.SetAttributeValue("l2Code", _pi.Language2 == null ? "" : _pi.Language2.LanguageCode);
 

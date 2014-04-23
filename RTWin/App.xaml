@@ -1,3 +1,23 @@
 <Application x:Class="RTWin.App" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" d1p1:Ignorable="d" xmlns:d1p1="http://schemas.openxmlformats.org/markup-compatibility/2006">
-
+    <Application.Resources>
+        <Style TargetType="Button">
+            <Setter Property="MinWidth" Value="60" />
+            <Setter Property="Height" Value="23" />
+            <Setter Property="Margin" Value="3" />
+        </Style>
+        <Style TargetType="{x:Type TextBox}">
+            <Setter Property="Validation.ErrorTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <DockPanel LastChildFill="True">
+                            <TextBlock DockPanel.Dock="Right" Foreground="Red" FontSize="14" FontWeight="Bold">*</TextBlock>
+                            <Border BorderBrush="Green" BorderThickness="1">
+                                <AdornedElementPlaceholder></AdornedElementPlaceholder>
+                            </Border>
+                        </DockPanel>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Application.Resources>
 </Application>
