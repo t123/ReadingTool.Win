@@ -1,34 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using ICSharpCode.AvalonEdit.Rendering;
-using MahApps.Metro.Controls;
-using Microsoft.Win32;
+﻿using System.Windows;
 using Ninject;
 using Ninject.Parameters;
 using RTWin.Entities;
 using RTWin.Models.Views;
-using RTWin.Services;
 
 namespace RTWin.Controls
 {
     /// <summary>
     /// Interaction logic for ItemDialog.xaml
     /// </summary>
-    public partial class ItemDialog : MetroWindow
+    public partial class ItemDialog : Window
     {
         private readonly ItemDialogViewModel _itemDialogViewModel;
-        private Item _item;
+
+        public ItemDialog()
+            : this(null)
+        {
+        }
 
         public ItemDialog(Item item)
         {

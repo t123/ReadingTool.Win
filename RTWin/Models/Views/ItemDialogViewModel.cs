@@ -1,34 +1,25 @@
 ﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using AutoMapper;
+using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Win32;
-using RTWin.Annotations;
-using RTWin.Common;
 using RTWin.Entities;
-using RTWin.Entities.Enums;
 using RTWin.Messages;
+using RTWin.Models.Dto;
 using RTWin.Services;
 
 namespace RTWin.Models.Views
 {
-    public class ItemDialogViewModel : INotifyPropertyChanged
+    public class ItemDialogViewModel : BaseViewModel
     {
         private readonly ItemService _itemService;
         private readonly LanguageService _languageService;
-        private Item _item;
+        private ItemModel _item;
         private ICommand _saveCommand;
-        private ICommand _cancelCommand;
+        private ICommand _copyCommand;
         private ICommand _openCommand;
         private ObservableCollection<Language> _languages;
-        private bool? _dialogResult;
-
-        public bool? DialogResult
-        {
-            get { return _dialogResult; }
-            set { _dialogResult = value; OnPropertyChanged("DialogResult"); }
-        }
 
         public ICommand OpenCommand
         {
@@ -42,22 +33,18 @@ namespace RTWin.Models.Views
             set { _saveCommand = value; }
         }
 
-        public ICommand CancelCommand
+        public ICommand CopyCommand
         {
-            get { return _cancelCommand; }
-            set { _cancelCommand = value; }
+            get { return _copyCommand; }
+            set { _copyCommand = value; }
         }
 
-        public Item Item
+        public ItemModel Item
         {
             get { return _item; }
             set
             {
-                _item = value ?? new Item()
-                {
-                    ItemType = ItemType.Text
-                };
-
+                _item = value;
                 OnPropertyChanged("Item");
             }
         }
@@ -72,11 +59,10 @@ namespace RTWin.Models.Views
         {
             _itemService = itemService;
             _languageService = languageService;
-            Item = item;
-
             Languages = new ObservableCollection<Language>(_languageService.FindAll());
+            MapItem(item);
 
-            _openCommand = new RelayCommand(param =>
+            _openCommand = new RelayCommand(() =>
             {
                 OpenFileDialog openFileDialog = new OpenFileDialog();
                 var result = openFileDialog.ShowDialog();
@@ -87,39 +73,31 @@ namespace RTWin.Models.Views
                 }
             });
 
-            _saveCommand = new RelayCommand(param =>
+            _saveCommand = new RelayCommand(() =>
             {
-                Item i = _itemService.FindOne(Item.ItemId) ?? new Item();
-                i.CollectionName = Item.CollectionName;
-                i.CollectionNo = Item.CollectionNo;
-                i.ItemId = Item.ItemId;
-                i.ItemType = Item.ItemType;
-                i.L1Content = Item.L1Content;
-                i.L1LanguageId = Item.L1LanguageId;
-                i.L1Title = Item.L1Title;
-                i.L2Content = Item.L2Content;
-                i.L2LanguageId = Item.L2LanguageId;
-                i.L2Title = Item.L2Title;
-                i.MediaUri = Item.MediaUri;
-
-                _itemService.Save(item);
-
-                Messenger.Default.Send<RefreshItemsMessage>(new RefreshItemsMessage());
+                var newItem = Item.ToItem();
+                _itemService.Save(newItem);
+                MapItem(newItem);
+                Messenger.Default.Send<RefreshItemsMessage>(new RefreshItemsMessage(newItem));
             });
 
-            _cancelCommand = new RelayCommand(param =>
+            _copyCommand = new RelayCommand<ItemModel>(param =>
             {
-                Item = _itemService.FindOne(Item.ItemId);
-            });
+                var newItem = _itemService.CopyItem(Item.ToItem());
+                _itemService.Save(newItem);
+                MapItem(newItem);
+                Messenger.Default.Send<RefreshItemsMessage>(new RefreshItemsMessage(newItem));
+            }, param => Item != null && Item.ItemId > 0);
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        private void MapItem(Item item)
         {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+            if (item == null)
+            {
+                item = Entities.Item.CreateItem();
+            }
+
+            Item = Mapper.Map<Item, ItemModel>(item);
         }
     }
 }

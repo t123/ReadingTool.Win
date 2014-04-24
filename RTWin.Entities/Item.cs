@@ -51,22 +51,18 @@ namespace RTWin.Entities
         [ResultColumn]
         public string L2Language { get; set; }
 
-        [Ignore]
-        public string CommonName
+        public static Item CreateItem()
         {
-            get
+            return new Item()
             {
-                string name = string.IsNullOrEmpty(CollectionName) ? "" : CollectionName + " - ";
-                name += CollectionNo == null ? "" : CollectionNo.ToString() + ". ";
-                name += L1Title;
-
-                if (!string.IsNullOrWhiteSpace(L1Language))
-                {
-                    name += " (" + L1Language + ")";
-                }
-
-                return name;
-            }
+                ItemType = ItemType.Text,
+                CollectionName = string.Empty,
+                L1Title = string.Empty,
+                L1Content = string.Empty,
+                L2Title = string.Empty,
+                L2Content = string.Empty,
+                MediaUri = string.Empty
+            };
         }
     }
 }

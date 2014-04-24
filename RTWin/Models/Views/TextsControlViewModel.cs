@@ -3,49 +3,47 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
+using System.Windows;
 using System.Windows.Input;
+using AutoMapper;
+using AutoMapper.Internal;
+using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using Ninject;
 using Ninject.Parameters;
 using RTWin.Annotations;
 using RTWin.Common;
 using RTWin.Controls;
+using RTWin.Core;
 using RTWin.Entities;
 using RTWin.Messages;
-using RTWin.Models.Entities;
+using RTWin.Models.Dto;
 using RTWin.Services;
 
 namespace RTWin.Models.Views
 {
-    public class TextsControlViewModel : INotifyPropertyChanged
+    public class TextsControlViewModel : BaseViewModel
     {
+        private IList<Item> _allItems;
 
         private IList<ItemSearch> _root;
         private readonly ItemService _itemService;
         private readonly LanguageService _languageService;
-        private ObservableCollection<Item> _items;
+        private ObservableCollection<ItemModel> _items;
         private string _filterText;
-        private ObservableCollection<string> _collectionNames;
-        private string _selectedCollectionName;
-        private Item _selectedItem;
+        private ItemModel _selectedItem;
         private ICommand _addCommand;
         private ICommand _editCommand;
         private ICommand _copyCommand;
         private ICommand _deleteCommand;
         private ICommand _readCommand;
-        private ICommand _backCommand;
         private ICommand _searchCommand;
 
         public ICommand SearchCommand
         {
             get { return _searchCommand; }
             set { _searchCommand = value; }
-        }
-
-        public ICommand BackCommand
-        {
-            get { return _backCommand; }
-            set { _backCommand = value; }
         }
 
         public ICommand ReadCommand
@@ -80,7 +78,12 @@ namespace RTWin.Models.Views
         public string FilterText
         {
             get { return _filterText; }
-            set { _filterText = value; OnPropertyChanged("FilterText"); MapCollection(); }
+            set
+            {
+                _filterText = value;
+                OnPropertyChanged("FilterText");
+                Items = null;
+            }
         }
 
         private string _itemType;
@@ -90,7 +93,7 @@ namespace RTWin.Models.Views
             set { _itemType = value; OnPropertyChanged("ItemType"); }
         }
 
-        public Item SelectedItem
+        public ItemModel SelectedItem
         {
             get { return _selectedItem; }
             set
@@ -99,7 +102,7 @@ namespace RTWin.Models.Views
 
                 if (_selectedItem != null)
                 {
-                    if (_selectedItem.ItemType == RTWin.Entities.Enums.ItemType.Text)
+                    if (_selectedItem.ItemType == RTWin.Core.Enums.ItemType.Text)
                     {
                         ItemType = "Read";
                     }
@@ -113,9 +116,17 @@ namespace RTWin.Models.Views
             }
         }
 
-        public ObservableCollection<Item> Items
+        public ObservableCollection<ItemModel> Items
         {
-            get { return _items; }
+            get
+            {
+                if (_items == null)
+                {
+                    MapItems();
+                }
+
+                return _items;
+            }
             set { _items = value; OnPropertyChanged("Items"); }
         }
 
@@ -129,93 +140,100 @@ namespace RTWin.Models.Views
         {
             _itemService = itemService;
             _languageService = languageService;
-            MapCollection();
+
+            _allItems = _itemService.FindAll().ToList();
+
             SelectedItem = Items.FirstOrDefault();
             ConstructTree();
 
-            _addCommand = new RelayCommand(param =>
+            _addCommand = new RelayCommand(() =>
             {
-                IParameter parameter = new ConstructorArgument("item", (Item)null);
-                var itemDialog = App.Container.Get<ItemDialog>(parameter);
-                var result = itemDialog.ShowDialog();
-
-                if (result == true)
-                {
-                    MapCollection();
-                }
+                var itemDialog = App.Container.Get<ItemDialog>();
+                itemDialog.Show();
             });
 
-            _editCommand = new RelayCommand(param =>
+            _editCommand = new RelayCommand<ItemModel>(param =>
             {
                 var item = _itemService.FindOne(SelectedItem.ItemId);
                 IParameter parameter = new ConstructorArgument("item", item);
                 var itemDialog = App.Container.Get<ItemDialog>(parameter);
-                var result = itemDialog.ShowDialog();
-
-                if (result == true)
-                {
-                    var id = SelectedItem.ItemId;
-                    MapCollection();
-                    SelectedItem = Items.FirstOrDefault(x => x.ItemId == id);
-                }
+                itemDialog.Show();
             }, param => SelectedItem != null);
 
-            _copyCommand = new RelayCommand(param =>
+            _copyCommand = new RelayCommand<ItemModel>(param =>
             {
                 var actualItem = _itemService.FindOne(SelectedItem.ItemId);
-                var newItem = new Item()
-                {
-                    CollectionName = actualItem.CollectionName,
-                    CollectionNo = actualItem.CollectionNo,
-                    ItemType = actualItem.ItemType,
-                    L1Content = actualItem.L1Content,
-                    L1LanguageId = actualItem.L1LanguageId,
-                    L1Title = actualItem.L1Title + " (copy)",
-                    L2Content = actualItem.L2Content,
-                    L2LanguageId = actualItem.L2LanguageId,
-                    L2Title = actualItem.L2Title,
-                    MediaUri = actualItem.MediaUri,
-                    UserId = actualItem.UserId,
-                };
-
+                var newItem = _itemService.CopyItem(actualItem);
                 _itemService.Save(newItem);
-                MapCollection();
+                _allItems.Add(newItem);
+                Items = null;
                 SelectedItem = Items.FirstOrDefault(x => x.ItemId == newItem.ItemId);
             }, param => SelectedItem != null);
 
-            _deleteCommand = new RelayCommand(param =>
+            _deleteCommand = new RelayCommand<ItemModel>(param =>
             {
-                _itemService.DeleteOne(SelectedItem.ItemId);
-                MapCollection();
-                SelectedItem = Items.FirstOrDefault();
+                var result = MessageBox.Show(
+                   string.Format("Are you sure you want to delete {0}?", SelectedItem.CommonName),
+                   string.Format("Delete {0}", SelectedItem.CommonName),
+                   MessageBoxButton.YesNo,
+                   MessageBoxImage.Exclamation
+                   );
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    _itemService.DeleteOne(SelectedItem.ItemId);
+                    _allItems.Remove(_allItems.First(x => x.ItemId == SelectedItem.ItemId));
+                    Items = null;
+                    ConstructTree();
+                    SelectedItem = Items.FirstOrDefault();
+                }
             }, param => SelectedItem != null);
 
-            _readCommand = new RelayCommand(param =>
+            _readCommand = new RelayCommand<string>(param =>
             {
-                bool parallel = param.ToString() == "Determine" ? SelectedItem.IsParallel : param.ToString() != "Single";
+                bool parallel = param == null || param.ToString() == "Determine" ? SelectedItem.IsParallel : param.ToString() != "Single";
                 Messenger.Default.Send<ReadMessage>(new ReadMessage(SelectedItem.ItemId, parallel));
-            }, param => param != null && SelectedItem != null);
+            }, param => SelectedItem != null);
 
-            _searchCommand = new RelayCommand(param =>
+            _searchCommand = new RelayCommand<ItemSearch>(param =>
             {
-                var node = param as ItemSearch;
-                if (node == null)
+                if (param == null)
                 {
                     return;
                 }
 
-                FilterText = node.Value;
+                FilterText = param.Value;
             });
 
-            _backCommand = new RelayCommand(param => Messenger.Default.Send<ChangeViewMessage>(new ChangeViewMessage(ChangeViewMessage.Main)));
+            Messenger.Default.Register<RefreshItemsMessage>(this, param =>
+            {
+                if (param == null || param.Item == null)
+                {
+                    return;
+                }
 
-            Messenger.Default.Register<RefreshItemsMessage>(this, (action) => MapCollection());
+                if (_allItems.All(x => x.ItemId != param.Item.ItemId))
+                {
+                    _allItems.Add(param.Item);
+                }
+                else
+                {
+                    _allItems.Remove(_allItems.First(x => x.ItemId == param.Item.ItemId));
+                    _allItems.Add(param.Item);
+                }
+
+                Items = null;
+                ConstructTree();
+            });
         }
 
         private void ConstructTree()
         {
+            var filterText = FilterText;
+
             var languages = _languageService.FindAll().OrderBy(x => x.IsArchived);
             var nodes = new List<ItemSearch>();
+
             nodes.Add(new ItemSearch() { Name = "Parallel Items", Value = "#parallel" });
             nodes.Add(new ItemSearch() { Name = "Items with media", Value = "#media" });
             nodes.Add(new ItemSearch() { Name = "Text items", Value = "#text" });
@@ -250,20 +268,85 @@ namespace RTWin.Models.Views
             }
 
             Root = nodes;
+            FilterText = filterText;
         }
 
-        private void MapCollection()
+        private void MapItems()
         {
-            Items = new ObservableCollection<Item>(_itemService.Search(maxResults: 200, filter: FilterText));
-        }
+            var temp = _allItems.AsQueryable();
 
-        public event PropertyChangedEventHandler PropertyChanged;
+            if (!string.IsNullOrWhiteSpace(FilterText ?? ""))
+            {
+                var predicate = PredicateBuilder.True<Item>();
 
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+                var matches = Regex.Matches(FilterText, @"[\#\w]+|""[\w\s]*""");
+
+                var filter = PredicateBuilder.True<Item>();
+
+                foreach (Match match in matches)
+                {
+                    if (match.Value.StartsWith("#"))
+                    {
+                        if (match.Value.Length > 1)
+                        {
+                            var remainder = match.Value.Substring(1, match.Length - 1).ToLowerInvariant();
+                            switch (remainder)
+                            {
+                                case "parallel":
+                                    temp = temp.Where(x => x.IsParallel);
+                                    break;
+
+                                case "media":
+                                    temp = temp.Where(x => x.HasMedia);
+                                    break;
+
+                                case "text":
+                                    temp = temp.Where(x => x.ItemType == Core.Enums.ItemType.Text);
+                                    break;
+
+                                case "video":
+                                    temp = temp.Where(x => x.ItemType == Core.Enums.ItemType.Video);
+                                    break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        string value = match.Value.Trim();
+                        bool exact = false;
+
+                        if (value.StartsWith("\""))
+                        {
+                            value = value.Substring(1, value.Length - 1);
+                            exact = true;
+                        }
+
+                        if (value.EndsWith("\""))
+                        {
+                            value = value.Substring(0, value.Length - 1);
+                            exact = true;
+                        }
+
+                        if (value.Length > 0)
+                        {
+                            if (exact)
+                            {
+                                filter = filter.And(x => x.CollectionName == value || x.L1Title == value || x.L1Language == value);
+                            }
+                            else
+                            {
+                                filter = filter.And(x => x.CollectionName.StartsWith(value) || x.L1Title.StartsWith(value) || x.L1Language.StartsWith(value));
+                            }
+                        }
+                    }
+                }
+
+                predicate = predicate.And(filter);
+                temp = temp.Where(predicate);
+            }
+
+            temp = temp.OrderBy(x => x.L1Language).ThenBy(x => x.CollectionName).ThenBy(x => x.CollectionNo).ThenBy(x => x.L1Title);
+            _items = new ObservableCollection<ItemModel>(Mapper.Map<IEnumerable<Item>, IEnumerable<ItemModel>>(temp));
         }
     }
 }

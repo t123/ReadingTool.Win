@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PredicateBuilder.cs" />
     <Compile Include="Enums\LanguageDirection.cs" />
     <Compile Include="Enums\ItemType.cs" />
     <Compile Include="ContentLoader.cs" />

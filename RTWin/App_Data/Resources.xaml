@@ -5,9 +5,16 @@
     <SolidColorBrush x:Key="ControlBackgroundColor">#F3F3F3</SolidColorBrush>
 
     <Style TargetType="{x:Type Button}">
+        <Setter Property="MinWidth" Value="60"></Setter>
         <Setter Property="Height" Value="25"></Setter>
         <Setter Property="Margin" Value="5,0,5,0"/>
         <Setter Property="Padding" Value="10,0,10,0"/>
+    </Style>
+    <Style TargetType="{x:Type controls:TextsControl}">
+        <Setter Property="Background" Value="{DynamicResource ControlBackgroundColor}"/>
+    </Style>
+    <Style TargetType="{x:Type controls:ItemDialog}">
+        <Setter Property="Background" Value="{DynamicResource ControlBackgroundColor}"/>
     </Style>
     <Style TargetType="{x:Type controls:PluginsControl}">
         <Setter Property="Background" Value="{DynamicResource ControlBackgroundColor}"/>

@@ -83,7 +83,7 @@ namespace RTWin.Models.Views
             _toolbarCommand = new RelayCommand<string>(PerformToolbarCommand);
             _changeProfileCommand = new RelayCommand<User>(PerformChangeProfile);
 
-            PerformToolbarCommand("languages");
+            PerformToolbarCommand("items");
 
             Messenger.Default.Register<SwitchProfileMessage>(this, x => PerformChangeProfile(x.User));
         }
@@ -119,8 +119,10 @@ namespace RTWin.Models.Views
                     CurrentView = pluginsControl;
                     return;
 
-                case "addprofile":
-                    break;
+                case "items":
+                    var textsControl = App.Container.Get<TextsControl>();
+                    CurrentView = textsControl;
+                    return;
             }
         }
     }

@@ -33,7 +33,6 @@
                     <xctk:SplitButton Grid.Column="0" Content="Profiles" Command="{Binding ToolbarCommand}" CommandParameter="profiles">
                         <xctk:SplitButton.DropDownContent>
                             <StackPanel>
-                                <TextBlock><Hyperlink Command="{Binding ToolbarCommand}" CommandParameter="addprofile">Add Profile</Hyperlink></TextBlock>
                                 <ItemsControl ItemsSource="{Binding Users}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
@@ -44,11 +43,7 @@
                             </StackPanel>
                         </xctk:SplitButton.DropDownContent>
                     </xctk:SplitButton>
-                    <xctk:SplitButton Grid.Column="1" Content="Languages" Command="{Binding ToolbarCommand}" CommandParameter="languages">
-                        <xctk:SplitButton.DropDownContent>
-                            <Button Content="Add Language"></Button>
-                        </xctk:SplitButton.DropDownContent>
-                    </xctk:SplitButton>
+                    <Button Grid.Column="1" Content="Languages" Height="25" Margin="5,0,5,0" Padding="10,0,10,0"  Command="{Binding ToolbarCommand}" CommandParameter="languages"/>
                     <xctk:SplitButton Grid.Column="2" Content="Items" Command="{Binding ToolbarCommand}" CommandParameter="items">
                         <xctk:SplitButton.DropDownContent>
                             <Button Content="Add Item"></Button>
@@ -59,11 +54,7 @@
                             <Button Content="Add Term"></Button>
                         </xctk:SplitButton.DropDownContent>
                     </xctk:SplitButton>
-                    <xctk:SplitButton Grid.Column="4" Content="Plugins" Command="{Binding ToolbarCommand}" CommandParameter="plugins">
-                        <xctk:SplitButton.DropDownContent>
-                            <Button Content="Add Plugin"></Button>
-                        </xctk:SplitButton.DropDownContent>
-                    </xctk:SplitButton>
+                    <Button Grid.Column="4" Content="Plugins" Height="25" Margin="5,0,5,0" Padding="10,0,10,0"  Command="{Binding ToolbarCommand}" CommandParameter="plugins"/>
                     <Button Grid.Column="5" Content="Settings" Height="25" Margin="5,0,5,0" Padding="10,0,10,0"  Command="{Binding ToolbarCommand}" CommandParameter="settings"/>
                 </Grid>
             </Border>

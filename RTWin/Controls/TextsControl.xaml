@@ -6,48 +6,34 @@
              xmlns:controls="clr-namespace:RTWin.Controls"
              xmlns:common="clr-namespace:RTWin.Common"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:converters="clr-namespace:RTWin.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="500" d:DesignWidth="800">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Resources/Icons.xaml" />
+                <ResourceDictionary Source="..\App_Data\Resources.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            <common:DateTimeConverter x:Key="dateConverter"/>
+            <converters:DateTimeConverter x:Key="dateConverter"/>
+            <converters:EnumMatchToBooleanConverter x:Key="enumConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition MinWidth="100" Width="280" MaxWidth="500"></ColumnDefinition>
-            <ColumnDefinition Width="5"></ColumnDefinition>
+            <ColumnDefinition MinWidth="50" Width="280" MaxWidth="500"></ColumnDefinition>
+            <ColumnDefinition Width="4"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <DockPanel Grid.Column="0">
             <Grid DockPanel.Dock="Bottom" Height="40">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="45"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
-                    <ColumnDefinition Width="45"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" Width="40" Height="40" Command="{Binding BackCommand}" Style="{DynamicResource MetroCircleButtonStyle}">
-                    <Rectangle Width="20" Height="20">
-                        <Rectangle.Fill>
-                            <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_chevron_left}" />
-                        </Rectangle.Fill>
-                    </Rectangle>
-                </Button>
-                <Button Grid.Column="2" Width="40" Height="40" Command="{Binding AddCommand}" Style="{DynamicResource MetroCircleButtonStyle}">
-                    <Rectangle Width="20" Height="20">
-                        <Rectangle.Fill>
-                            <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_add}" />
-                        </Rectangle.Fill>
-                    </Rectangle>
-                </Button>
+                <Button Grid.Column="0" Content="Add" Command="{Binding AddCommand}"/>
             </Grid>
-            <GroupBox>
-                <GroupBox.Header>
-                    <TextBlock Margin="5" FontWeight="Heavy">Items</TextBlock>
-                </GroupBox.Header>
+            <GroupBox Header="Items">
                 <TreeView ItemsSource="{Binding Root}" x:Name="TreeView">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="SelectedItemChanged">
@@ -75,24 +61,24 @@
         <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
         <DockPanel Grid.Column="2">
             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" DockPanel.Dock="Bottom" Height="40">
-                <Button Content="Edit" Margin="10,0,10,0" MinWidth="75" Height="25"  Command="{Binding EditCommand}"/>
-                <Button Content="Copy" Margin="10,0,10,0" MinWidth="75" Height="25"  Command="{Binding CopyCommand}"/>
-                <Button Content="Delete" Margin="10,0,10,0" MinWidth="75" Height="25"  Command="{Binding DeleteCommand}"/>
-                <Button Content="{Binding ItemType}" Margin="10,0,10,0" MinWidth="75" Height="25"  Command="{Binding ReadCommand}" CommandParameter="Single"/>
-                <Button Content="Parallel" IsEnabled="{Binding SelectedItem.IsParallel}" Margin="10,0,10,0" MinWidth="75" Height="25"  Command="{Binding ReadCommand}" CommandParameter="Parallel"/>
+                <Button Content="Edit" Command="{Binding EditCommand}"/>
+                <Button Content="Copy" Command="{Binding CopyCommand}"/>
+                <Button Content="Delete" Command="{Binding DeleteCommand}"/>
+                <Button Content="{Binding ItemType}" Command="{Binding ReadCommand}" CommandParameter="Single"/>
+                <Button Content="Parallel" IsEnabled="{Binding SelectedItem.IsParallel}" Command="{Binding ReadCommand}" CommandParameter="Parallel"/>
             </StackPanel>
 
             <Grid DockPanel.Dock="Top" Height="50">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <Label Content="Filter" Grid.Column="0" Margin="5" VerticalAlignment="Center"></Label>
-                <TextBox Width="Auto" Grid.Column="1" Margin="5" VerticalAlignment="Center" Text="{Binding FilterText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=200}"></TextBox>
+                <Label Content="Filter" Grid.Column="0"></Label>
+                <TextBox Grid.Column="1" Text="{Binding FilterText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=200}"></TextBox>
             </Grid>
-            <DataGrid ItemsSource="{Binding Items}" AutoGenerateColumns="False" CanUserReorderColumns="True" 
+            <DataGrid ItemsSource="{Binding Items}" AutoGenerateColumns="False" CanUserReorderColumns="True"  BorderThickness="0"
                       CanUserAddRows="False" CanUserResizeRows="False" SelectionMode="Single" SelectedItem="{Binding SelectedItem}"
-                      EnableRowVirtualization="True" IsReadOnly="True" CanUserDeleteRows="False"
+                      EnableRowVirtualization="True" IsReadOnly="True" CanUserDeleteRows="False" HorizontalGridLinesBrush="#DEDEDE" GridLinesVisibility="Horizontal"
                       >
                 <DataGrid.RowStyle>
                     <Style TargetType="DataGridRow">

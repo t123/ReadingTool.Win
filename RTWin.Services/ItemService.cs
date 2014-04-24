@@ -25,9 +25,39 @@ namespace RTWin.Services
             _user = user;
         }
 
+        public Item CopyItem(Item item)
+        {
+            if (item == null)
+            {
+                return null;
+            }
+
+            var newItem = new Item()
+            {
+                CollectionName = item.CollectionName,
+                CollectionNo = item.CollectionNo,
+                ItemType = item.ItemType,
+                L1Content = item.L1Content,
+                L1LanguageId = item.L1LanguageId,
+                L1Title = item.L1Title + " (copy)",
+                L2Content = item.L2Content,
+                L2LanguageId = item.L2LanguageId,
+                L2Title = item.L2Title,
+                MediaUri = item.MediaUri,
+                UserId = item.UserId,
+            };
+
+            return newItem;
+        }
+
         public Item FindOne(long id)
         {
-            return _db.SingleOrDefaultById<Item>(id);
+            var sql = Sql.Builder.Append("SELECT item.*, B.Name as L1Language, C.Name as L2Language FROM item item");
+            sql.LeftJoin("language B on item.L1LanguageId=B.LanguageId");
+            sql.LeftJoin("language C on item.L2LanguageId=C.LanguageId");
+            sql.Append("WHERE item.UserId=@0 AND item.ItemId=@1 ", _user.UserId, id);
+
+            return _db.FirstOrDefault<Item>(sql);
         }
 
 
@@ -54,9 +84,12 @@ namespace RTWin.Services
 
         public IEnumerable<Item> FindAll()
         {
-            var items = _db.Fetch<Item>("WHERE UserId=@0 ORDER BY CollectionName, CollectionNo, L1Title", _user.UserId);
+            var sql = Sql.Builder.Append("SELECT item.*, B.Name as L1Language, C.Name as L2Language FROM item item");
+            sql.LeftJoin("language B on item.L1LanguageId=B.LanguageId");
+            sql.LeftJoin("language C on item.L2LanguageId=C.LanguageId");
+            sql.Append("WHERE item.UserId=@0 ", _user.UserId);
 
-            return items;
+            return _db.Fetch<Item>(sql);
         }
 
         public IEnumerable<string> FindCollectionsPerLanguage()

@@ -80,16 +80,17 @@ namespace RTWin
             container.Bind<MainWindowControl>().ToSelf();
             container.Bind<LanguagesControl>().ToSelf();
             container.Bind<PluginsControl>().ToSelf();
-            //container.Bind<TextsControl>().ToSelf();
+            container.Bind<TextsControl>().ToSelf();
             //container.Bind<TermsControl>().ToSelf();
             container.Bind<ProfilesControl>().ToSelf();
             //container.Bind<ReadControl>().ToSelf();
-            //container.Bind<ItemDialog>().ToSelf();
+            container.Bind<ItemDialog>().ToSelf();
 
             container.Bind<MainWindowViewModel>().ToSelf();
             container.Bind<MainWindowControlViewModel>().ToSelf();
             container.Bind<PluginsControlViewModel>().ToSelf();
             container.Bind<LanguagesControlViewModel>().ToSelf();
+            container.Bind<TextsControlViewModel>().ToSelf();
             //container.Bind<TermsControlViewModel>().ToSelf();
             container.Bind<ProfilesControlViewModel>().ToSelf();
             //container.Bind<ReadControlViewModel>().ToSelf();
@@ -113,6 +114,7 @@ namespace RTWin
             
             Mapper.CreateMap<User, UserModel>();
             Mapper.CreateMap<Plugin, PluginModel>();
+            Mapper.CreateMap<Item, ItemModel>();
         }
 
         private void CheckAndUpgradeDatabase()

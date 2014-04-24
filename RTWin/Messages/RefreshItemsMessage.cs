@@ -1,17 +1,19 @@
-﻿namespace RTWin.Messages
+﻿using RTWin.Entities;
+
+namespace RTWin.Messages
 {
     public class RefreshItemsMessage
     {
-        public bool Refresh { get; private set; }
+        public Item Item { get; private set; }
 
         public RefreshItemsMessage()
-            : this(true)
+            : this(null)
         {
         }
 
-        public RefreshItemsMessage(bool refresh)
+        public RefreshItemsMessage(Item item)
         {
-            Refresh = refresh;
+            Item = item;
         }
     }
 }
