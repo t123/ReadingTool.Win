@@ -35,15 +35,17 @@ namespace RTWin.Models.Views
             }
         }
 
-        private User _currentUser;
         public User CurrentUser
         {
             set
             {
-                _currentUser = value;
+                App.User = value;
                 OnPropertyChanged("CurrentUser");
             }
-            get { return _currentUser; }
+            get
+            {
+                return App.User;
+            }
         }
 
         private ICommand _toolbarCommand;
@@ -73,22 +75,26 @@ namespace RTWin.Models.Views
             _mainWindowControl = mainWindowControl;
             _userService = userService;
 
-            CurrentUser = App.User;
+            CurrentUser = userService.FindAll().OrderByDescending(x => x.LastLogin).First();
+
             CurrentView = mainWindowControl;
             Users = new ObservableCollection<User>(_userService.FindAll());
 
             _toolbarCommand = new RelayCommand<string>(PerformToolbarCommand);
             _changeProfileCommand = new RelayCommand<User>(PerformChangeProfile);
+
+            PerformToolbarCommand("languages");
+
+            Messenger.Default.Register<SwitchProfileMessage>(this, x => PerformChangeProfile(x.User));
         }
 
         private void PerformChangeProfile(User user)
         {
-            if (user == null || user.UserId == App.User.UserId)
+            if (user == null || user.UserId == CurrentUser.UserId)
             {
                 return;
             }
 
-            App.User = user;
             CurrentUser = user;
         }
 
@@ -101,6 +107,16 @@ namespace RTWin.Models.Views
                 case "profiles":
                     var profilesControl = App.Container.Get<ProfilesControl>();
                     CurrentView = profilesControl;
+                    return;
+
+                case "languages":
+                    var languagesControl = App.Container.Get<LanguagesControl>();
+                    CurrentView = languagesControl;
+                    return;
+
+                case "plugins":
+                    var pluginsControl = App.Container.Get<PluginsControl>();
+                    CurrentView = pluginsControl;
                     return;
 
                 case "addprofile":

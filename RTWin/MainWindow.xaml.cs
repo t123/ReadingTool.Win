@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using RTWin.Entities;
 using RTWin.Models.Views;
 
 namespace RTWin

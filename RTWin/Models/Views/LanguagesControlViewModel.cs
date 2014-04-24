@@ -1,44 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Data;
 using System.Windows.Input;
 using AutoMapper;
+using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
-using MahApps.Metro.Controls;
-using MahApps.Metro.Controls.Dialogs;
 using RTWin.Annotations;
-using RTWin.Common;
-using RTWin.Controls;
 using RTWin.Entities;
 using RTWin.Messages;
+using RTWin.Models.Dto;
 using RTWin.Services;
 
 namespace RTWin.Models.Views
 {
-    public class LanguagesControlViewModel : INotifyPropertyChanged
+    public class LanguagesControlViewModel : BaseViewModel
     {
         private readonly LanguageService _languageService;
         private readonly LanguageCodeService _languageCodeService;
         private ObservableCollection<LanguageModel> _languages;
         private LanguageModel _selectedItem;
-        private ICommand _backCommand;
         private ICommand _addCommand;
         private ICommand _deleteCommand;
         private ICommand _saveCommand;
         private ICommand _cancelCommand;
-
-        public ICommand BackCommand
-        {
-            get { return _backCommand; }
-            set { _backCommand = value; }
-        }
 
         public ICommand SaveCommand
         {
@@ -66,8 +53,20 @@ namespace RTWin.Models.Views
 
         public ObservableCollection<LanguageModel> Languages
         {
-            get { return _languages; }
-            set { _languages = value; OnPropertyChanged("Languages"); }
+            get
+            {
+                if (_languages == null)
+                {
+                    _languages = new ObservableCollection<LanguageModel>(Mapper.Map<IEnumerable<Language>, IEnumerable<LanguageModel>>(_languageService.FindAll()));
+                }
+
+                return _languages;
+            }
+            set
+            {
+                _languages = value;
+                OnPropertyChanged("Languages");
+            }
         }
 
         private IEnumerable<LanguageCode> _codes;
@@ -83,24 +82,9 @@ namespace RTWin.Models.Views
             set
             {
                 _selectedItem = value;
-
-                if (_selectedItem != null)
-                {
-                    Language = Mapper.Map<Language, LanguageModel>(_languageService.FindOne(_selectedItem.LanguageId));
-                }
-
                 OnPropertyChanged("SelectedItem");
             }
         }
-
-        private LanguageModel _language;
-
-        public LanguageModel Language
-        {
-            get { return _language; }
-            set { _language = value; OnPropertyChanged("Language"); }
-        }
-
 
         public LanguagesControlViewModel(LanguageService languageService, LanguageCodeService languageCodeService)
         {
@@ -108,90 +92,39 @@ namespace RTWin.Models.Views
             _languageCodeService = languageCodeService;
 
             Codes = _languageCodeService.FindAll();
-            MapCollection();
             SelectedItem = Languages.FirstOrDefault();
 
-            _addCommand = new RelayCommand(async param =>
+            _addCommand = new RelayCommand(() =>
             {
-                var metroWindow = (Application.Current.MainWindow as MetroWindow);
-                var result = await metroWindow.ShowInputAsync("Please enter a name for your language", "Language Name", MainWindowViewModel.DialogSettings);
-
-                if (!string.IsNullOrWhiteSpace(result))
-                {
-                    var language = new Language()
-                    {
-                        Name = result.Trim(),
-                        IsArchived = false,
-                        LanguageCode = "--",
-                        Settings = new LanguageSettings()
-                        {
-                            Direction = Direction.LeftToRight,
-                            SentenceRegex = Language.SentenceRegex,
-                            TermRegex = Language.TermRegex
-                        }
-                    };
-
-                    _languageService.Save(language);
-                    MapCollection();
-                    SelectedItem = Languages.FirstOrDefault(x => x.LanguageId == language.LanguageId);
-                }
+                var language = Language.NewLanguage();
+                _languageService.Save(language);
+                var mapped = Mapper.Map<Language, LanguageModel>(language);
+                Languages.Add(mapped);
+                SelectedItem = mapped;
             });
 
-            _deleteCommand = new RelayCommand(async param =>
+            _deleteCommand = new RelayCommand(() =>
             {
-                var metroWindow = (Application.Current.MainWindow as MetroWindow);
-                var result = await metroWindow.ShowMessageAsync("Delete " + SelectedItem.Name, "Are you sure you want to delete " + SelectedItem.Name + "?", MessageDialogStyle.AffirmativeAndNegative, MainWindowViewModel.DialogSettings);
+                var result = MessageBox.Show(
+                    string.Format("Are you sure you want to delete {0}?", SelectedItem.Name),
+                    string.Format("Delete {0}", SelectedItem.Name),
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Exclamation
+                    );
 
-                if (result != MessageDialogResult.Affirmative)
-                    return;
-
-                _languageService.DeleteOne(SelectedItem.LanguageId);
-                MapCollection();
-                SelectedItem = Languages.FirstOrDefault();
-            }, param => SelectedItem != null);
-
-            _saveCommand = new RelayCommand(param =>
-            {
-                var language = _languageService.FindOne(Language.LanguageId);
-                var plugins = (from PluginLanguage item in Language.Plugins where item != null && item.Enabled select item.PluginId).ToArray();
-
-                language.IsArchived = Language.IsArchived;
-                language.LanguageCode = Language.LanguageCode;
-                language.Name = Language.Name;
-                language.Settings = new LanguageSettings()
+                if (result == MessageBoxResult.Yes)
                 {
-                    Direction = Language.Direction,
-                    SentenceRegex = Language.SentenceRegex,
-                    TermRegex = Language.TermRegex
-                };
+                    _languageService.DeleteOne(SelectedItem.LanguageId);
+                    Languages.Remove(SelectedItem);
+                    SelectedItem = Languages.FirstOrDefault();
+                }
+            }, () => SelectedItem != null);
 
-                _languageService.Save(language, plugins);
-                MapCollection();
-                SelectedItem = Languages.FirstOrDefault(x => x.LanguageId == language.LanguageId);
-            }, param => SelectedItem != null);
-
-            _cancelCommand = new RelayCommand(param =>
+            _saveCommand = new RelayCommand(() =>
             {
-                Language = Mapper.Map<Language, LanguageModel>(_languageService.FindOne(SelectedItem.LanguageId));
-                SelectedItem = Languages.FirstOrDefault(x => x.LanguageId == Language.LanguageId);
-            }, param => SelectedItem != null);
-
-            _backCommand = new RelayCommand(param => Messenger.Default.Send<ChangeViewMessage>(new ChangeViewMessage(ChangeViewMessage.Main)));
-        }
-
-        private void MapCollection()
-        {
-            var languages = Mapper.Map<IEnumerable<Language>, IEnumerable<LanguageModel>>(_languageService.FindAll());
-            Languages = new ObservableCollection<LanguageModel>(languages);
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+                var mapped = SelectedItem.ToLanguage();
+                _languageService.Save(mapped, SelectedItem.Plugins.Where(x => x.Enabled).Select(x => x.PluginId));
+            }, () => SelectedItem != null && SelectedItem.IsValid);
         }
     }
 }

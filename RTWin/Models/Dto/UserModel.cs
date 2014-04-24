@@ -9,9 +9,11 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Newtonsoft.Json;
+using Ninject;
 using NPoco;
 using RTWin.Annotations;
 using RTWin.Entities;
+using RTWin.Services;
 
 namespace RTWin.Models.Dto
 {
@@ -26,15 +28,16 @@ namespace RTWin.Models.Dto
             get { return _username; }
             set
             {
+                const string field = "Username";
                 if (string.IsNullOrWhiteSpace(value))
                 {
-                    _errors["Username"] = true;
+                    _errors[field] = true;
                     throw new ValidationException();
                 }
 
-                _errors["Username"] = false;
+                _errors[field] = false;
                 _username = value;
-                OnPropertyChanged("Username");
+                OnPropertyChanged(field);
             }
         }
 
@@ -42,5 +45,23 @@ namespace RTWin.Models.Dto
         public string AccessKey { get; set; }
         public string AccessSecret { get; set; }
         public bool SyncData { get; set; }
+
+        public User ToUser()
+        {
+            var userService = App.Container.Get<UserService>();
+            var u = userService.FindOne(this.UserId);
+
+            if (u == null)
+            {
+                u = User.NewUser();
+            }
+
+            u.AccessKey = this.AccessKey;
+            u.AccessSecret = this.AccessSecret;
+            u.SyncData = this.SyncData;
+            u.Username = this.Username;
+
+            return u;
+        }
     }
 }

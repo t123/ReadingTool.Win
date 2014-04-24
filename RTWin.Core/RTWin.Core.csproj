@@ -42,6 +42,7 @@
     <Compile Include="Enums\LanguageDirection.cs" />
     <Compile Include="Enums\ItemType.cs" />
     <Compile Include="ContentLoader.cs" />
+    <Compile Include="Extensions\StringExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Enums\TermState.cs" />
     <Compile Include="Enums\TermType.cs" />

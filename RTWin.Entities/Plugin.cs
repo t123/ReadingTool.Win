@@ -21,5 +21,16 @@ namespace RTWin.Entities
                 return new Guid(UUID);
             }
         }
+
+        public static Plugin NewPlugin()
+        {
+            return new Plugin()
+            {
+                Name = "New Plugin",
+                Description = string.Format("Created {0:dd/MM/yyyy}", DateTime.Now),
+                Content = "//your Javascript here",
+                UUID = Guid.NewGuid().ToString()
+            };
+        }
     }
 }

@@ -8,39 +8,36 @@
              x:Name="Application"
              >
     <Application.Resources>
+        <SolidColorBrush x:Key="MainWindowBackgroundColor">#FCFCFC</SolidColorBrush>
+        
         <Style TargetType="{x:Type rtWin:MainWindow}">
-            <Setter Property="Background" Value="#F0F0F0"/>
+            <Setter Property="Background" Value="{DynamicResource MainWindowColor}"/>
         </Style>
-        <Style TargetType="{x:Type controls:ProfilesControl}">
-            <Setter Property="Background" Value="#F0F0F0"/>
-        </Style>
-        <Style TargetType="{x:Type ToolBarTray}">
-            <Setter Property="Background" Value="#F0F0F0"/>
-        </Style>
-        <Style TargetType="{x:Type ToolBar}">
-            <Setter Property="Background" Value="#F0F0F0"/>
-        </Style>
-        <Style TargetType="{x:Type ToolBarPanel}">
-            <Setter Property="Background" Value="#F0F0F0"/>
-        </Style>
-        <Style TargetType="{x:Type GridSplitter}">
-            <Setter Property="Background" Value="#F0F0F0"/>
-        </Style>
+        <!--<Style TargetType="{x:Type GridSplitter}">
+            <Setter Property="Background" Value="#CDCDCD"/>
+        </Style>-->
         <Style TargetType="{x:Type Button}">
             <Setter Property="MinWidth" Value="60" />
-            <Setter Property="Height" Value="23" />
+            <Setter Property="MinHeight" Value="23" />
             <Setter Property="Margin" Value="3" />
         </Style>
-        <Style TargetType="{x:Type TextBox}">
-            <Setter Property="Validation.ErrorTemplate">
+        <Style TargetType="{x:Type GridSplitter}">
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="Cursor" Value="SizeWE" />
+            <Setter Property="Background" Value="#F3F3F3" />
+            <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate>
-                        <DockPanel LastChildFill="True">
-                            <TextBlock DockPanel.Dock="Right" Foreground="Red" FontSize="14" FontWeight="Bold">*</TextBlock>
-                            <Border BorderBrush="Green" BorderThickness="1">
-                                <AdornedElementPlaceholder></AdornedElementPlaceholder>
+                    <ControlTemplate TargetType="{x:Type GridSplitter}">
+                        <Border BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Background="{TemplateBinding Background}"
+                                Width="{TemplateBinding Width}">
+                            <Border Height="50" Width="3" VerticalAlignment="Center"
+                                    HorizontalAlignment="Center" BorderThickness="1 0"
+                                    Background="White" BorderBrush="#BABABA">
                             </Border>
-                        </DockPanel>
+                        </Border>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>

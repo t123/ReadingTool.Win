@@ -128,6 +128,8 @@ CREATE TABLE ""term"" (
 
             sql.Add("pluginstorage", @"CREATE TABLE ""plugin_storage"" (""Id"" INTEGER PRIMARY KEY AUTOINCREMENT  NOT NULL , ""Uuid"" TEXT, ""Key"" TEXT, ""Value"" TEXT)");
 
+            sql.Add("language_plugin", @"CREATE TABLE ""language_plugin"" (""LanguageId"" INTEGER NOT NULL , ""PluginId"" INTEGER NOT NULL , PRIMARY KEY (""LanguageId"", ""PluginId""))");
+
             foreach (var kvp in sql)
             {
                 if (!TableExists(kvp.Key))

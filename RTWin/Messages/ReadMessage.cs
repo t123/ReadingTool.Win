@@ -22,26 +22,4 @@ namespace RTWin.Messages
             AsParallel = asParallel;
         }
     }
-
-    public class RefreshItemsMessage
-    {
-        public bool Refresh { get; private set; }
-
-        public RefreshItemsMessage()
-            : this(true)
-        {
-        }
-
-        public RefreshItemsMessage(bool refresh)
-        {
-            Refresh = refresh;
-        }
-    }
-
-    public class RefreshViewsMessage
-    {
-        public RefreshViewsMessage()
-        {
-        }
-    }
 }

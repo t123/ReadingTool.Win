@@ -8,7 +8,9 @@ using System.Windows;
 using System.Windows.Input;
 using AutoMapper;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 using RTWin.Entities;
+using RTWin.Messages;
 using RTWin.Models.Dto;
 using RTWin.Services;
 using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
@@ -118,7 +120,7 @@ namespace RTWin.Models.Views
 
             _saveCommand = new RelayCommand(() =>
             {
-                var mapped = Mapper.Map<UserModel, User>(SelectedItem);
+                var mapped = SelectedItem.ToUser();
                 _userService.Save(mapped);
             }, () => SelectedItem.IsValid);
 
@@ -129,9 +131,10 @@ namespace RTWin.Models.Views
                 _userService.Save(user);
 
                 SelectedItem = Users.FirstOrDefault(x => x.UserId == user.UserId);
-                var mapped = Mapper.Map<UserModel, User>(SelectedItem);
-                App.User = mapped;
-            }, param => SelectedItem != null);
+                var mapped = SelectedItem.ToUser();
+                Messenger.Default.Send<SwitchProfileMessage>(new SwitchProfileMessage(mapped));
+
+            }, param => SelectedItem != null && SelectedItem.UserId != App.User.UserId);
         }
     }
 }

@@ -7,97 +7,66 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="600">
     <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Resources/Icons.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
+        <ResourceDictionary Source="..\App_Data\Resources.xaml"/>
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition MinWidth="180" Width="200" MaxWidth="500"></ColumnDefinition>
-            <ColumnDefinition Width="5"></ColumnDefinition>
+            <ColumnDefinition Width="4"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <DockPanel Grid.Column="0">
             <Grid DockPanel.Dock="Bottom" Height="40">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="45"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
-                    <ColumnDefinition Width="45"></ColumnDefinition>
-                    <ColumnDefinition Width="45"></ColumnDefinition>
-                    <ColumnDefinition Width="45"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" Width="40" Height="40" Command="{Binding BackCommand}" Style="{DynamicResource MetroCircleButtonStyle}">
-                    <Rectangle Width="20" Height="20">
-                        <Rectangle.Fill>
-                            <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_chevron_left}" />
-                        </Rectangle.Fill>
-                    </Rectangle>
-                </Button>
-                <Button Grid.Column="3" Width="40" Height="40" Command="{Binding ExportCommand}" Style="{DynamicResource MetroCircleButtonStyle}" ToolTip="Save all plugins to the plugins folder">
-                    <Rectangle Width="20" Height="20">
-                        <Rectangle.Fill>
-                            <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_save}" />
-                        </Rectangle.Fill>
-                    </Rectangle>
-                </Button>
-                <Button Grid.Column="2" Width="40" Height="40" Command="{Binding DeleteCommand}" Style="{DynamicResource MetroCircleButtonStyle}">
-                    <Rectangle Width="20" Height="20">
-                        <Rectangle.Fill>
-                            <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_delete}" />
-                        </Rectangle.Fill>
-                    </Rectangle>
-                </Button>
-                <Button Grid.Column="4" Width="40" Height="40" Command="{Binding AddCommand}" Style="{DynamicResource MetroCircleButtonStyle}">
-                    <Rectangle Width="20" Height="20">
-                        <Rectangle.Fill>
-                            <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_add}" />
-                        </Rectangle.Fill>
-                    </Rectangle>
-                </Button>
+                <Button Content="Export" Grid.Column="0" Command="{Binding ExportCommand}" ToolTip="Save all plugins to the plugins folder" />
+                <Button Content="Delete" Grid.Column="1" Command="{Binding DeleteCommand}" />
+                <Button Content="Add" Grid.Column="2" Command="{Binding AddCommand}" />
             </Grid>
-            <GroupBox>
-                <GroupBox.Header>
-                    <TextBlock Margin="5" FontWeight="Heavy">Available Plugins</TextBlock>
-                </GroupBox.Header>
+            <GroupBox Header="Plugins">
                 <ListBox ItemsSource="{Binding Plugins}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedItem}">
                 </ListBox>
             </GroupBox>
         </DockPanel>
-        <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
-        <DockPanel Grid.Column="2">
-            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" DockPanel.Dock="Bottom" Height="40">
-                <Button Content="Cancel" Margin="10,0,10,0" Width="75" Height="25" Command="{Binding CancelCommand}"/>
-                <Button Content="Save" Margin="10,0,10,0" Width="75" Height="25" Command="{Binding SaveCommand}" />
-            </StackPanel>
-            <GroupBox>
-                <GroupBox.Header>
-                    <TextBlock Margin="5" FontWeight="Heavy">Details</TextBlock>
-                </GroupBox.Header>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="150"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="*"></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <Label Content="Plugin Name" Grid.Row="0" Grid.Column="0"/>
-                    <TextBox Grid.Row="0" Grid.Column="1" Margin="5" Text="{Binding Plugin.Name}"/>
-                    <Label Content="Description" Grid.Row="1" Grid.Column="0"/>
-                    <TextBox Grid.Row="1" Grid.Column="1" MinLines="5" Margin="5" AcceptsReturn="True" AcceptsTab="True" Text="{Binding Plugin.Description}"/>
-                    <Label Content="Javascript" Grid.Row="2" Grid.Column="0"/>
-                    <common:MvvmTextEditor
-                    Height="300" Text="{Binding Plugin.Content, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+        <GridSplitter Grid.Column="1" Width="4" HorizontalAlignment="Stretch"/>
+
+        <GroupBox Header="Details" Grid.Column="2">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Label Content="Plugin Name" Grid.Row="0" Grid.Column="0"/>
+                <TextBox Grid.Row="0" Grid.Column="1" Margin="5" Text="{Binding SelectedItem.Name}"/>
+                <Label Content="Description" Grid.Row="1" Grid.Column="0"/>
+                <TextBox Grid.Row="1" Grid.Column="1" MinLines="5" Margin="5" AcceptsReturn="True" AcceptsTab="True" Text="{Binding SelectedItem.Description}" VerticalContentAlignment="Top"/>
+                <Label Content="Javascript" Grid.Row="2" Grid.Column="0"/>
+                <common:MvvmTextEditor
+                    Height="Auto" MinHeight="100" MaxHeight="300" Text="{Binding SelectedItem.Content, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                     Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" WordWrap="True" VerticalScrollBarVisibility="Visible" 
                     ShowLineNumbers="True" VerticalAlignment="Top">
-                    </common:MvvmTextEditor>
+                </common:MvvmTextEditor>
+                <Grid Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Grid.Column="1" Content="Cancel"  Command="{Binding CancelCommand}"/>
+                    <Button Grid.Column="2" Content="Save"  Command="{Binding SaveCommand}" />
                 </Grid>
-            </GroupBox>
-        </DockPanel>
+            </Grid>
+        </GroupBox>
     </Grid>
 </UserControl>

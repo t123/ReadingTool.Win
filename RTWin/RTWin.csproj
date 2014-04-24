@@ -169,9 +169,15 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Common\MvvmTextEditor.cs" />
+    <Compile Include="Controls\LanguagesControl.xaml.cs">
+      <DependentUpon>LanguagesControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\MainWindowControl.xaml.cs">
       <DependentUpon>MainWindowControl.xaml</DependentUpon>
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Controls\PluginsControl.xaml.cs">
+      <DependentUpon>PluginsControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\ProfilesControl.xaml.cs">
       <DependentUpon>ProfilesControl.xaml</DependentUpon>
@@ -180,8 +186,14 @@
     <Compile Include="Converters\DateTimeConverter.cs" />
     <Compile Include="Common\DialogCloser.cs" />
     <Compile Include="Messages\ChangeViewMessage.cs" />
+    <Compile Include="Messages\RefreshItemsMessage.cs" />
+    <Compile Include="Messages\RefreshViewsMessage.cs" />
+    <Compile Include="Messages\SwitchProfileMessage.cs" />
     <Compile Include="Models\Dto\BaseDtoModel.cs" />
+    <Compile Include="Models\Dto\Plugin.cs" />
     <Compile Include="Models\Dto\UserModel.cs" />
+    <Compile Include="Models\Views\LanguagesControlViewModel.cs" />
+    <Compile Include="Models\Views\PluginsControlViewModel.cs" />
     <Compile Include="Models\Views\ProfilesViewControlModel.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -201,9 +213,21 @@
     <Compile Include="Web\Controllers\ResourceController.cs" />
     <Compile Include="Web\Controllers\SyncController.cs" />
     <Compile Include="Web\Controllers\TermsController.cs" />
+    <Page Include="App_Data\Resources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\LanguagesControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Controls\MainWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\PluginsControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\ProfilesControl.xaml">
       <SubType>Designer</SubType>

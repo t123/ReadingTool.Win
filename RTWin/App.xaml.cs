@@ -42,6 +42,11 @@ namespace RTWin
             AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
             {
                 Exception exception = (Exception)args.ExceptionObject;
+
+                if (exception is AutoMapper.AutoMapperMappingException)
+                {
+                }
+                
                 Log.Error(exception);
             };
 

@@ -16,17 +16,11 @@ namespace RTWin.Controls
     /// </summary>
     public partial class LanguagesControl : UserControl
     {
-        private LanguagesControlViewModel _languagesControlViewModel;
-
-        public LanguagesControlViewModel LanguagesControlViewModel
-        {
-            get { return _languagesControlViewModel; }
-            set { _languagesControlViewModel = value; }
-        }
+        public LanguagesControlViewModel LanguagesControlViewModel { get; set; }
 
         public LanguagesControl(LanguagesControlViewModel languagesControlViewModel)
         {
-            _languagesControlViewModel = languagesControlViewModel;
+            LanguagesControlViewModel = languagesControlViewModel;
             InitializeComponent();
 
             this.DataContext = LanguagesControlViewModel;

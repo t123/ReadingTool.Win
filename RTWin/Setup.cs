@@ -78,8 +78,8 @@ namespace RTWin
 
             container.Bind<MainWindow>().ToSelf();
             container.Bind<MainWindowControl>().ToSelf();
-            //container.Bind<LanguagesControl>().ToSelf();
-            //container.Bind<PluginsControl>().ToSelf();
+            container.Bind<LanguagesControl>().ToSelf();
+            container.Bind<PluginsControl>().ToSelf();
             //container.Bind<TextsControl>().ToSelf();
             //container.Bind<TermsControl>().ToSelf();
             container.Bind<ProfilesControl>().ToSelf();
@@ -88,8 +88,8 @@ namespace RTWin
 
             container.Bind<MainWindowViewModel>().ToSelf();
             container.Bind<MainWindowControlViewModel>().ToSelf();
-            //container.Bind<PluginsControlViewModel>().ToSelf();
-            //container.Bind<LanguagesControlViewModel>().ToSelf();
+            container.Bind<PluginsControlViewModel>().ToSelf();
+            container.Bind<LanguagesControlViewModel>().ToSelf();
             //container.Bind<TermsControlViewModel>().ToSelf();
             container.Bind<ProfilesControlViewModel>().ToSelf();
             //container.Bind<ReadControlViewModel>().ToSelf();
@@ -110,9 +110,9 @@ namespace RTWin
                 .ForMember(x => x.Direction, y => y.MapFrom(z => z.Direction))
                 .ForMember(x => x.Plugins, y => y.MapFrom(z => App.Container.Get<PluginService>().FindAllWithActive(z.LanguageId)))
                 ;
-
+            
             Mapper.CreateMap<User, UserModel>();
-            Mapper.CreateMap<UserModel, User>();
+            Mapper.CreateMap<Plugin, PluginModel>();
         }
 
         private void CheckAndUpgradeDatabase()

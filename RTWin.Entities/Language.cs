@@ -31,7 +31,8 @@ namespace RTWin.Entities
                 Direction = LanguageDirection.LeftToRight,
                 SentenceRegex = SENTENCE_REGEX,
                 TermRegex = TERM_REGEX,
-                IsArchived = false
+                IsArchived = false,
+                LanguageCode = "--"
             };
         }
     }
