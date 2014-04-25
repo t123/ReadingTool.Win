@@ -189,7 +189,7 @@ namespace RTWin.Services
                     item.ReadTimes--;
                 }
 
-                message = "Item read " + item.ReadTimes + " times";
+                message = "Item read " + item.ReadTimes + " time" + (item.ReadTimes > 1 ? "s" : "");
             }
             else if (type == "listen")
             {
@@ -204,11 +204,11 @@ namespace RTWin.Services
 
                 if (item.ItemType == ItemType.Text)
                 {
-                    message = "Item listened to " + item.ListenedTimes + " times";
+                    message = "Item listened to " + item.ListenedTimes + " time" + (item.ListenedTimes > 1 ? "s" : "");
                 }
                 else
                 {
-                    message = "Item watched " + item.ListenedTimes + " times";
+                    message = "Item watched " + item.ListenedTimes + " times" + (item.ListenedTimes > 1 ? "s" : "");
                 }
             }
 

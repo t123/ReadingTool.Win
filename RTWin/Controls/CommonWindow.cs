@@ -30,6 +30,7 @@ namespace RTWin.Controls
         protected IParserService _parserService;
         protected WebControl _control;
         private DbSettingService _settings;
+        protected bool _initJs = false;
 
         public ParserOutput Output
         {
@@ -42,7 +43,7 @@ namespace RTWin.Controls
             InitializeWebControl(_control);
         }
 
-        public async void Read(Item item, bool parallel)
+        public void Read(Item item, bool parallel)
         {
             _item = item;
             _parallel = parallel;
@@ -170,8 +171,12 @@ namespace RTWin.Controls
 
         protected void WebControl_OnDocumentReady(object sender, UrlEventArgs e)
         {
-            JSObject jsObject = _control.CreateGlobalJavascriptObject("rtjscript");
-            jsObject.Bind("copyToClipboard", false, JSHandler);
+            if (!_initJs)
+            {
+                JSObject jsObject = _control.CreateGlobalJavascriptObject("rtjscript");
+                jsObject.Bind("copyToClipboard", false, JSHandler);
+                _initJs = true;
+            }
         }
 
         protected void JSHandler(object sender, JavascriptMethodEventArgs args)

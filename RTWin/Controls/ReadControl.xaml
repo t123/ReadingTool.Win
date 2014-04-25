@@ -4,12 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:awe="http://schemas.awesomium.com/winfx"
-             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-             xmlns:converters="clr-namespace:RTWin.Converters"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d"  ShowInTaskbar="True" WindowState="Maximized" WindowStartupLocation="CenterScreen"
              d:DesignHeight="300" d:DesignWidth="800" KeyUp="ReadControl_OnKeyUp"
-             Title="{Binding WindowTitle, Mode=OneWay}"
+             Title="{Binding WindowTitle}"
         >
     <Window.Resources>
         <ResourceDictionary>

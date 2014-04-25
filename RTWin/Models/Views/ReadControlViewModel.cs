@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Timers;
 using System.Windows.Input;
 using AutoMapper;
 using GalaSoft.MvvmLight.Command;
@@ -52,14 +53,14 @@ namespace RTWin.Models.Views
 
         public string WindowTitle
         {
-            set { _windowTitle = value; }
-            get { return _windowTitle; OnPropertyChanged("WindowTitle"); }
+            get { return _windowTitle; }
+            set { _windowTitle = value; OnPropertyChanged("WindowTitle"); }
         }
 
         public ItemModel NextToRead
         {
             get { return _nextToRead; }
-            set { _nextToRead = value; OnPropertyChanged("NextToRead");}
+            set { _nextToRead = value; OnPropertyChanged("NextToRead"); }
         }
 
         public IList<ItemModel> ItemList
@@ -91,11 +92,18 @@ namespace RTWin.Models.Views
         }
 
         public CommonWindow CW { get; set; }
+        private DateTime _startupTime;
 
         public ReadControlViewModel(ItemService itemService, DbSettingService settings)
         {
+            _startupTime = DateTime.Now;
             _itemService = itemService;
             _settings = settings;
+
+            var timer = new System.Timers.Timer();
+            timer.Interval = 1000 * 60;
+            timer.Elapsed += (sender, args) => System.Windows.Application.Current.Dispatcher.InvokeAsync(() => UpdateWindowTitle());
+            timer.Start();
 
             _changeCommand = new RelayCommand<string>(param =>
             {
@@ -169,7 +177,7 @@ namespace RTWin.Models.Views
                 name += " (" + Item.L1Language + ")";
             }
 
-            name += string.Format(" [started at {0:HH:mm}]", DateTime.Now);
+            name += string.Format(" [this item {0:HH:mm}] [this window {1:HH:mm}] [{2} minutes]", DateTime.Now, _startupTime, Math.Floor((DateTime.Now - _startupTime).TotalMinutes));
 
             WindowTitle = name;
         }

@@ -144,7 +144,11 @@
         $(document).trigger('postUpdateModal');
     };
 
-    self._selectText = function () {
+    self._selectText = function (element) {
+        if (!element.any()) {
+            return;
+        }
+
         setTimeout(function () {
             var range = document.createRange();
             var selection = window.getSelection();
