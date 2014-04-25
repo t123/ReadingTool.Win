@@ -22,7 +22,7 @@ namespace RTWin.Controls
         private CommonWindow _cw;
         private ItemService _itemService;
         private CurrentState _state;
-        private static readonly object _lock = new object(); 
+        private static readonly object _lock = new object();
 
         private class CurrentState
         {
@@ -93,10 +93,11 @@ namespace RTWin.Controls
 
                     this.WindowState = WindowState.Maximized;
                     this.Topmost = true;
+                    FullscreenMessage.Opacity = 1.0;
                     FullscreenMessage.Visibility = Visibility.Visible;
 
                     var timer = new System.Timers.Timer();
-                    timer.Interval = 5000;
+                    timer.Interval = 3000;
                     timer.Elapsed += (o, args) =>
                     {
                         lock (_lock)
@@ -127,7 +128,27 @@ namespace RTWin.Controls
         {
             if (FullscreenMessage.Visibility == Visibility.Visible)
             {
-                System.Windows.Application.Current.Dispatcher.InvokeAsync(() => FullscreenMessage.Visibility = Visibility.Hidden);
+                var timer = new System.Timers.Timer();
+                timer.Interval = 100;
+                timer.Elapsed += (o, args) =>
+                {
+                    System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
+                    {
+                        if (FullscreenMessage.Opacity <= 0.1)
+                        {
+                            timer.Stop();
+                            timer.Enabled = false;
+                            FullscreenMessage.Visibility = Visibility.Hidden;
+                        }
+                        else
+                        {
+                            FullscreenMessage.Opacity -= 0.1;
+                        }
+                    });
+                };
+
+                timer.Enabled = true;
+                timer.Start();
             }
         }
 
@@ -135,7 +156,7 @@ namespace RTWin.Controls
         {
             lock (_lock)
             {
-                HideCanvas();
+                System.Windows.Application.Current.Dispatcher.InvokeAsync(() => FullscreenMessage.Visibility = Visibility.Hidden);
             }
         }
     }

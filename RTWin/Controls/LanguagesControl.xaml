@@ -19,7 +19,7 @@
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition MinWidth="150" Width="200" MaxWidth="300"></ColumnDefinition>
+            <ColumnDefinition MinWidth="150" Width="220" MaxWidth="300"></ColumnDefinition>
             <ColumnDefinition Width="5"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>

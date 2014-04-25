@@ -156,6 +156,7 @@ namespace RTWin.Models.Views
             }
 
             CurrentUser = user;
+            PerformToolbarCommand("items");
         }
 
         private void PerformToolbarCommand(string command)
