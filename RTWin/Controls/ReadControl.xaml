@@ -9,6 +9,7 @@
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d"  ShowInTaskbar="True" WindowState="Maximized" WindowStartupLocation="CenterScreen"
              d:DesignHeight="300" d:DesignWidth="800" KeyUp="ReadControl_OnKeyUp"
+             Title="{Binding WindowTitle, Mode=OneWay}"
         >
     <Window.Resources>
         <ResourceDictionary>
@@ -45,14 +46,18 @@
                                 <ItemsControl ItemsSource="{Binding ItemList}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <TextBlock><Hyperlink Command="{Binding DataContext.ChangeItemCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"><Run Text="{Binding CommonName, Mode=OneWay}"></Run></Hyperlink></TextBlock>
+                                            <TextBlock Padding="15,3,15,3">
+                                                <Hyperlink FontWeight="SemiBold" FontSize="12" TextDecorations="None" Foreground="Black" Command="{Binding DataContext.ChangeItemCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}">
+                                                    <Run Text="{Binding CommonName, Mode=OneWay}"/>
+                                                </Hyperlink>
+                                            </TextBlock>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
                             </StackPanel>
                         </xctk:SplitButton.DropDownContent>
                     </xctk:SplitButton>
-                    <TextBlock Text="{Binding Message}" Grid.Column="4" VerticalAlignment="Center" FontWeight="Bold"/>
+                    <TextBlock Text="{Binding Message}" Grid.Column="4" VerticalAlignment="Center" FontWeight="Bold" Padding="15,0,0,0"/>
                 </Grid>
             </Border>
             <awe:WebControl Name="WebControl">

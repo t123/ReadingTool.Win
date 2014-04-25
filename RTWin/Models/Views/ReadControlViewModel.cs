@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
@@ -42,7 +43,15 @@ namespace RTWin.Models.Views
                 _item = value;
                 OnPropertyChanged("Item");
                 UpdateNextPrev();
+                UpdateWindowTitle();
             }
+        }
+
+        private string _windowTitle;
+        public string WindowTitle
+        {
+            set { _windowTitle = value; }
+            get { return _windowTitle; OnPropertyChanged("WindowTitle"); }
         }
 
         public ItemModel NextToRead { get; set; }
@@ -97,7 +106,6 @@ namespace RTWin.Models.Views
 
                     case "decreaseread":
                         Message = _itemService.ChangeStatistics(Item, "read", -1);
-                        Message = "Decrease read count";
                         break;
 
                     case "increaselisten":
@@ -121,7 +129,6 @@ namespace RTWin.Models.Views
             {
                 var item = _itemService.FindOne(param.ItemId);
                 this.Item = item;
-                this.UpdateNextPrev();
                 CW.Read(item, param.IsParallel);
                 Messenger.Default.Send(new RefreshItemsMessage());
             }, param => true);
@@ -136,6 +143,22 @@ namespace RTWin.Models.Views
             NextToRead = Mapper.Map<Item, ItemModel>(next.FirstOrDefault());
 
             ItemList = Mapper.Map<IEnumerable<Item>, IEnumerable<ItemModel>>(next.Union(previous).OrderBy(x => x.CollectionNo)).ToList();
+        }
+
+        private void UpdateWindowTitle()
+        {
+            string name = string.IsNullOrEmpty(Item.CollectionName) ? "" : Item.CollectionName + " - ";
+            name += Item.CollectionNo == null ? "" : Item.CollectionNo.ToString() + ". ";
+            name += Item.L1Title;
+
+            if (!string.IsNullOrWhiteSpace(Item.L1Language))
+            {
+                name += " (" + Item.L1Language + ")";
+            }
+
+            name += string.Format(" [started at {0:HH:mm}]", DateTime.Now);
+
+            WindowTitle = name;
         }
     }
 }

@@ -30,7 +30,7 @@
             </Grid>
             <DataGrid ItemsSource="{Binding Terms}" AutoGenerateColumns="False" CanUserReorderColumns="True" 
                       CanUserAddRows="False" CanUserResizeRows="False" SelectionMode="Single" AlternatingRowBackground="#F7F7F7"
-                      EnableRowVirtualization="True" IsReadOnly="True" CanUserDeleteRows="False"
+                      EnableRowVirtualization="True" IsReadOnly="True" CanUserDeleteRows="False" GridLinesVisibility="Horizontal"
                       >
                 <DataGrid.RowDetailsTemplate>
                     <DataTemplate>
