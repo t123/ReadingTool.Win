@@ -48,13 +48,19 @@ namespace RTWin.Models.Views
         }
 
         private string _windowTitle;
+        private ItemModel _nextToRead;
+
         public string WindowTitle
         {
             set { _windowTitle = value; }
             get { return _windowTitle; OnPropertyChanged("WindowTitle"); }
         }
 
-        public ItemModel NextToRead { get; set; }
+        public ItemModel NextToRead
+        {
+            get { return _nextToRead; }
+            set { _nextToRead = value; OnPropertyChanged("NextToRead");}
+        }
 
         public IList<ItemModel> ItemList
         {
@@ -131,7 +137,7 @@ namespace RTWin.Models.Views
                 this.Item = item;
                 CW.Read(item, param.IsParallel);
                 Messenger.Default.Send(new RefreshItemsMessage());
-            }, param => true);
+            }, param => param != null);
 
             Messenger.Default.Send(new RefreshItemsMessage());
         }
@@ -140,8 +146,15 @@ namespace RTWin.Models.Views
         {
             var previous = _itemService.FindPrev(Item, 5);
             var next = _itemService.FindNext(Item, 5);
-            NextToRead = Mapper.Map<Item, ItemModel>(next.FirstOrDefault());
 
+            var nextToRead = next.FirstOrDefault();
+
+            if (nextToRead == null)
+            {
+                nextToRead = previous.FirstOrDefault();
+            }
+
+            NextToRead = Mapper.Map<Item, ItemModel>(nextToRead);
             ItemList = Mapper.Map<IEnumerable<Item>, IEnumerable<ItemModel>>(next.Union(previous).OrderBy(x => x.CollectionNo)).ToList();
         }
 
