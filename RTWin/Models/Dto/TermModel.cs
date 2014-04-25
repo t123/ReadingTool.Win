@@ -1,12 +1,13 @@
 ﻿using System;
+using Ninject;
 using NPoco;
 using RTWin.Core.Enums;
+using RTWin.Entities;
+using RTWin.Services;
 
-namespace RTWin.Entities
+namespace RTWin.Models.Dto
 {
-    [TableName("term")]
-    [PrimaryKey("TermId", AutoIncrement = false)]
-    public class Term
+    public class TermModel : BaseDtoModel
     {
         public long TermId { get; set; }
         public DateTime DateCreated { get; set; }
@@ -49,17 +50,17 @@ namespace RTWin.Entities
         [ResultColumn]
         public string ItemSource { get; set; }
 
-        public static Term NewTerm()
+        public Term ToTerm()
         {
-            return new Term()
+            var termService = App.Container.Get<TermService>();
+            var l = termService.FindOne(this.LanguageId);
+
+            if (l == null)
             {
-                BasePhrase = string.Empty,
-                Definition = string.Empty,
-                ItemSource = string.Empty,
-                Phrase = string.Empty,
-                Sentence = string.Empty,
-                State = TermState.None,
-            };
+                l = Term.NewTerm();
+            }
+
+            return l;
         }
     }
 }

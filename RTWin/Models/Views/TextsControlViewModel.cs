@@ -26,7 +26,7 @@ namespace RTWin.Models.Views
     public class TextsControlViewModel : BaseViewModel
     {
         private IList<Item> _allItems;
-
+        private IEnumerable<Language> _languages;
         private IList<ItemSearch> _root;
         private readonly ItemService _itemService;
         private readonly LanguageService _languageService;
@@ -141,6 +141,7 @@ namespace RTWin.Models.Views
             _itemService = itemService;
             _languageService = languageService;
 
+            _languages = _languageService.FindAll();
             _allItems = _itemService.FindAll().ToList();
 
             SelectedItem = Items.FirstOrDefault();
@@ -186,6 +187,7 @@ namespace RTWin.Models.Views
                     Items = null;
                     ConstructTree();
                     SelectedItem = Items.FirstOrDefault();
+                    Messenger.Default.Send<RefreshItemsMessage>(new RefreshItemsMessage());
                 }
             }, param => SelectedItem != null);
 
@@ -230,8 +232,6 @@ namespace RTWin.Models.Views
         private void ConstructTree()
         {
             var filterText = FilterText;
-
-            var languages = _languageService.FindAll().OrderBy(x => x.IsArchived);
             var nodes = new List<ItemSearch>();
 
             nodes.Add(new ItemSearch() { Name = "Parallel Items", Value = "#parallel" });
@@ -239,7 +239,7 @@ namespace RTWin.Models.Views
             nodes.Add(new ItemSearch() { Name = "Text items", Value = "#text" });
             nodes.Add(new ItemSearch() { Name = "Video items", Value = "#video" });
 
-            foreach (var l in languages)
+            foreach (var l in _languages)
             {
                 var node = new ItemSearch()
                 {
@@ -248,15 +248,10 @@ namespace RTWin.Models.Views
                     IsExpanded = !l.IsArchived
                 };
 
-                var collections = _itemService.FindAllCollectionNames(l.LanguageId);
+                var collections = _allItems.Where(x => x.L1LanguageId == l.LanguageId && !string.IsNullOrWhiteSpace(x.CollectionName)).Select(x => x.CollectionName).Distinct();
 
                 foreach (var c in collections)
                 {
-                    if (string.IsNullOrWhiteSpace(c))
-                    {
-                        continue;
-                    }
-
                     node.Children.Add(new ItemSearch()
                     {
                         Name = c,
@@ -279,7 +274,7 @@ namespace RTWin.Models.Views
             {
                 var predicate = PredicateBuilder.True<Item>();
 
-                var matches = Regex.Matches(FilterText, @"[\#\w]+|""[\w\s]*""");
+                var matches = Regex.Matches(FilterText.ToLowerInvariant(), @"[\#\w]+|""[\w\s]*""");
 
                 var filter = PredicateBuilder.True<Item>();
 
@@ -331,11 +326,11 @@ namespace RTWin.Models.Views
                         {
                             if (exact)
                             {
-                                filter = filter.And(x => x.CollectionName == value || x.L1Title == value || x.L1Language == value);
+                                filter = filter.And(x => x.CollectionName.ToLowerInvariant() == value || x.L1Title.ToLowerInvariant() == value || x.L1Language.ToLowerInvariant() == value);
                             }
                             else
                             {
-                                filter = filter.And(x => x.CollectionName.StartsWith(value) || x.L1Title.StartsWith(value) || x.L1Language.StartsWith(value));
+                                filter = filter.And(x => x.CollectionName.ToLowerInvariant().StartsWith(value) || x.L1Title.ToLowerInvariant().StartsWith(value) || x.L1Language.ToLowerInvariant().StartsWith(value));
                             }
                         }
                     }

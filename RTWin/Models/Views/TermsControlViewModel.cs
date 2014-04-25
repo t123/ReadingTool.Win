@@ -4,22 +4,27 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Windows.Input;
+using AutoMapper;
+using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using RTWin.Annotations;
-using RTWin.Common;
+using RTWin.Core;
+using RTWin.Core.Enums;
 using RTWin.Entities;
-using RTWin.Entities.Enums;
 using RTWin.Messages;
+using RTWin.Models.Dto;
 using RTWin.Services;
 
 namespace RTWin.Models.Views
 {
-    public class TermsControlViewModel : INotifyPropertyChanged
+    public class TermsControlViewModel : BaseViewModel
     {
+        private IList<Term> _allTerms;
         private readonly TermService _termService;
         private readonly LanguageService _languageService;
-        private ObservableCollection<Term> _terms;
+        private ObservableCollection<TermModel> _terms;
         private ICommand _backCommand;
         private ICommand _exportCommand;
         private string _filterText;
@@ -41,7 +46,7 @@ namespace RTWin.Models.Views
         public string FilterText
         {
             get { return _filterText; }
-            set { _filterText = value; OnPropertyChanged("FilterText"); MapCollection(); }
+            set { _filterText = value; OnPropertyChanged("FilterText"); Terms = null; }
         }
 
         public ObservableCollection<string> CollectionNames
@@ -61,9 +66,16 @@ namespace RTWin.Models.Views
             }
         }
 
-        public ObservableCollection<Term> Terms
+        public ObservableCollection<TermModel> Terms
         {
-            get { return _terms; }
+            get
+            {
+                if (_terms == null)
+                {
+                    MapTerms();
+                }
+                return _terms;
+            }
             set { _terms = value; OnPropertyChanged("Terms"); }
         }
 
@@ -71,7 +83,7 @@ namespace RTWin.Models.Views
         {
             _termService = termService;
             _languageService = languageService;
-            MapCollection();
+            _allTerms = _termService.FindAll();
 
             var languages = _languageService.FindAll()
                 .Where(x => !x.IsArchived) //TODO fixme
@@ -89,26 +101,102 @@ namespace RTWin.Models.Views
 
             CollectionNames = new ObservableCollection<string>(complete);
 
-            _exportCommand = new RelayCommand(parma =>
+            _exportCommand = new RelayCommand(() =>
             {
 
             });
-
-            _backCommand = new RelayCommand(param => Messenger.Default.Send<ChangeViewMessage>(new ChangeViewMessage(ChangeViewMessage.Main)));
         }
 
-        private void MapCollection()
+        private void MapTerms()
         {
-            Terms = new ObservableCollection<Term>(_termService.Search(maxResults: 1000, filter: FilterText));
-        }
+            var temp = _allTerms.AsQueryable();
 
-        public event PropertyChangedEventHandler PropertyChanged;
+            if (!string.IsNullOrWhiteSpace(FilterText ?? ""))
+            {
+                var predicate = PredicateBuilder.True<Term>();
 
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+                var matches = Regex.Matches(FilterText.ToLowerInvariant(), @"[\#\w]+|""[\w\s]*""");
+
+                var filter = PredicateBuilder.True<Term>();
+
+                foreach (Match match in matches)
+                {
+                    if (match.Value.StartsWith("#"))
+                    {
+                        if (match.Value.Length > 1)
+                        {
+                            var remainder = match.Value.Substring(1, match.Length - 1).ToLowerInvariant();
+                            switch (remainder)
+                            {
+                                case "known":
+                                    temp = temp.Where(x => x.State == TermState.Known);
+                                    break;
+
+                                case "unknown":
+                                case "notknown":
+                                    temp = temp.Where(x => x.State == TermState.Unknown);
+                                    break;
+
+                                case "notseen":
+                                    temp = temp.Where(x => x.State == TermState.NotSeen);
+                                    break;
+
+                                case "none":
+                                    temp = temp.Where(x => x.State == TermState.None);
+                                    break;
+
+                                case "ignore":
+                                case "ignored":
+                                    temp = temp.Where(x => x.State == TermState.Ignored);
+                                    break;
+
+                                case "new":
+                                    temp = temp.Where(x => x.DateCreated > DateTime.Now.AddDays(-7));
+                                    break;
+
+                                case "recent":
+                                    temp = temp.Where(x => x.DateModified > DateTime.Now.AddDays(-7));
+                                    break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        string value = match.Value.Trim();
+                        bool exact = false;
+
+                        if (value.StartsWith("\""))
+                        {
+                            value = value.Substring(1, value.Length - 1);
+                            exact = true;
+                        }
+
+                        if (value.EndsWith("\""))
+                        {
+                            value = value.Substring(0, value.Length - 1);
+                            exact = true;
+                        }
+
+                        if (value.Length > 0)
+                        {
+                            if (exact)
+                            {
+                                filter = filter.And(x => x.LowerPhrase == value || x.BasePhrase.ToLowerInvariant() == value || x.Language.ToLowerInvariant() == value);
+                            }
+                            else
+                            {
+                                filter = filter.And(x => x.LowerPhrase.StartsWith(value) || x.BasePhrase.ToLowerInvariant().StartsWith(value) || x.Language.ToLowerInvariant().StartsWith(value));
+                            }
+                        }
+                    }
+                }
+
+                predicate = predicate.And(filter);
+                temp = temp.Where(predicate);
+            }
+
+            temp = temp.OrderBy(x => x.Language).ThenBy(x => x.LowerPhrase);
+            _terms = new ObservableCollection<TermModel>(Mapper.Map<IEnumerable<Term>, IEnumerable<TermModel>>(temp));
         }
     }
 }

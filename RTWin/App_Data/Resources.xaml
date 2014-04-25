@@ -4,11 +4,11 @@
                     >
     <SolidColorBrush x:Key="ControlBackgroundColor">#F3F3F3</SolidColorBrush>
 
-    <Style TargetType="{x:Type Button}">
-        <Setter Property="MinWidth" Value="60"></Setter>
-        <Setter Property="Height" Value="25"></Setter>
-        <Setter Property="Margin" Value="5,0,5,0"/>
-        <Setter Property="Padding" Value="10,0,10,0"/>
+    <Style TargetType="{x:Type controls:ReadControl}">
+        <Setter Property="Background" Value="{DynamicResource ControlBackgroundColor}"/>
+    </Style>
+    <Style TargetType="{x:Type controls:TermsControl}">
+        <Setter Property="Background" Value="{DynamicResource ControlBackgroundColor}"/>
     </Style>
     <Style TargetType="{x:Type controls:TextsControl}">
         <Setter Property="Background" Value="{DynamicResource ControlBackgroundColor}"/>
@@ -28,6 +28,12 @@
     <Style TargetType="{x:Type controls:MainWindowControl}">
         <Setter Property="Background" Value="{DynamicResource ControlBackgroundColor}"/>
     </Style>
+    <Style TargetType="{x:Type Button}">
+        <Setter Property="MinWidth" Value="60"></Setter>
+        <Setter Property="Height" Value="25"></Setter>
+        <Setter Property="Margin" Value="5,0,5,0"/>
+        <Setter Property="Padding" Value="10,0,10,0"/>
+    </Style>
     <Style TargetType="{x:Type GroupBox}">
         <Setter Property="Margin" Value="3"></Setter>
         <Setter Property="HeaderTemplate">
@@ -38,12 +44,17 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <Style TargetType="CheckBox">
+    <Style TargetType="{x:Type ComboBox}">
+        <Setter Property="Margin" Value="5" />
+        <Setter Property="MinHeight" Value="30" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+    <Style TargetType="{x:Type CheckBox}">
         <Setter Property="Margin" Value="5" />
         <Setter Property="MinHeight" Value="30" />
         <Setter Property="VerticalAlignment" Value="Bottom" />
     </Style>
-    <Style TargetType="Label">
+    <Style TargetType="{x:Type Label}">
         <Setter Property="MinHeight" Value="30" />
         <Setter Property="Margin" Value="5" />
         <Setter Property="VerticalContentAlignment" Value="Center" />

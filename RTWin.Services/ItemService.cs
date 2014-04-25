@@ -182,7 +182,37 @@ namespace RTWin.Services
             return message;
         }
 
-        public Tuple<Item, Item> FindNextPrev(Item item)
+        public IEnumerable<Item> FindPrev(Item item, int limit = 1)
+        {
+            if (item == null)
+            {
+                return new List<Item>();
+            }
+
+            var prev = _db.FetchWhere<Item>(x => x.L1LanguageId == item.L1LanguageId && x.CollectionName == item.CollectionName && x.CollectionNo < item.CollectionNo)
+                .OrderByDescending(x => x.CollectionNo)
+                .Take(limit);
+                ;
+
+            return prev;
+        }
+
+        public IEnumerable<Item> FindNext(Item item, int limit = 1)
+        {
+            if (item == null)
+            {
+                return new List<Item>();
+            }
+
+            var next = _db.FetchWhere<Item>(x => x.L1LanguageId == item.L1LanguageId && x.CollectionName == item.CollectionName && x.CollectionNo > item.CollectionNo)
+                .OrderBy(x => x.CollectionNo)
+                .Take(limit);
+            ;
+
+            return next;
+        }
+
+        public Tuple<Item, Item> FindNextAndPrev(Item item)
         {
             if (item == null)
             {
@@ -332,13 +362,30 @@ namespace RTWin.Services
             return results;
         }
 
-        public IEnumerable<Item> FindRecent(int? maxResults)
+        public IEnumerable<Item> FindRecentlyRead(int? maxResults)
         {
             var sql = Sql.Builder.Append("SELECT item.*, B.Name as L1Language, C.Name as L2Language FROM item item");
             sql.LeftJoin("language B on item.L1LanguageId=B.LanguageId");
             sql.LeftJoin("language C on item.L2LanguageId=C.LanguageId");
             sql.Append("WHERE item.UserId=@0 ", _user.UserId);
             sql.OrderBy("item.LastRead DESC");
+
+            if (maxResults.HasValue && maxResults > 0)
+            {
+                sql.Append("LIMIT @0", maxResults.Value);
+            }
+
+            var results = _db.Query<Item>(sql);
+            return results;
+        }
+
+        public IEnumerable<Item> FindRecentlyCreated(int? maxResults)
+        {
+            var sql = Sql.Builder.Append("SELECT item.*, B.Name as L1Language, C.Name as L2Language FROM item item");
+            sql.LeftJoin("language B on item.L1LanguageId=B.LanguageId");
+            sql.LeftJoin("language C on item.L2LanguageId=C.LanguageId");
+            sql.Append("WHERE item.UserId=@0 ", _user.UserId);
+            sql.OrderBy("item.DateCreated DESC");
 
             if (maxResults.HasValue && maxResults > 0)
             {

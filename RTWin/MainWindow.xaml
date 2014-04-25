@@ -46,7 +46,33 @@
                     <Button Grid.Column="1" Content="Languages" Height="25" Margin="5,0,5,0" Padding="10,0,10,0"  Command="{Binding ToolbarCommand}" CommandParameter="languages"/>
                     <xctk:SplitButton Grid.Column="2" Content="Items" Command="{Binding ToolbarCommand}" CommandParameter="items">
                         <xctk:SplitButton.DropDownContent>
-                            <Button Content="Add Item"></Button>
+                            <Menu Height="25">
+                                <MenuItem Header="Recently Read" ItemsSource="{Binding RecentItems}">
+                                    <MenuItem.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock><Hyperlink Command="{Binding DataContext.ReadCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"><Run Text="{Binding CommonName, Mode=OneWay}"></Run></Hyperlink></TextBlock>
+                                        </DataTemplate>
+                                    </MenuItem.ItemTemplate>
+                                </MenuItem>
+                                <MenuItem Header="New Items" ItemsSource="{Binding NewItems}">
+                                    <MenuItem.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock><Hyperlink Command="{Binding DataContext.ReadCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"><Run Text="{Binding CommonName, Mode=OneWay}"></Run></Hyperlink></TextBlock>
+                                        </DataTemplate>
+                                    </MenuItem.ItemTemplate>
+                                </MenuItem>
+                                <MenuItem Header="Add New Item" Command="{Binding ToolbarCommand}" CommandParameter="additem"/>
+                            </Menu>
+                            <!--<StackPanel>
+                                <TextBlock><Hyperlink><Run Text="Add Item"></Run></Hyperlink></TextBlock>
+                                <ItemsControl ItemsSource="{Binding Items}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock><Hyperlink Command="{Binding DataContext.ReadCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"><Run Text="{Binding CommonName, Mode=OneWay}"></Run></Hyperlink></TextBlock>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                    </StackPanel> -->
                         </xctk:SplitButton.DropDownContent>
                     </xctk:SplitButton>
                     <xctk:SplitButton Grid.Column="3" Content="Terms" Command="{Binding ToolbarCommand}" CommandParameter="terms">
@@ -56,6 +82,7 @@
                     </xctk:SplitButton>
                     <Button Grid.Column="4" Content="Plugins" Height="25" Margin="5,0,5,0" Padding="10,0,10,0"  Command="{Binding ToolbarCommand}" CommandParameter="plugins"/>
                     <Button Grid.Column="5" Content="Settings" Height="25" Margin="5,0,5,0" Padding="10,0,10,0"  Command="{Binding ToolbarCommand}" CommandParameter="settings"/>
+                    <Button Grid.Column="6" Content="Settings" Height="25" Margin="5,0,5,0" Padding="10,0,10,0"  Command="{Binding ToolbarCommand}" CommandParameter="importtestdata"/>
                 </Grid>
             </Border>
             <ContentControl Name="ContentControl" Content="{Binding CurrentView}"/>

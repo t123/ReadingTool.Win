@@ -81,9 +81,9 @@ namespace RTWin
             container.Bind<LanguagesControl>().ToSelf();
             container.Bind<PluginsControl>().ToSelf();
             container.Bind<TextsControl>().ToSelf();
-            //container.Bind<TermsControl>().ToSelf();
+            container.Bind<TermsControl>().ToSelf();
             container.Bind<ProfilesControl>().ToSelf();
-            //container.Bind<ReadControl>().ToSelf();
+            container.Bind<ReadControl>().ToSelf();
             container.Bind<ItemDialog>().ToSelf();
 
             container.Bind<MainWindowViewModel>().ToSelf();
@@ -91,9 +91,9 @@ namespace RTWin
             container.Bind<PluginsControlViewModel>().ToSelf();
             container.Bind<LanguagesControlViewModel>().ToSelf();
             container.Bind<TextsControlViewModel>().ToSelf();
-            //container.Bind<TermsControlViewModel>().ToSelf();
+            container.Bind<TermsControlViewModel>().ToSelf();
             container.Bind<ProfilesControlViewModel>().ToSelf();
-            //container.Bind<ReadControlViewModel>().ToSelf();
+            container.Bind<ReadControlViewModel>().ToSelf();
 
             return container;
         }
@@ -111,10 +111,11 @@ namespace RTWin
                 .ForMember(x => x.Direction, y => y.MapFrom(z => z.Direction))
                 .ForMember(x => x.Plugins, y => y.MapFrom(z => App.Container.Get<PluginService>().FindAllWithActive(z.LanguageId)))
                 ;
-            
+
             Mapper.CreateMap<User, UserModel>();
             Mapper.CreateMap<Plugin, PluginModel>();
             Mapper.CreateMap<Item, ItemModel>();
+            Mapper.CreateMap<Term, TermModel>();
         }
 
         private void CheckAndUpgradeDatabase()
@@ -181,7 +182,14 @@ namespace RTWin
 
                 foreach (var file in files)
                 {
-                    File.Delete(file.FullName);
+                    try
+                    {
+                        File.Delete(file.FullName);
+                    }
+                    catch
+                    {
+
+                    }
                 }
             }
         }

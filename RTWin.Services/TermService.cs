@@ -91,7 +91,13 @@ namespace RTWin.Services
 
         public IList<Term> FindAll()
         {
-            return _db.Fetch<Term>("WHERE UserId=@0 ORDER BY LowerPhrase", _user.UserId);
+            var sql = Sql.Builder.Append("SELECT term.*, b.name as Language, c.collectionNo || ' - ' || c.CollectionName || ' ' || c.L1Title as ItemSource FROM term term");
+            sql.LeftJoin("language b on term.LanguageId=b.LanguageId");
+            sql.LeftJoin("item c on term.ItemSourceId=c.ItemId");
+            sql.Append("WHERE term.UserId=@0", _user.UserId);
+            sql.Append("ORDER BY term.LowerPhrase");
+
+            return _db.Fetch<Term>(sql);
         }
 
         public IEnumerable<Term> Search(long? languageId = null, DateTime? modified = null, int? maxResults = null, string filter = null)

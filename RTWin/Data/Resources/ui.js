@@ -45,7 +45,7 @@
 
     window.hubReady.done(function () {
         if ($('#reading').data('mediauri') != '') {
-            var mediaUri = webApiEndPoint + '/api/resource/media/' + $('#reading').data('itemid');
+            var mediaUri = webApiEndPoint + '/api/v1/resource/media/' + $('#reading').data('itemid');
 
             if ($('#reading').data('itemtype') == 'text') {
                 $("#jquery_jplayer_1").jPlayer({
@@ -54,7 +54,7 @@
                             mp3: mediaUri
                         });
                     },
-                    swfPath: webApiEndPoint + "/api/resource/local/Jplayer.swf",
+                    swfPath: webApiEndPoint + "/api/v1/resource/local/Jplayer.swf",
                     supplied: "mp3",
                     errorAlerts: true
                 });
@@ -65,7 +65,7 @@
                             m4v: mediaUri
                         });
                     },
-                    swfPath: webApiEndPoint + "/api/resource/local/Jplayer.swf",
+                    swfPath: webApiEndPoint + "/api/v1/resource/local/Jplayer.swf",
                     supplied: "m4v",
                     errorAlerts: true,
                     size: {

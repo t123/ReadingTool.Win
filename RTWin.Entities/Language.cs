@@ -6,7 +6,7 @@ using RTWin.Core.Enums;
 namespace RTWin.Entities
 {
     [TableName("language")]
-    [PrimaryKey("LanguageId")]
+    [PrimaryKey("LanguageId", AutoIncrement = false)]
     public class Language
     {
         public const string TERM_REGEX = "([a-zA-ZÀ-ÖØ-öø-ȳ\\'-]+)";

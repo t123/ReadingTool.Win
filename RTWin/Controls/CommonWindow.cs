@@ -7,12 +7,11 @@ using System.Windows;
 using System.Windows.Controls;
 using Awesomium.Core;
 using Awesomium.Windows.Controls;
-using MahApps.Metro.Controls;
-using MahApps.Metro.Controls.Dialogs;
 using Ninject;
 using RTWin.Common;
+using RTWin.Core;
+using RTWin.Core.Enums;
 using RTWin.Entities;
-using RTWin.Entities.Enums;
 using RTWin.Models.Views;
 using RTWin.Services;
 
@@ -28,10 +27,9 @@ namespace RTWin.Controls
         protected VideoParserService _vps;
         protected ItemService _itemService;
         protected PluginService _pluginService;
-        protected DatabaseService _databaseService;
         protected IParserService _parserService;
         protected WebControl _control;
-        private ProgressDialogController _progress;
+        private DbSettingService _settings;
 
         public ParserOutput Output
         {
@@ -41,29 +39,25 @@ namespace RTWin.Controls
         public CommonWindow(WebControl control)
         {
             _control = control;
-
             InitializeWebControl(_control);
         }
 
         public async void Read(Item item, bool parallel)
         {
-            var metroWindow = (Application.Current.MainWindow as MetroWindow);
-            _progress = await metroWindow.ShowProgressAsync("Please wait...", "Your material will be available in a few seconds.", false, MainWindowViewModel.DialogSettings);
-
             _item = item;
             _parallel = parallel;
             _itemService = App.Container.Get<ItemService>();
             _languageService = App.Container.Get<LanguageService>();
             _termService = App.Container.Get<TermService>();
             _pluginService = App.Container.Get<PluginService>();
-            _databaseService = App.Container.Get<DatabaseService>();
-            //_parserService = parserService;
+            _settings = App.Container.Get<DbSettingService>();
 
             _parserService = item.ItemType == ItemType.Text ? (IParserService)new ParserService() : (IParserService)new VideoParserService();
-            var html = item.ItemType == ItemType.Text ? HtmlLoader.Instance.ReadingHtml : HtmlLoader.Instance.WatchingHtml;
+            var html = item.ItemType == ItemType.Text ? ContentLoader.Instance.Get(ContentLoader.READING) : ContentLoader.Instance.Get(ContentLoader.WATCHING);
 
-            var signalR = _databaseService.GetSetting<string>(DbSetting.Keys.BaseWebSignalRAddress);
-            var webApi = _databaseService.GetSetting<string>(DbSetting.Keys.BaseWebAPIAddress);
+            var signalR = _settings.Get<string>(DbSetting.Keys.BaseWebSignalRAddress);
+            var webApi = _settings.Get<string>(DbSetting.Keys.BaseWebAPIAddress);
+
             ParserInput pi = new ParserInput()
                 .WithItem(_item)
                 .IsParallel(_parallel)
@@ -84,7 +78,8 @@ namespace RTWin.Controls
             WriteHtml(_output.Xml, ".xml");
             MarkAsRead();
 
-            var sourceUri = _databaseService.GetSetting<string>(DbSetting.Keys.BaseWebAPIAddress) + "/api/resource/item/" + _item.ItemId;
+            var sourceUri = _settings.Get<string>(DbSetting.Keys.BaseWebAPIAddress) + "/api/v1/resource/item/" + _item.ItemId;
+
             //TODO fixme, navigate away sourceurl doesn't change if view again, dialog doesn't close.
             _control.Source = "about:blank".ToUri();
             _control.Source = sourceUri.ToUri();
@@ -105,7 +100,7 @@ namespace RTWin.Controls
 
         private ParserOutput InjectPlugins(ParserOutput po)
         {
-            po.Html = _output.Html.Replace("<!-- plugins -->", string.Format(@"<script src=""<!-- webapi -->/api/resource/plugins/{0}""></script>", _item.L1LanguageId));
+            po.Html = _output.Html.Replace("<!-- plugins -->", string.Format(@"<script src=""<!-- webapi -->/api/v1/resource/plugins/{0}""></script>", _item.L1LanguageId));
             return po;
         }
 
@@ -159,9 +154,9 @@ namespace RTWin.Controls
 
             control.LoadingFrameComplete += (s, e) =>
             {
-                if (e.IsMainFrame && _progress != null)
+                if (e.IsMainFrame)
                 {
-                    _progress.CloseAsync();
+                    
                 }
             };
         }

@@ -73,7 +73,9 @@ namespace RTWin.Core
 
         private string Read(string filename)
         {
-            using (var stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            _path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "App_Data", filename);
+
+            using (var stream = new FileStream(_path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
                 using (var sr = new StreamReader(stream, Encoding.UTF8))
                 {

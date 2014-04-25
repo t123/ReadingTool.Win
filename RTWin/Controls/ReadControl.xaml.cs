@@ -14,7 +14,7 @@ namespace RTWin.Controls
     /// <summary>
     /// Interaction logic for ReadWindow.xaml
     /// </summary>
-    public partial class ReadControl : UserControl
+    public partial class ReadControl : Window
     {
         private readonly ReadControlViewModel _readControlViewModel;
         private CommonWindow _cw;
