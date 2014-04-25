@@ -5,7 +5,7 @@ using RTWin.Core.Enums;
 namespace RTWin.Entities
 {
     [TableName("item")]
-    [PrimaryKey("ItemId", AutoIncrement = false)]
+    [PrimaryKey("ItemId", AutoIncrement = true)]
     public class Item
     {
         public long ItemId { get; set; }

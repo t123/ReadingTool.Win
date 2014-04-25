@@ -50,6 +50,40 @@ namespace RTWin.Services
             return newItem;
         }
 
+        public IEnumerable<Item> SplitItem(long id)
+        {
+            var item = FindOne(id);
+
+            if (item == null)
+            {
+                return null;
+            }
+
+            var items = new List<Item>();
+
+            var l1Split = item.L1Content.Split(new string[] { "===" }, StringSplitOptions.None);
+            var l2Split = (item.L2Content ?? "").Split(new string[] { "===" }, StringSplitOptions.None);
+
+            for (int i = 0; i < l1Split.Length; i++)
+            {
+                var newItem = CopyItem(item);
+
+                newItem.L1Title = item.L1Title;
+                newItem.L1Content = l1Split[i];
+                newItem.L2Content = i < l2Split.Length ? l2Split[i] : "";
+
+                if (item.CollectionNo.HasValue)
+                {
+                    newItem.CollectionNo = item.CollectionNo + i;
+                }
+
+                Save(newItem);
+                items.Add(newItem);
+            }
+
+            return items;
+        }
+
         public Item FindOne(long id)
         {
             var sql = Sql.Builder.Append("SELECT item.*, B.Name as L1Language, C.Name as L2Language FROM item item");
@@ -192,7 +226,7 @@ namespace RTWin.Services
             var prev = _db.FetchWhere<Item>(x => x.L1LanguageId == item.L1LanguageId && x.CollectionName == item.CollectionName && x.CollectionNo < item.CollectionNo)
                 .OrderByDescending(x => x.CollectionNo)
                 .Take(limit);
-                ;
+            ;
 
             return prev;
         }

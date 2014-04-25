@@ -19,6 +19,13 @@
         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" DockPanel.Dock="Bottom" Height="40">
             <Button Content="Save" Command="{Binding SaveCommand}" />
             <Button Content="Copy" Command="{Binding CopyCommand}" />
+            <Button Content="Split" Command="{Binding SplitCommand}" >
+                <Button.ToolTip>
+                    <TextBlock>Splits text into multiple parts on <Run FontWeight="Bold" Foreground="Red">===</Run> (use === on a line by themselves)
+                    <LineBreak/>
+                    New items are numbered sequentially from the current collection number and the original is kept.</TextBlock>
+                </Button.ToolTip>
+            </Button>
         </StackPanel>
         <TabControl>
             <TabItem Header="General">

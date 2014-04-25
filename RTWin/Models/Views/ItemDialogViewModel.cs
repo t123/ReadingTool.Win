@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Input;
 using AutoMapper;
 using GalaSoft.MvvmLight.Command;
@@ -19,7 +21,13 @@ namespace RTWin.Models.Views
         private ICommand _saveCommand;
         private ICommand _copyCommand;
         private ICommand _openCommand;
+        private ICommand _splitCommand;
         private ObservableCollection<Language> _languages;
+        public ICommand SplitCommand
+        {
+            get { return _splitCommand; }
+            set { _splitCommand = value; }
+        }
 
         public ICommand OpenCommand
         {
@@ -87,6 +95,12 @@ namespace RTWin.Models.Views
                 _itemService.Save(newItem);
                 MapItem(newItem);
                 Messenger.Default.Send<RefreshItemsMessage>(new RefreshItemsMessage(newItem));
+            }, param => Item != null && Item.ItemId > 0);
+
+            _splitCommand = new RelayCommand<ItemModel>(param =>
+            {
+                var items = _itemService.SplitItem(Item.ItemId);
+                Messenger.Default.Send<RefreshItemsMessage>(new RefreshItemsMessage(items));
             }, param => Item != null && Item.ItemId > 0);
         }
 

@@ -1,19 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
 using AutoMapper;
-using AutoMapper.Internal;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using Ninject;
 using Ninject.Parameters;
-using RTWin.Annotations;
-using RTWin.Common;
 using RTWin.Controls;
 using RTWin.Core;
 using RTWin.Entities;
@@ -170,6 +165,7 @@ namespace RTWin.Models.Views
                 var actualItem = _itemService.FindOne(SelectedItem.ItemId);
                 var newItem = _itemService.CopyItem(actualItem);
                 _itemService.Save(newItem);
+                newItem = _itemService.FindOne(newItem.ItemId); //Get the languages
                 _allItems.Add(newItem);
                 Items = null;
                 SelectedItem = Items.FirstOrDefault(x => x.ItemId == newItem.ItemId);
@@ -213,19 +209,24 @@ namespace RTWin.Models.Views
 
             Messenger.Default.Register<RefreshItemsMessage>(this, param =>
             {
-                if (param == null || param.Item == null)
+                if (param == null || param.Items.Count == 0)
                 {
                     return;
                 }
 
-                if (_allItems.All(x => x.ItemId != param.Item.ItemId))
+                foreach (var itemOld in param.Items)
                 {
-                    _allItems.Add(param.Item);
-                }
-                else
-                {
-                    _allItems.Remove(_allItems.First(x => x.ItemId == param.Item.ItemId));
-                    _allItems.Add(param.Item);
+                    var item = _itemService.FindOne(itemOld.ItemId); //Missing the languages
+
+                    if (_allItems.All(x => x.ItemId != itemOld.ItemId))
+                    {
+                        _allItems.Add(item);
+                    }
+                    else
+                    {
+                        _allItems.Remove(_allItems.First(x => x.ItemId == itemOld.ItemId));
+                        _allItems.Add(item);
+                    }
                 }
 
                 Items = null;
@@ -345,7 +346,11 @@ namespace RTWin.Models.Views
             }
 
             temp = temp.OrderBy(x => x.L1Language).ThenBy(x => x.CollectionName).ThenBy(x => x.CollectionNo).ThenBy(x => x.L1Title);
-            _items = new ObservableCollection<ItemModel>(Mapper.Map<IEnumerable<Item>, IEnumerable<ItemModel>>(temp));
+
+            var newTemp = temp.ToList();
+            var mapped = Mapper.Map<IEnumerable<Item>, IEnumerable<ItemModel>>(newTemp);
+
+            _items = new ObservableCollection<ItemModel>(mapped);
         }
     }
 }
