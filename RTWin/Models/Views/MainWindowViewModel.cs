@@ -213,12 +213,22 @@ namespace RTWin.Models.Views
             wc.DownloadStringAsync(checkUri);
         }
 
+        private ReadControl _readControl; //TODO fixme
         private void Read(long itemId, bool asParallel)
         {
-            var readControl = App.Container.Get<ReadControl>();
-            readControl.View(itemId, asParallel);
-            readControl.Show();
+            _readControl = App.Container.Get<ReadControl>();
+            _readControl.View(itemId, asParallel);
+            _readControl.Show();
             RecentItems = null;
+        }
+
+        public Tuple<long, long> GetSub(double time)
+        {
+            if (_readControl != null)
+            {
+                return _readControl.GetSub(time);
+            }
+            return new Tuple<long, long>(-1, -1);
         }
 
         private void PerformChangeProfile(User user)
@@ -248,7 +258,7 @@ namespace RTWin.Models.Views
                 case "profiles":
                     var profilesControl = App.Container.Get<ProfilesControl>();
                     CurrentView = profilesControl;
-                    return;
+                    break;
 
                 case "languages":
                     var languagesControl = App.Container.Get<LanguagesControl>();

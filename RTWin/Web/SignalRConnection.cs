@@ -53,9 +53,9 @@ namespace RTWin.Web
                         }
                         else
                         {
-                            //var sub = owner.MainWindowViewModel.GetSub(time);
-                            //_mainHubProxy.Invoke("Send", new object[] { "srtl1", sub.Item1 });
-                            //_mainHubProxy.Invoke("Send", new object[] { "srtl2", sub.Item2 });
+                            var sub = owner.MainWindowViewModel.GetSub(time);
+                            _mainHubProxy.Invoke("Send", new object[] { "srtl1", sub.Item1 });
+                            _mainHubProxy.Invoke("Send", new object[] { "srtl2", sub.Item2 });
                         }
                     });
                 }

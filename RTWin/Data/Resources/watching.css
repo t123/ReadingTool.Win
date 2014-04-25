@@ -61,9 +61,18 @@
 }
 
 div.jp-video-270p {
-    width: 720px;
+    width: 720px !important;
 }
 
 #modalContent {
     color: black;
+}
+
+.tooltip-inner {
+  color: #000000 !important;
+  background-color: #ffffff !important;
+}
+
+.tooltip.top .tooltip-arrow {
+    border-top-color: #ffffff !important;
 }

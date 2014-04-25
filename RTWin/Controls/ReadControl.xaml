@@ -62,7 +62,7 @@
             </awe:WebControl>
         </DockPanel>
 
-        <Border BorderThickness="2" BorderBrush="Black" Width="304" Height="104" Visibility="Collapsed" Name="FullscreenMessage" >
+        <Border BorderThickness="2" BorderBrush="Black" Width="304" Height="104" Visibility="Collapsed" Name="FullscreenMessage" CornerRadius="3">
             <Canvas Width="300" Height="100" Background="#fcfcfc" MouseLeftButtonUp="Canvas_OnMouseLeftButtonUp">
                 <TextBlock Canvas.Left="40" Canvas.Top="35" FontSize="20">
                 Press <Run FontWeight="Bold">F11</Run> to exit fullscreen

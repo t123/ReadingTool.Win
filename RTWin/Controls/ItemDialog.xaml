@@ -85,7 +85,7 @@
 
                     <Label Content="L2 Content" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" FontWeight="Bold"/>
                     <Label Content="Language" Grid.Row="1" Grid.Column="2"/>
-                    <ComboBox Grid.Row="1" Grid.Column="3" ItemsSource="{Binding Languages}" SelectedValuePath="LanguageId" DisplayMemberPath="Name" SelectedValue="{Binding Item.L1LanguageId}"/>
+                    <ComboBox Grid.Row="1" Grid.Column="3" ItemsSource="{Binding Languages}" SelectedValuePath="LanguageId" DisplayMemberPath="Name" SelectedValue="{Binding Item.L2LanguageId}"/>
                     <Label Content="Title" Grid.Row="2" Grid.Column="2"/>
                     <TextBox Grid.Row="2" Grid.Column="3" Text="{Binding Item.L2Title}"/>
                     <common:MvvmTextEditor Text="{Binding Item.L2Content, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MinHeight="100" MaxHeight="500" Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" WordWrap="True" VerticalScrollBarVisibility="Auto" ShowLineNumbers="True" VerticalAlignment="Top">

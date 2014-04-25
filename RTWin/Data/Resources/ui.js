@@ -11,19 +11,34 @@
 
     window.hubReady = $.connection.hub.start();
 
+    var lastL1 = -2, lastL2 = -2;
+
     chat.client.addMessage = function (name, message) {
         if (name == "srtl1") {
+            if (message == lastL1) {
+                return;
+            }
+
             if (message == -1) {
                 $('#l1Main').html('');
             } else {
                 $('#l1Main').html($('#l1_' + message).html());
             }
+
+            lastL1 = message;
+
         } else if (name == "srtl2") {
+            if (message == lastL2) {
+                return;
+            }
+
             if (message == -1) {
                 $('#l2Main').html('');
             } else {
                 $('#l2Main').html($('#l2_' + message).html());
             }
+
+            lastL2 = message;
         } else if (name == "markremainingasknown") {
             if (!confirm('Are you sure you want to mark remaining words as known?')) {
                 return false;

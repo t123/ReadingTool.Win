@@ -7,8 +7,13 @@ namespace RTWin.Messages
 {
     public class RefreshItemsMessage
     {
-        //public Item Item { get; private set; }
-        public List<Item> Items { get; private set; }
+        private List<Item> _items = new List<Item>();
+
+        public List<Item> Items
+        {
+            get { return _items; }
+            private set { _items = value; }
+        }
 
         public RefreshItemsMessage()
             : this(new List<Item>())
@@ -24,7 +29,6 @@ namespace RTWin.Messages
         {
             if (items == null)
             {
-                Items = new List<Item>();
                 return;
             }
 
