@@ -228,6 +228,8 @@ namespace RTWin.Models.Views
                 return;
             }
 
+            user = _userService.Login(user);
+
             CurrentUser = user;
             PerformToolbarCommand("items");
         }

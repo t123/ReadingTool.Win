@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 using NPoco;
@@ -62,6 +63,24 @@ namespace RTWin.Services
         public IEnumerable<User> FindAll()
         {
             return _db.FetchBy<User>(sql => sql.OrderBy(x => x.Username));
+        }
+
+        public User Login(long userId)
+        {
+            var user = FindOne(userId);
+            return Login(user);
+        }
+
+        public User Login(User user)
+        {
+            if (user == null)
+            {
+                return null;
+            }
+
+            user.LastLogin = DateTime.Now.ToUniversalTime();
+            Save(user);
+            return user;
         }
     }
 }

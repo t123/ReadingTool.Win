@@ -59,7 +59,7 @@ namespace RTWin.Web.Controllers
         }
 
         [HttpGet]
-        [Route("{phrase}/{languageId}")]
+        [Route("")]
         public async Task<TermReponse> GetTerm(string phrase = "", int languageId = 0)
         {
             if (string.IsNullOrWhiteSpace(phrase) || languageId <= 0)
@@ -90,15 +90,15 @@ namespace RTWin.Web.Controllers
         }
 
         [HttpGet]
-        [Route("api/v1/terms/encode")]
-        public HttpResponseMessage Encode(string term, string encoding="utf-8")
+        [Route("encode")]
+        public HttpResponseMessage Encode(string phrase, string encoding="utf-8")
         {
             try
             {
                 var response = new HttpResponseMessage(HttpStatusCode.OK);
 
                 var dest = Encoding.GetEncoding(encoding);
-                var bytes = dest.GetBytes(term);
+                var bytes = dest.GetBytes(phrase);
                 var ascii = Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(bytes, 0, bytes.Length));
 
                 response.Content = new StringContent(ascii);
@@ -176,7 +176,7 @@ namespace RTWin.Web.Controllers
         }
 
         [HttpPost]
-        [Route("api/terms/markasread")]
+        [Route("markasread")]
         public HttpResponseMessage MarkAllAsRead(TermPost[] terms)
         {
             var response = new HttpResponseMessage(HttpStatusCode.OK);
@@ -213,31 +213,6 @@ namespace RTWin.Web.Controllers
             }
 
             response.Content = new StringContent(counter.ToString());
-            return response;
-        }
-
-        public class ChangeRead
-        {
-            public int Amount { get; set; }
-            public string Type { get; set; }
-            public long ItemId { get; set; }
-        }
-
-        [HttpPost]
-        [Route("api/terms/updatecount")]
-        public HttpResponseMessage Update(ChangeRead change)
-        {
-            var item = _itemService.FindOne(change.ItemId);
-
-            if (item == null)
-            {
-                return new HttpResponseMessage(HttpStatusCode.NotFound);
-            }
-
-            var message = _itemService.ChangeStatistics(item, change.Type, change.Amount);
-
-            var response = new HttpResponseMessage(HttpStatusCode.OK);
-            response.Content = new StringContent(JsonConvert.SerializeObject(message));
             return response;
         }
 

@@ -126,9 +126,7 @@ namespace RTWin.Models.Views
 
             _switchCommand = new RelayCommand<User>(param =>
             {
-                var user = _userService.FindOne(SelectedItem.UserId);
-                user.LastLogin = DateTime.Now.ToUniversalTime();
-                _userService.Save(user);
+                var user = _userService.Login(SelectedItem.UserId);
 
                 SelectedItem = Users.FirstOrDefault(x => x.UserId == user.UserId);
                 var mapped = SelectedItem.ToUser();

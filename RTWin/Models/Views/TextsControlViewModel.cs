@@ -111,6 +111,10 @@ namespace RTWin.Models.Views
                         ItemType = "Watch";
                     }
                 }
+                else
+                {
+                    ItemType = "Read";
+                }
 
                 OnPropertyChanged("SelectedItem");
             }

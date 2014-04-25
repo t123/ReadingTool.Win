@@ -106,7 +106,7 @@
         self._removeChanged();
 
         $.ajax({
-            url: self.options.url + '/api/terms/',
+            url: self.options.url + '/internal/v1/',
             type: 'GET',
             data: {
                 phrase: text,
@@ -223,7 +223,7 @@
         var state = self.getDState();
 
         $.ajax({
-            url: self.options.url + "/api/terms/",
+            url: self.options.url + "/internal/v1/",
             type: 'POST',
             data: {
                 phrase: phrase,
@@ -285,13 +285,13 @@
         var phrase = self.getCurrentWordAsText();
 
         $.ajax({
-            url: self.options.url + "/api/terms/",
+            url: self.options.url + "/internal/v1/",
             type: 'DELETE',
             data: {
                 phrase: phrase,
-                basePhrase: self.setDBase(''),
-                sentence: self.setDSentence(''),
-                definition: self.setDDefinition(''),
+                basePhrase: self.getDBase(''),
+                sentence: self.getDSentence(''),
+                definition: self.getDDefinition(''),
                 languageId: self.getLanguageId(),
                 itemId: self.getItemId(),
                 state: 'NotSeen',
@@ -472,25 +472,6 @@
         self.options.chat.server.send(source, message);
     };
 
-    self.setResultMessage = function (message) {
-        //$('#resultMessage').html(message);
-    };
-
-    self.changeRead = function (amount, type) {
-        $.ajax({
-            url: self.options.url + "/api/terms/updatecount",
-            type: 'POST',
-            dataType: 'json',
-            headers: { "content-type": "application/json" },
-            data: JSON.stringify({ Amount: amount, Type: type, ItemId: self.getItemId() })
-        }).done(function (data, status, xhr) {
-            self.setResultMessage(data);
-        }).fail(function (data) {
-            self.setResultMessage('Change failed');
-        }).always(function (data) {
-        });
-    };
-
     self._showOverlayModal = function (content) {
         self._setOverlayModalContent(content);
         $('#modalOverlay').show();
@@ -530,7 +511,7 @@
         self._showOverlayModal('Please wait, sending <strong>' + termArray.length + '</strong> terms');
 
         $.ajax({
-            url: self.options.url + "/api/terms/markasread",
+            url: self.options.url + "/internal/v1/markasread",
             type: 'POST',
             dataType: 'json',
             headers: { "content-type": "application/json" },
