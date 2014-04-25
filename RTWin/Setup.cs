@@ -240,7 +240,7 @@ namespace RTWin
         private void InitSignalR()
         {
             WebApp.Start<OWINSignalRConfig>(_settings.Get<string>(DbSetting.Keys.BaseWebSignalRAddress));
-            MainHub.Init();
+            SignalRConnection.Init();
         }
     }
 }

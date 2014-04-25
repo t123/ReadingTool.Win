@@ -8,7 +8,8 @@
              xmlns:converters="clr-namespace:RTWin.Converters"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d"  ShowInTaskbar="True" WindowState="Maximized" WindowStartupLocation="CenterScreen"
-             d:DesignHeight="300" d:DesignWidth="800">
+             d:DesignHeight="300" d:DesignWidth="800" KeyUp="ReadControl_OnKeyUp"
+        >
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -24,6 +25,7 @@
                         <ColumnDefinition Width="Auto"></ColumnDefinition>
                         <ColumnDefinition Width="Auto"></ColumnDefinition>
                         <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
                         <ColumnDefinition Width="*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <StackPanel Grid.Column="0" Orientation="Horizontal">
@@ -36,7 +38,8 @@
                         <TextBlock VerticalAlignment="Center">Listened</TextBlock>
                         <Button Command="{Binding ChangeCommand}" CommandParameter="IncreaseListen" Width="10" Content="+"/>
                     </StackPanel>
-                    <xctk:SplitButton Grid.Column="2" Content="Mark remaining as read" Command="{Binding MarkKnownCommand}">
+                    <Button Grid.Column="2" Content="Mark remaining as read" Command="{Binding MarkKnownCommand}"/>
+                    <xctk:SplitButton Grid.Column="3" Content="{Binding NextToRead.CommonName, Mode=OneWay}" Command="{Binding ChangeItemCommand}" CommandParameter="{Binding NextToRead, Mode=OneWay}">
                         <xctk:SplitButton.DropDownContent>
                             <StackPanel>
                                 <ItemsControl ItemsSource="{Binding ItemList}">
@@ -49,11 +52,19 @@
                             </StackPanel>
                         </xctk:SplitButton.DropDownContent>
                     </xctk:SplitButton>
-                    <TextBlock Text="{Binding Message}" Grid.Column="3" VerticalAlignment="Center" FontWeight="Bold"/>
+                    <TextBlock Text="{Binding Message}" Grid.Column="4" VerticalAlignment="Center" FontWeight="Bold"/>
                 </Grid>
             </Border>
             <awe:WebControl Name="WebControl">
             </awe:WebControl>
         </DockPanel>
+
+        <Border BorderThickness="2" BorderBrush="Black" Width="304" Height="104" Visibility="Collapsed" Name="FullscreenMessage" >
+            <Canvas Width="300" Height="100" Background="#fcfcfc" MouseLeftButtonUp="Canvas_OnMouseLeftButtonUp">
+                <TextBlock Canvas.Left="40" Canvas.Top="35" FontSize="20">
+                Press <Run FontWeight="Bold">F11</Run> to exit fullscreen
+                </TextBlock>
+            </Canvas>
+        </Border>
     </Grid>
 </Window>

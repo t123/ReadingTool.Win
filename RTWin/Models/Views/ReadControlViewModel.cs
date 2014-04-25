@@ -6,9 +6,12 @@ using AutoMapper;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using Microsoft.AspNet.SignalR.Client;
+using RTWin.Controls;
 using RTWin.Entities;
+using RTWin.Messages;
 using RTWin.Models.Dto;
 using RTWin.Services;
+using RTWin.Web;
 
 namespace RTWin.Models.Views
 {
@@ -42,8 +45,7 @@ namespace RTWin.Models.Views
             }
         }
 
-        private HubConnection _hubConnection;
-        private IHubProxy _mainHubProxy;
+        public ItemModel NextToRead { get; set; }
 
         public IList<ItemModel> ItemList
         {
@@ -61,7 +63,7 @@ namespace RTWin.Models.Views
             set { _changeCommand = value; }
         }
 
-        public ICommand ChangeItem
+        public ICommand ChangeItemCommand
         {
             get { return _changeItemCommand; }
             set { _changeItemCommand = value; }
@@ -73,13 +75,12 @@ namespace RTWin.Models.Views
             set { _markKnownCommand = value; }
         }
 
+        public CommonWindow CW { get; set; }
+
         public ReadControlViewModel(ItemService itemService, DbSettingService settings)
         {
             _itemService = itemService;
             _settings = settings;
-            //_hubConnection = new HubConnection(_databaseService.GetSetting<string>(DbSetting.Keys.BaseWebSignalRAddress));
-            //_mainHubProxy = _hubConnection.CreateHubProxy("MainHub");
-            //_hubConnection.Start();
 
             _changeCommand = new RelayCommand<string>(param =>
             {
@@ -106,29 +107,33 @@ namespace RTWin.Models.Views
                     case "decreaselisten":
                         Message = _itemService.ChangeStatistics(Item, "listen", -1);
                         break;
+
+                    default:
+                        return;
                 }
 
-                //Task.Factory.StartNew(() =>
-                //{
-                //    //TODO fixme, evilness
-                //    //send back message from html when complete and update then instead
-                //    System.Threading.Thread.Sleep(4000);
-                //    Messenger.Default.Send<RefreshItemsMessage>(new RefreshItemsMessage());
-                //});
+                Messenger.Default.Send(new RefreshItemsMessage());
             });
 
-            //_markKnownCommand = new RelayCommand(param => _mainHubProxy.Invoke("Send", new object[] { "markremainingasknown", "" }));
+            _markKnownCommand = new RelayCommand(() => SignalRConnection.Instance.MainHubProxy.Invoke("Send", new object[] { "markremainingasknown", "" }));
 
             _changeItemCommand = new RelayCommand<ItemModel>(param =>
             {
-
+                var item = _itemService.FindOne(param.ItemId);
+                this.Item = item;
+                this.UpdateNextPrev();
+                CW.Read(item, param.IsParallel);
+                Messenger.Default.Send(new RefreshItemsMessage());
             }, param => true);
+
+            Messenger.Default.Send(new RefreshItemsMessage());
         }
 
         private void UpdateNextPrev()
         {
             var previous = _itemService.FindPrev(Item, 5);
             var next = _itemService.FindNext(Item, 5);
+            NextToRead = Mapper.Map<Item, ItemModel>(next.FirstOrDefault());
 
             ItemList = Mapper.Map<IEnumerable<Item>, IEnumerable<ItemModel>>(next.Union(previous).OrderBy(x => x.CollectionNo)).ToList();
         }

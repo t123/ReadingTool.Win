@@ -63,16 +63,6 @@
                                 </MenuItem>
                                 <MenuItem Header="Add New Item" Command="{Binding ToolbarCommand}" CommandParameter="additem"/>
                             </Menu>
-                            <!--<StackPanel>
-                                <TextBlock><Hyperlink><Run Text="Add Item"></Run></Hyperlink></TextBlock>
-                                <ItemsControl ItemsSource="{Binding Items}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <TextBlock><Hyperlink Command="{Binding DataContext.ReadCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"><Run Text="{Binding CommonName, Mode=OneWay}"></Run></Hyperlink></TextBlock>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                    </StackPanel> -->
                         </xctk:SplitButton.DropDownContent>
                     </xctk:SplitButton>
                     <xctk:SplitButton Grid.Column="3" Content="Terms" Command="{Binding ToolbarCommand}" CommandParameter="terms">

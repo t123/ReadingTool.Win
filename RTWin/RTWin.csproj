@@ -233,6 +233,7 @@
     <Compile Include="Web\Controllers\ResourceController.cs" />
     <Compile Include="Web\Controllers\SyncController.cs" />
     <Compile Include="Web\Controllers\TermsController.cs" />
+    <Compile Include="Web\SignalRConnection.cs" />
     <Page Include="App_Data\Resources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
