@@ -59,7 +59,7 @@ namespace RTWin.Services
             else
             {
                 setting.Value = (value ?? "").ToString();
-                _db.Update(setting);
+                _db.Execute("UPDATE \"settings\" SET \"Value\"=@0 WHERE \"Key\"=@1", setting.Key, setting.Value);
             }
 
             ObjectCache cache = MemoryCache.Default;
@@ -93,6 +93,17 @@ namespace RTWin.Services
         private string NormalizeKey(string key)
         {
             return (key ?? "").ToLowerInvariant().Trim();
+        }
+
+        public IList<DbSetting> FindAll()
+        {
+            return _db.FetchBy<DbSetting>(sql => sql.OrderBy(x => x.Key));
+        }
+
+        public DbSetting FindOne(string key)
+        {
+            key = NormalizeKey(key);
+            return _db.FirstOrDefault<DbSetting>("WHERE Key=@0", key);
         }
     }
 }

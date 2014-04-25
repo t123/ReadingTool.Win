@@ -24,8 +24,6 @@ namespace RTWin.Entities
             public const string CheckNewVersions = "check_for_new_versions";
         }
 
-        //public int Id { get; set; }
-
         [Column(Name = "Key")]
         public string Key { get; set; }
         [Column(Name = "Value")]

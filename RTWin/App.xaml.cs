@@ -42,22 +42,24 @@ namespace RTWin
             AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
             {
                 Exception exception = (Exception)args.ExceptionObject;
-
-                if (exception is AutoMapper.AutoMapperMappingException)
-                {
-                }
-                
                 Log.Error(exception);
             };
 
-            _container = Setup.InitContainer(_container);
-            Setup.Start();
+            try
+            {
+                _container = Setup.InitContainer(_container);
+                Setup.Start();
 
-            var userService = _container.Get<UserService>();
-            App.User = userService.FindAll().OrderByDescending(x=>x.LastLogin).First();
+                var userService = _container.Get<UserService>();
+                App.User = userService.FindAll().OrderByDescending(x => x.LastLogin).First();
 
-            var mainWindow = _container.Get<MainWindow>();
-            mainWindow.Show();
+                var mainWindow = _container.Get<MainWindow>();
+                mainWindow.Show();
+            }
+            catch (Exception exception)
+            {
+                Setup.Instance.AddError("General startup", new Setup.Error("An unknown startup error has occurred", exception));
+            }
         }
 
         protected override void OnExit(ExitEventArgs e)
